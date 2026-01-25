@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from domain.base.file_storage import BaseFileStorage
+from infrastructure.s3.base import BaseFileStorage
 
 
 class DummyFileStorage(BaseFileStorage):
@@ -9,7 +9,7 @@ class DummyFileStorage(BaseFileStorage):
     def __init__(self) -> None:
         self._files: dict[str, bytes] = {}
 
-    async def upload_file(self, file_obj: BytesIO, file_path: str) -> None:
+    async def upload_file(self, file_obj: BytesIO, file_path: str, bucket_name: str) -> None:
         file_obj.seek(0)
         self._files[file_path] = file_obj.read()
 

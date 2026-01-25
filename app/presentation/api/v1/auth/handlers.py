@@ -5,7 +5,10 @@ from fastapi import (
     status,
 )
 
-from presentation.api.auth import auth_service
+from presentation.api.auth import (
+    create_and_set_access_token,
+    create_and_set_refresh_token,
+)
 from presentation.api.dependencies import get_refresh_token_payload
 from presentation.api.schemas import (
     ApiResponse,
@@ -84,14 +87,9 @@ async def login(
 
     user = await mediator.handle_query(query)
 
-    # Создаем токены, используя ID пользователя
     user_id = str(user.oid)
-    access_token = auth_service.create_access_token(uid=user_id)
-    refresh_token = auth_service.create_refresh_token(uid=user_id)
-
-    # Устанавливаем токены в cookies
-    auth_service.set_access_cookies(token=access_token, response=response)
-    auth_service.set_refresh_cookies(token=refresh_token, response=response)
+    access_token = create_and_set_access_token(user_id, response)
+    refresh_token = create_and_set_refresh_token(user_id, response)
 
     return ApiResponse[TokenResponseSchema](
         data=TokenResponseSchema(
@@ -115,12 +113,8 @@ async def refresh_token(
     refresh_payload: dict = Depends(get_refresh_token_payload),
 ) -> ApiResponse[RefreshTokenResponseSchema]:
     """Обновление access токена с помощью refresh токена из cookies."""
-    # Создаем новый access токен
     user_id = refresh_payload.sub
-    access_token = auth_service.create_access_token(uid=user_id)
-
-    # Устанавливаем новый access токен в cookie
-    auth_service.set_access_cookies(token=access_token, response=response)
+    access_token = create_and_set_access_token(user_id, response)
 
     return ApiResponse[RefreshTokenResponseSchema](
         data=RefreshTokenResponseSchema(

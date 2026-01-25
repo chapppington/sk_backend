@@ -1,12 +1,7 @@
 from functools import lru_cache
 
-from infrastructure.database.gateways.postgres import SQLDatabase
-from infrastructure.database.repositories.users.users import SQLAlchemyUserRepository
-from infrastructure.websockets.manager import (
-    BaseConnectionManager,
-    ConnectionManager,
-)
-from motor.motor_asyncio import AsyncIOMotorClient
+from infrastructure.database.gateways.mongo import MongoDatabase
+from infrastructure.database.repositories.users.mongo import MongoUserRepository
 from punq import (
     Container,
     Scope,
@@ -40,40 +35,13 @@ def _init_container() -> Container:
     config = Config()
     container.register(Config, instance=config, scope=Scope.singleton)
 
-    # WebSocket Manager
-    container.register(
-        BaseConnectionManager,
-        instance=ConnectionManager(),
-        scope=Scope.singleton,
-    )
+    # Регистрируем Mongo Database
+    def init_mongo_database() -> MongoDatabase:
+        return MongoDatabase(mongo_url=config.mongo_connection_url, mongo_database=config.mongo_database)
 
-    # Регистрируем SQL Database
-    def init_sql_database() -> SQLDatabase:
-        return SQLDatabase(
-            url=config.postgres_connection_uri,
-            ro_url=config.postgres_connection_uri,
-        )
+    container.register(MongoDatabase, factory=init_mongo_database, scope=Scope.singleton)
 
-    container.register(SQLDatabase, factory=init_sql_database, scope=Scope.singleton)
-
-    # Регистрируем MongoDB Client
-    def create_mongodb_client():
-        return AsyncIOMotorClient(
-            config.mongodb_connection_uri,
-            serverSelectionTimeoutMS=3000,
-        )
-
-    container.register(
-        AsyncIOMotorClient,
-        factory=create_mongodb_client,
-        scope=Scope.singleton,
-    )
-
-    # Регистрируем репозитории
-    container.register(
-        BaseUserRepository,
-        SQLAlchemyUserRepository,
-    )
+    container.register(BaseUserRepository, MongoUserRepository)
 
     # Регистрируем доменные сервисы
     container.register(UserService)

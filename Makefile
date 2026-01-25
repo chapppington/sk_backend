@@ -24,7 +24,6 @@ app-logs:
 app-shell:
 	${EXEC} ${APP_CONTAINER} bash
 
-
 .PHONY: app-down
 app-down:
 	${DC} -f ${APP_FILE} ${ENV} down
@@ -46,32 +45,9 @@ storages-down:
 storages-logs:
 	${LOGS} ${STORAGES_CONTAINER} -f
 
-.PHONY: postgres 
-postgres:
-	${EXEC} ${STORAGES_CONTAINER} psql -U postgres
-
-
 .PHONY: precommit 
 precommit:
 	pre-commit run --all-files
-
-
-.PHONY: migrations
-migrations:
-	${EXEC} ${APP_CONTAINER} alembic revision --autogenerate
-
-.PHONY: migrate
-migrate:
-	${EXEC_NO_TTY} ${APP_CONTAINER} alembic upgrade head
-
-.PHONY: downgrade
-downgrade:
-	${EXEC_NO_TTY} ${APP_CONTAINER} alembic downgrade base
-
-.PHONY: reapply-migrations
-reapply-migrations:
-	${EXEC_NO_TTY} ${APP_CONTAINER} alembic downgrade base
-	${EXEC_NO_TTY} ${APP_CONTAINER} alembic upgrade head
 
 .PHONY: test 
 test:

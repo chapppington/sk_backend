@@ -1,7 +1,4 @@
-from pydantic import (
-    computed_field,
-    Field,
-)
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
@@ -33,15 +30,6 @@ class MongoConfig(BaseSettings):
         alias="MONGO_DATABASE",
     )
 
-    mongodb_games_collection: str = Field(
-        default="games",
-        alias="MONGODB_GAMES_COLLECTION",
-    )
-
-    @computed_field
     @property
-    def mongodb_connection_uri(self) -> str:
-        """Build MongoDB connection URI from components."""
-        if self.mongo_user and self.mongo_password:
-            return f"mongodb://{self.mongo_user}:{self.mongo_password}@{self.mongo_host}:{self.mongo_port}/{self.mongo_database}?authSource=admin"
-        return f"mongodb://{self.mongo_host}:{self.mongo_port}/{self.mongo_database}"
+    def mongo_connection_url(self) -> str:
+        return f"mongodb://{self.mongo_user}:{self.mongo_password}@{self.mongo_host}:{self.mongo_port}/{self.mongo_database}?authSource=admin"

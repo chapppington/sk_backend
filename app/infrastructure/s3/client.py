@@ -1,5 +1,3 @@
-"""S3 client for MinIO integration."""
-
 from contextlib import asynccontextmanager
 
 import aioboto3
@@ -9,8 +7,6 @@ from settings.config import Config
 
 
 class S3Client:
-    """Async S3 client wrapper for MinIO."""
-
     def __init__(self, config: Config) -> None:
         self.config = config
         self.session = aioboto3.Session()
@@ -40,10 +36,13 @@ class S3Client:
             await self.create_bucket_if_not_exists()
             await client.upload_file(file_path, self.config.s3_bucket_name, object_name)
 
-    async def upload_fileobj(self, file_obj, object_name: str) -> None:
+    async def upload_fileobj(self, file_obj, object_name: str, bucket_name: str) -> None:
         async with self.get_client() as client:
-            await self.create_bucket_if_not_exists()
-            await client.upload_fileobj(file_obj, self.config.s3_bucket_name, object_name)
+            try:
+                await client.head_bucket(Bucket=bucket_name)
+            except ClientError:
+                await client.create_bucket(Bucket=bucket_name)
+            await client.upload_fileobj(file_obj, bucket_name, object_name)
 
     async def download_file(self, object_name: str, file_path: str) -> None:
         async with self.get_client() as client:

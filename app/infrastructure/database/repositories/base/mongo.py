@@ -1,15 +1,14 @@
 from abc import ABC
 from dataclasses import dataclass
 
-from motor.core import AgnosticClient
+from infrastructure.database.gateways.mongo import MongoDatabase
 
 
 @dataclass
-class BaseMongoDBRepository(ABC):
-    mongo_db_client: AgnosticClient
-    mongo_db_database_name: str
-    mongo_db_collection_name: str
+class BaseMongoRepository(ABC):
+    mongo_database: MongoDatabase
+    collection_name: str
 
     @property
-    def _collection(self):
-        return self.mongo_db_client[self.mongo_db_database_name][self.mongo_db_collection_name]
+    def collection(self):
+        return self.mongo_database.connection[self.collection_name]

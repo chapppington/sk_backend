@@ -2,11 +2,18 @@ from functools import lru_cache
 
 from infrastructure.database.gateways.mongo import MongoDatabase
 from infrastructure.database.repositories.users.mongo import MongoUserRepository
+from infrastructure.s3.base import BaseFileStorage
+from infrastructure.s3.client import S3Client
+from infrastructure.s3.storage import S3FileStorage
 from punq import (
     Container,
     Scope,
 )
 
+from application.media.commands import (
+    UploadFileCommand,
+    UploadFileCommandHandler,
+)
 from application.mediator import Mediator
 from application.users.commands import (
     CreateUserCommand,
@@ -43,10 +50,23 @@ def _init_container() -> Container:
 
     container.register(BaseUserRepository, MongoUserRepository)
 
+    # Регистрируем S3
+    def init_s3_client() -> S3Client:
+        return S3Client(config=config)
+
+    container.register(S3Client, factory=init_s3_client, scope=Scope.singleton)
+
+    def init_s3_file_storage() -> S3FileStorage:
+        return S3FileStorage(s3_client=container.resolve(S3Client))
+
+    container.register(BaseFileStorage, factory=init_s3_file_storage, scope=Scope.singleton)
+
     # Регистрируем доменные сервисы
     container.register(UserService)
 
     # Регистрируем command handlers
+    # Media
+    container.register(UploadFileCommandHandler)
     # Users
     container.register(CreateUserCommandHandler)
 
@@ -60,6 +80,11 @@ def _init_container() -> Container:
         mediator = Mediator()
 
         # Регистрируем commands
+        # Media
+        mediator.register_command(
+            UploadFileCommand,
+            [container.resolve(UploadFileCommandHandler)],
+        )
         # Users
         mediator.register_command(
             CreateUserCommand,

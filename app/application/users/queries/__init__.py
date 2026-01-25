@@ -1,6 +1,8 @@
-from application.users.queries.users import (
+from application.users.queries.authenticate import (
     AuthenticateUserQuery,
     AuthenticateUserQueryHandler,
+)
+from application.users.queries.get_by_id import (
     GetUserByIdQuery,
     GetUserByIdQueryHandler,
 )

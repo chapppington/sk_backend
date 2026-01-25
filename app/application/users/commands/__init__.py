@@ -1,4 +1,4 @@
-from application.users.commands.users import (
+from application.users.commands.create import (
     CreateUserCommand,
     CreateUserCommandHandler,
 )

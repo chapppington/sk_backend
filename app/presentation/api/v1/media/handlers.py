@@ -9,6 +9,7 @@ from fastapi import (
     UploadFile,
 )
 
+from infrastructure.s3.base import BaseFileStorage
 from presentation.api.dependencies import get_current_user_id
 from presentation.api.schemas import (
     ApiResponse,
@@ -43,6 +44,7 @@ async def upload_file(
 ) -> ApiResponse[UploadFileResponseSchema]:
     """Загрузка файла в указанный бакет."""
     mediator: Mediator = container.resolve(Mediator)
+    file_storage: BaseFileStorage = container.resolve(BaseFileStorage)
 
     file_content = await file.read()
     file_obj = BytesIO(file_content)
@@ -55,9 +57,12 @@ async def upload_file(
 
     file_path, *_ = await mediator.handle_command(command)
 
+    file_url = await file_storage.get_file_url(file_path, bucket_name)
+
     return ApiResponse[UploadFileResponseSchema](
         data=UploadFileResponseSchema(
             file_path=file_path,
             bucket_name=bucket_name,
+            file_url=file_url,
         ),
     )

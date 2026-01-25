@@ -42,6 +42,33 @@ services:
       retries: 3
     restart: unless-stopped
 
+  minio-init:
+    image: minio/mc:latest
+    container_name: minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    networks:
+      - backend
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc alias set minio http://minio:9000 ${MINIO_ROOT_USER:-minioadmin} ${MINIO_ROOT_PASSWORD:-minioadmin}) do echo '...waiting for minio...' && sleep 1; done;
+      /usr/bin/mc mb minio/news --ignore-existing;
+      /usr/bin/mc anonymous set public minio/news;
+      /usr/bin/mc mb minio/portfolios --ignore-existing;
+      /usr/bin/mc anonymous set public minio/portfolios;
+      /usr/bin/mc mb minio/vacancies --ignore-existing;
+      /usr/bin/mc anonymous set public minio/vacancies;
+      /usr/bin/mc mb minio/users --ignore-existing;
+      /usr/bin/mc anonymous set public minio/users;
+      /usr/bin/mc mb minio/sk-storage --ignore-existing;
+      /usr/bin/mc anonymous set public minio/sk-storage;
+      echo 'MinIO buckets configured with public access';
+      "
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+
 volumes:
   mongodb_data:
   minio_data:

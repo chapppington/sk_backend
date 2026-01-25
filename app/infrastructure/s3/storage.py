@@ -12,11 +12,5 @@ class S3FileStorage(BaseFileStorage):
     async def upload_file(self, file_obj: BytesIO, file_path: str, bucket_name: str) -> None:
         await self.s3_client.upload_fileobj(file_obj, file_path, bucket_name)
 
-    async def delete_file(self, file_path: str) -> None:
-        await self.s3_client.delete_file(file_path)
-
-    async def get_file_url(self, file_path: str, expiration: int = 3600) -> str | None:
-        try:
-            return await self.s3_client.get_presigned_url(file_path, expiration)
-        except Exception:
-            return None
+    async def get_file_url(self, file_path: str, bucket_name: str, expiration: int = 3600) -> str | None:
+        return self.s3_client.get_public_url(file_path, bucket_name)

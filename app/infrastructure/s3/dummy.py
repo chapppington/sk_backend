@@ -13,10 +13,7 @@ class DummyFileStorage(BaseFileStorage):
         file_obj.seek(0)
         self._files[file_path] = file_obj.read()
 
-    async def delete_file(self, file_path: str) -> None:
-        self._files.pop(file_path, None)
-
-    async def get_file_url(self, file_path: str, expiration: int = 3600) -> str | None:
+    async def get_file_url(self, file_path: str, bucket_name: str, expiration: int = 3600) -> str | None:
         if file_path in self._files:
-            return f"http://test-storage/{file_path}"
+            return f"http://test-storage/{bucket_name}/{file_path}"
         return None

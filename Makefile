@@ -8,6 +8,8 @@ EXEC_NO_TTY = docker exec
 APP_FILE = docker_compose/app.yaml
 APP_CONTAINER = main-app
 
+# Application ==============================================================
+
 .PHONY: all
 all:
 	${DC} -f ${STORAGES_FILE} -f ${APP_FILE} ${ENV} up --build -d
@@ -32,6 +34,7 @@ app-down:
 app-up:
 	${DC} -f ${STORAGES_FILE} -f ${APP_FILE} ${ENV} up --build -d main-app
 
+# Storages ================================================================
 
 .PHONY: storages
 storages:
@@ -45,9 +48,13 @@ storages-down:
 storages-logs:
 	${LOGS} ${STORAGES_CONTAINER} -f
 
+# Precommit ===============================================================
+
 .PHONY: precommit 
 precommit:
 	pre-commit run --all-files
+
+# Tests ===================================================================
 
 .PHONY: test 
 test:

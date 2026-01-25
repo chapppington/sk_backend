@@ -23,6 +23,12 @@ from domain.news.exceptions.news import (
     NewsNotFoundBySlugException,
     NewsNotFoundException,
 )
+from domain.portfolios.exceptions.portfolios import (
+    PortfolioAlreadyExistsException,
+    PortfolioException,
+    PortfolioNotFoundBySlugException,
+    PortfolioNotFoundException,
+)
 from domain.users.exceptions import (
     InvalidCredentialsException,
     UserAlreadyExistsException,
@@ -60,6 +66,14 @@ def _map_vacancy_exception_to_status_code(exc: VacancyException) -> int:
     return status.HTTP_400_BAD_REQUEST
 
 
+def _map_portfolio_exception_to_status_code(exc: PortfolioException) -> int:
+    if isinstance(exc, (PortfolioNotFoundException, PortfolioNotFoundBySlugException)):
+        return status.HTTP_404_NOT_FOUND
+    if isinstance(exc, PortfolioAlreadyExistsException):
+        return status.HTTP_409_CONFLICT
+    return status.HTTP_400_BAD_REQUEST
+
+
 def _map_domain_exception_to_status_code(exc: DomainException) -> int:
     if isinstance(exc, UserException):
         return _map_user_exception_to_status_code(exc)
@@ -67,6 +81,8 @@ def _map_domain_exception_to_status_code(exc: DomainException) -> int:
         return _map_news_exception_to_status_code(exc)
     if isinstance(exc, VacancyException):
         return _map_vacancy_exception_to_status_code(exc)
+    if isinstance(exc, PortfolioException):
+        return _map_portfolio_exception_to_status_code(exc)
     return status.HTTP_400_BAD_REQUEST
 
 

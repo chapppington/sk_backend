@@ -8,14 +8,14 @@ from domain.base.exceptions import DomainException
 class UserException(DomainException):
     @property
     def message(self) -> str:
-        return "Identity exception occurred"
+        return "Произошла ошибка при работе с пользователем"
 
 
 @dataclass(eq=False)
 class EmptyEmailException(UserException):
     @property
     def message(self) -> str:
-        return "Email is empty"
+        return "Email не может быть пустым"
 
 
 @dataclass(eq=False)
@@ -24,14 +24,14 @@ class InvalidEmailException(UserException):
 
     @property
     def message(self) -> str:
-        return f"Invalid email format: {self.email}"
+        return f"Недопустимый формат email: {self.email}"
 
 
 @dataclass(eq=False)
 class EmptyUserNameException(UserException):
     @property
     def message(self) -> str:
-        return "User name is empty"
+        return "Имя пользователя не может быть пустым"
 
 
 @dataclass(eq=False)
@@ -42,7 +42,8 @@ class UserNameTooLongException(UserException):
     @property
     def message(self) -> str:
         return (
-            f"User name is too long. Current length is {self.name_length}, maximum allowed length is {self.max_length}"
+            f"Имя пользователя слишком длинное. Текущая длина: {self.name_length}, "
+            f"максимально допустимая длина: {self.max_length}"
         )
 
 
@@ -50,7 +51,7 @@ class UserNameTooLongException(UserException):
 class EmptyPasswordException(UserException):
     @property
     def message(self) -> str:
-        return "Password is empty"
+        return "Пароль не может быть пустым"
 
 
 @dataclass(eq=False)
@@ -61,8 +62,8 @@ class PasswordTooShortException(UserException):
     @property
     def message(self) -> str:
         return (
-            f"Password is too short. Current length is {self.password_length}, "
-            f"minimum required length is {self.min_length}"
+            f"Пароль слишком короткий. Текущая длина: {self.password_length}, "
+            f"минимально требуемая длина: {self.min_length}"
         )
 
 
@@ -72,7 +73,7 @@ class InvalidPasswordException(UserException):
 
     @property
     def message(self) -> str:
-        return f"Invalid password: {self.reason}"
+        return f"Недопустимый пароль: {self.reason}"
 
 
 @dataclass(eq=False)
@@ -81,7 +82,7 @@ class UserNotFoundException(UserException):
 
     @property
     def message(self) -> str:
-        return f"User with id {self.user_id} not found"
+        return f"Пользователь с id {self.user_id} не найден"
 
 
 @dataclass(eq=False)
@@ -90,11 +91,11 @@ class UserAlreadyExistsException(UserException):
 
     @property
     def message(self) -> str:
-        return f"User with email '{self.email}' already exists"
+        return f"Пользователь с email '{self.email}' уже существует"
 
 
 @dataclass(eq=False)
 class InvalidCredentialsException(UserException):
     @property
     def message(self) -> str:
-        return "Invalid credentials"
+        return "Неверные учетные данные"

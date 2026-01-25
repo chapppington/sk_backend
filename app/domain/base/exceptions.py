@@ -5,11 +5,11 @@ from dataclasses import dataclass
 class ApplicationException(Exception):
     @property
     def message(self) -> str:
-        return "Application exception occurred"
+        return "Произошла ошибка приложения"
 
 
 @dataclass(eq=False)
 class DomainException(ApplicationException):
     @property
     def message(self) -> str:
-        return "Domain exception occurred"
+        return "Произошла доменная ошибка"

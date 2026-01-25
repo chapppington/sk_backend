@@ -17,6 +17,12 @@ from domain.base.exceptions import (
     ApplicationException,
     DomainException,
 )
+from domain.news.exceptions.news import (
+    NewsAlreadyExistsException,
+    NewsException,
+    NewsNotFoundBySlugException,
+    NewsNotFoundException,
+)
 from domain.users.exceptions import (
     InvalidCredentialsException,
     UserAlreadyExistsException,
@@ -25,25 +31,39 @@ from domain.users.exceptions import (
 )
 
 
-async def application_exception_handler(
-    request: Request,
-    exc: ApplicationException,
-) -> JSONResponse:
-    if isinstance(exc, LogicException):
-        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-    elif isinstance(exc, DomainException):
-        if isinstance(exc, UserException):
-            if isinstance(exc, (InvalidCredentialsException, UserNotFoundException)):
-                status_code = status.HTTP_401_UNAUTHORIZED
-            elif isinstance(exc, UserAlreadyExistsException):
-                status_code = status.HTTP_409_CONFLICT
-            else:
-                status_code = status.HTTP_400_BAD_REQUEST
-        else:
-            status_code = status.HTTP_400_BAD_REQUEST
-    else:
-        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+def _map_user_exception_to_status_code(exc: UserException) -> int:
+    if isinstance(exc, (InvalidCredentialsException, UserNotFoundException)):
+        return status.HTTP_401_UNAUTHORIZED
+    if isinstance(exc, UserAlreadyExistsException):
+        return status.HTTP_409_CONFLICT
+    return status.HTTP_400_BAD_REQUEST
 
+
+def _map_news_exception_to_status_code(exc: NewsException) -> int:
+    if isinstance(exc, (NewsNotFoundException, NewsNotFoundBySlugException)):
+        return status.HTTP_404_NOT_FOUND
+    if isinstance(exc, NewsAlreadyExistsException):
+        return status.HTTP_409_CONFLICT
+    return status.HTTP_400_BAD_REQUEST
+
+
+def _map_domain_exception_to_status_code(exc: DomainException) -> int:
+    if isinstance(exc, UserException):
+        return _map_user_exception_to_status_code(exc)
+    if isinstance(exc, NewsException):
+        return _map_news_exception_to_status_code(exc)
+    return status.HTTP_400_BAD_REQUEST
+
+
+def _map_application_exception_to_status_code(exc: ApplicationException) -> int:
+    if isinstance(exc, LogicException):
+        return status.HTTP_500_INTERNAL_SERVER_ERROR
+    if isinstance(exc, DomainException):
+        return _map_domain_exception_to_status_code(exc)
+    return status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+def _create_error_response(exc: ApplicationException, status_code: int) -> JSONResponse:
     response = ApiResponse(
         errors=[{"message": exc.message, "type": exc.__class__.__name__}],
     )
@@ -52,6 +72,14 @@ async def application_exception_handler(
         status_code=status_code,
         content=response.model_dump(),
     )
+
+
+async def application_exception_handler(
+    request: Request,
+    exc: ApplicationException,
+) -> JSONResponse:
+    status_code = _map_application_exception_to_status_code(exc)
+    return _create_error_response(exc, status_code)
 
 
 async def authx_exception_handler(

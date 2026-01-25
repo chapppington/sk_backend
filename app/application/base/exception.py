@@ -7,4 +7,4 @@ from domain.base.exceptions import ApplicationException
 class LogicException(ApplicationException):
     @property
     def message(self) -> str:
-        return "Logic exception occurred"
+        return "Произошла логическая ошибка"

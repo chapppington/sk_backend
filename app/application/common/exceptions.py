@@ -9,7 +9,7 @@ class CommandHandlersNotRegisteredException(LogicException):
 
     @property
     def message(self) -> str:
-        return f"Command handlers not registered for command type: {self.command_type.__name__}"
+        return f"Обработчики команд не зарегистрированы для типа команды: {self.command_type.__name__}"
 
 
 @dataclass(eq=False)
@@ -18,4 +18,4 @@ class QueryHandlerNotRegisteredException(LogicException):
 
     @property
     def message(self) -> str:
-        return f"Query handler not registered for query type: {self.query_type.__name__}"
+        return f"Обработчик запроса не зарегистрирован для типа запроса: {self.query_type.__name__}"

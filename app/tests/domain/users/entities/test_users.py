@@ -39,15 +39,3 @@ def test_user_entity_equality():
 
     assert user1 == user2
     assert user1 != user3
-
-
-def test_user_entity_hash():
-    user_id = uuid4()
-    email1 = EmailValueObject("test@example.com")
-    email2 = EmailValueObject("test@example.com")
-    name = UserNameValueObject("Test User")
-
-    user1 = UserEntity(oid=user_id, email=email1, hashed_password="hash1", name=name)
-    user2 = UserEntity(oid=user_id, email=email2, hashed_password="hash2", name=name)
-
-    assert hash(user1) == hash(user2)

@@ -1,4 +1,6 @@
+from collections.abc import AsyncIterable
 from dataclasses import dataclass
+from typing import Optional
 from uuid import UUID
 
 from domain.portfolios.entities import PortfolioEntity
@@ -73,3 +75,31 @@ class PortfolioService:
     ) -> None:
         await self.get_by_id(portfolio_id)
         await self.portfolio_repository.delete(portfolio_id)
+
+    def find_many(
+        self,
+        sort_field: str,
+        sort_order: int,
+        offset: int,
+        limit: int,
+        search: Optional[str] = None,
+        year: Optional[int] = None,
+    ) -> AsyncIterable[PortfolioEntity]:
+        return self.portfolio_repository.find_many(
+            sort_field=sort_field,
+            sort_order=sort_order,
+            offset=offset,
+            limit=limit,
+            search=search,
+            year=year,
+        )
+
+    async def count_many(
+        self,
+        search: Optional[str] = None,
+        year: Optional[int] = None,
+    ) -> int:
+        return await self.portfolio_repository.count_many(
+            search=search,
+            year=year,
+        )

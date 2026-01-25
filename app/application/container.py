@@ -2,6 +2,7 @@ from functools import lru_cache
 
 from infrastructure.database.gateways.mongo import MongoDatabase
 from infrastructure.database.repositories.news.mongo import MongoNewsRepository
+from infrastructure.database.repositories.portfolios.mongo import MongoPortfolioRepository
 from infrastructure.database.repositories.users.mongo import MongoUserRepository
 from infrastructure.database.repositories.vacancies.mongo import MongoVacancyRepository
 from infrastructure.s3.base import BaseFileStorage
@@ -35,6 +36,24 @@ from application.news.queries import (
     GetNewsBySlugQuery,
     GetNewsBySlugQueryHandler,
 )
+from application.portfolios.commands import (
+    CreatePortfolioCommand,
+    CreatePortfolioCommandHandler,
+    DeletePortfolioCommand,
+    DeletePortfolioCommandHandler,
+    UpdatePortfolioCommand,
+    UpdatePortfolioCommandHandler,
+)
+from application.portfolios.queries import (
+    CountManyPortfoliosQuery,
+    CountManyPortfoliosQueryHandler,
+    FindManyPortfoliosQuery,
+    FindManyPortfoliosQueryHandler,
+    GetPortfolioByIdQuery,
+    GetPortfolioByIdQueryHandler,
+    GetPortfolioBySlugQuery,
+    GetPortfolioBySlugQueryHandler,
+)
 from application.users.commands import (
     CreateUserCommand,
     CreateUserCommandHandler,
@@ -63,6 +82,8 @@ from application.vacancies.queries import (
 )
 from domain.news.interfaces.repository import BaseNewsRepository
 from domain.news.services import NewsService
+from domain.portfolios.interfaces.repository import BasePortfolioRepository
+from domain.portfolios.services.portfolios import PortfolioService
 from domain.users.interfaces.repository import BaseUserRepository
 from domain.users.services import UserService
 from domain.vacancies.interfaces.repository import BaseVacancyRepository
@@ -91,6 +112,7 @@ def _init_container() -> Container:
     container.register(BaseUserRepository, MongoUserRepository)
     container.register(BaseNewsRepository, MongoNewsRepository)
     container.register(BaseVacancyRepository, MongoVacancyRepository)
+    container.register(BasePortfolioRepository, MongoPortfolioRepository)
 
     # Регистрируем S3
     def init_s3_client() -> S3Client:
@@ -107,6 +129,7 @@ def _init_container() -> Container:
     container.register(UserService)
     container.register(NewsService)
     container.register(VacancyService)
+    container.register(PortfolioService)
 
     # Регистрируем command handlers
     # Media
@@ -121,6 +144,10 @@ def _init_container() -> Container:
     container.register(CreateVacancyCommandHandler)
     container.register(UpdateVacancyCommandHandler)
     container.register(DeleteVacancyCommandHandler)
+    # Portfolios
+    container.register(CreatePortfolioCommandHandler)
+    container.register(UpdatePortfolioCommandHandler)
+    container.register(DeletePortfolioCommandHandler)
 
     # Регистрируем query handlers
     # Users
@@ -135,6 +162,11 @@ def _init_container() -> Container:
     container.register(GetVacancyByIdQueryHandler)
     container.register(FindManyVacanciesQueryHandler)
     container.register(CountManyVacanciesQueryHandler)
+    # Portfolios
+    container.register(GetPortfolioByIdQueryHandler)
+    container.register(GetPortfolioBySlugQueryHandler)
+    container.register(FindManyPortfoliosQueryHandler)
+    container.register(CountManyPortfoliosQueryHandler)
 
     # Инициализируем медиатор
     def init_mediator() -> Mediator:
@@ -177,6 +209,19 @@ def _init_container() -> Container:
             DeleteVacancyCommand,
             [container.resolve(DeleteVacancyCommandHandler)],
         )
+        # Portfolios
+        mediator.register_command(
+            CreatePortfolioCommand,
+            [container.resolve(CreatePortfolioCommandHandler)],
+        )
+        mediator.register_command(
+            UpdatePortfolioCommand,
+            [container.resolve(UpdatePortfolioCommandHandler)],
+        )
+        mediator.register_command(
+            DeletePortfolioCommand,
+            [container.resolve(DeletePortfolioCommandHandler)],
+        )
 
         # Регистрируем queries
         # Users
@@ -217,6 +262,23 @@ def _init_container() -> Container:
         mediator.register_query(
             CountManyVacanciesQuery,
             container.resolve(CountManyVacanciesQueryHandler),
+        )
+        # Portfolios
+        mediator.register_query(
+            GetPortfolioByIdQuery,
+            container.resolve(GetPortfolioByIdQueryHandler),
+        )
+        mediator.register_query(
+            GetPortfolioBySlugQuery,
+            container.resolve(GetPortfolioBySlugQueryHandler),
+        )
+        mediator.register_query(
+            FindManyPortfoliosQuery,
+            container.resolve(FindManyPortfoliosQueryHandler),
+        )
+        mediator.register_query(
+            CountManyPortfoliosQuery,
+            container.resolve(CountManyPortfoliosQueryHandler),
         )
 
         return mediator

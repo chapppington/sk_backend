@@ -14,7 +14,7 @@ from domain.portfolios.interfaces.repository import BasePortfolioRepository
 
 @dataclass
 class MongoPortfolioRepository(BaseMongoRepository, BasePortfolioRepository):
-    collection_name: str = "portfolios"
+    collection_name: str = "portfolio"
 
     async def add(self, portfolio: PortfolioEntity) -> PortfolioEntity:
         document = portfolio_entity_to_document(portfolio)

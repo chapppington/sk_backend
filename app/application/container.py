@@ -3,6 +3,7 @@ from functools import lru_cache
 from infrastructure.database.gateways.mongo import MongoDatabase
 from infrastructure.database.repositories.news.mongo import MongoNewsRepository
 from infrastructure.database.repositories.users.mongo import MongoUserRepository
+from infrastructure.database.repositories.vacancies.mongo import MongoVacancyRepository
 from infrastructure.s3.base import BaseFileStorage
 from infrastructure.s3.client import S3Client
 from infrastructure.s3.storage import S3FileStorage
@@ -44,10 +45,28 @@ from application.users.queries import (
     GetUserByIdQuery,
     GetUserByIdQueryHandler,
 )
+from application.vacancies.commands import (
+    CreateVacancyCommand,
+    CreateVacancyCommandHandler,
+    DeleteVacancyCommand,
+    DeleteVacancyCommandHandler,
+    UpdateVacancyCommand,
+    UpdateVacancyCommandHandler,
+)
+from application.vacancies.queries import (
+    CountManyVacanciesQuery,
+    CountManyVacanciesQueryHandler,
+    FindManyVacanciesQuery,
+    FindManyVacanciesQueryHandler,
+    GetVacancyByIdQuery,
+    GetVacancyByIdQueryHandler,
+)
 from domain.news.interfaces.repository import BaseNewsRepository
 from domain.news.services import NewsService
 from domain.users.interfaces.repository import BaseUserRepository
 from domain.users.services import UserService
+from domain.vacancies.interfaces.repository import BaseVacancyRepository
+from domain.vacancies.services import VacancyService
 from settings.config import Config
 
 
@@ -71,6 +90,7 @@ def _init_container() -> Container:
 
     container.register(BaseUserRepository, MongoUserRepository)
     container.register(BaseNewsRepository, MongoNewsRepository)
+    container.register(BaseVacancyRepository, MongoVacancyRepository)
 
     # Регистрируем S3
     def init_s3_client() -> S3Client:
@@ -86,6 +106,7 @@ def _init_container() -> Container:
     # Регистрируем доменные сервисы
     container.register(UserService)
     container.register(NewsService)
+    container.register(VacancyService)
 
     # Регистрируем command handlers
     # Media
@@ -96,6 +117,10 @@ def _init_container() -> Container:
     container.register(CreateNewsCommandHandler)
     container.register(UpdateNewsCommandHandler)
     container.register(DeleteNewsCommandHandler)
+    # Vacancies
+    container.register(CreateVacancyCommandHandler)
+    container.register(UpdateVacancyCommandHandler)
+    container.register(DeleteVacancyCommandHandler)
 
     # Регистрируем query handlers
     # Users
@@ -106,6 +131,10 @@ def _init_container() -> Container:
     container.register(GetNewsBySlugQueryHandler)
     container.register(FindManyNewsQueryHandler)
     container.register(CountManyNewsQueryHandler)
+    # Vacancies
+    container.register(GetVacancyByIdQueryHandler)
+    container.register(FindManyVacanciesQueryHandler)
+    container.register(CountManyVacanciesQueryHandler)
 
     # Инициализируем медиатор
     def init_mediator() -> Mediator:
@@ -135,6 +164,19 @@ def _init_container() -> Container:
             DeleteNewsCommand,
             [container.resolve(DeleteNewsCommandHandler)],
         )
+        # Vacancies
+        mediator.register_command(
+            CreateVacancyCommand,
+            [container.resolve(CreateVacancyCommandHandler)],
+        )
+        mediator.register_command(
+            UpdateVacancyCommand,
+            [container.resolve(UpdateVacancyCommandHandler)],
+        )
+        mediator.register_command(
+            DeleteVacancyCommand,
+            [container.resolve(DeleteVacancyCommandHandler)],
+        )
 
         # Регистрируем queries
         # Users
@@ -162,6 +204,19 @@ def _init_container() -> Container:
         mediator.register_query(
             CountManyNewsQuery,
             container.resolve(CountManyNewsQueryHandler),
+        )
+        # Vacancies
+        mediator.register_query(
+            GetVacancyByIdQuery,
+            container.resolve(GetVacancyByIdQueryHandler),
+        )
+        mediator.register_query(
+            FindManyVacanciesQuery,
+            container.resolve(FindManyVacanciesQueryHandler),
+        )
+        mediator.register_query(
+            CountManyVacanciesQuery,
+            container.resolve(CountManyVacanciesQueryHandler),
         )
 
         return mediator

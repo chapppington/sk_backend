@@ -33,11 +33,6 @@ class VacancyService:
         self,
         vacancy: VacancyEntity,
     ) -> VacancyEntity:
-        existing_vacancy = await self.vacancy_repository.get_by_id(vacancy.oid)
-
-        if not existing_vacancy:
-            raise VacancyNotFoundException(vacancy_id=vacancy.oid)
-
         await self.vacancy_repository.update(vacancy)
 
         return vacancy

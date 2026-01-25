@@ -55,10 +55,6 @@ class NewsService:
         news: NewsEntity,
     ) -> NewsEntity:
         existing_news = await self.news_repository.get_by_id(news.oid)
-
-        if not existing_news:
-            raise NewsNotFoundException(news_id=news.oid)
-
         current_slug = existing_news.slug.as_generic_type()
         new_slug = news.slug.as_generic_type()
 

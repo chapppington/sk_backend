@@ -1,5 +1,6 @@
 from infrastructure.database.repositories.dummy.news.news import DummyInMemoryNewsRepository
 from infrastructure.database.repositories.dummy.users.users import DummyInMemoryUserRepository
+from infrastructure.database.repositories.dummy.vacancies.vacancies import DummyInMemoryVacancyRepository
 from punq import (
     Container,
     Scope,
@@ -8,6 +9,7 @@ from punq import (
 from application.container import _init_container
 from domain.news.interfaces.repository import BaseNewsRepository
 from domain.users.interfaces.repository import BaseUserRepository
+from domain.vacancies.interfaces.repository import BaseVacancyRepository
 
 
 def init_dummy_container() -> Container:
@@ -22,6 +24,11 @@ def init_dummy_container() -> Container:
     container.register(
         BaseNewsRepository,
         DummyInMemoryNewsRepository,
+        scope=Scope.singleton,
+    )
+    container.register(
+        BaseVacancyRepository,
+        DummyInMemoryVacancyRepository,
         scope=Scope.singleton,
     )
 

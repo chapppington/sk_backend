@@ -29,6 +29,11 @@ from domain.users.exceptions import (
     UserException,
     UserNotFoundException,
 )
+from domain.vacancies.exceptions.vacancies import (
+    VacancyAlreadyExistsException,
+    VacancyException,
+    VacancyNotFoundException,
+)
 
 
 def _map_user_exception_to_status_code(exc: UserException) -> int:
@@ -47,11 +52,21 @@ def _map_news_exception_to_status_code(exc: NewsException) -> int:
     return status.HTTP_400_BAD_REQUEST
 
 
+def _map_vacancy_exception_to_status_code(exc: VacancyException) -> int:
+    if isinstance(exc, VacancyNotFoundException):
+        return status.HTTP_404_NOT_FOUND
+    if isinstance(exc, VacancyAlreadyExistsException):
+        return status.HTTP_409_CONFLICT
+    return status.HTTP_400_BAD_REQUEST
+
+
 def _map_domain_exception_to_status_code(exc: DomainException) -> int:
     if isinstance(exc, UserException):
         return _map_user_exception_to_status_code(exc)
     if isinstance(exc, NewsException):
         return _map_news_exception_to_status_code(exc)
+    if isinstance(exc, VacancyException):
+        return _map_vacancy_exception_to_status_code(exc)
     return status.HTTP_400_BAD_REQUEST
 
 

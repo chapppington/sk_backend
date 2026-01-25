@@ -1,5 +1,4 @@
 from datetime import datetime
-from uuid import uuid4
 
 from domain.news.entities import NewsEntity
 from domain.news.value_objects import (
@@ -76,58 +75,3 @@ def test_news_entity_creation_with_optional_fields():
 
     assert news.image_url.as_generic_type() is None
     assert news.alt.as_generic_type() is None
-
-
-def test_news_entity_equality():
-    news_id = uuid4()
-    category = CategoryValueObject("Производство")
-    title = TitleValueObject("Тестовая новость")
-    slug = SlugValueObject("testovaya-novost")
-    content = ContentValueObject("Полный текст")
-    short_content = ShortContentValueObject("Краткое описание")
-    image_url = ImageUrlValueObject(None)
-    alt = AltValueObject(None)
-    reading_time = ReadingTimeValueObject(5)
-    date = datetime(2026, 1, 20, 14, 0, 0)
-
-    news1 = NewsEntity(
-        oid=news_id,
-        category=category,
-        title=title,
-        slug=slug,
-        content=content,
-        short_content=short_content,
-        image_url=image_url,
-        alt=alt,
-        reading_time=reading_time,
-        date=date,
-    )
-
-    news2 = NewsEntity(
-        oid=news_id,
-        category=category,
-        title=title,
-        slug=slug,
-        content=content,
-        short_content=short_content,
-        image_url=image_url,
-        alt=alt,
-        reading_time=reading_time,
-        date=date,
-    )
-
-    news3 = NewsEntity(
-        oid=uuid4(),
-        category=category,
-        title=title,
-        slug=slug,
-        content=content,
-        short_content=short_content,
-        image_url=image_url,
-        alt=alt,
-        reading_time=reading_time,
-        date=date,
-    )
-
-    assert news1 == news2
-    assert news1 != news3

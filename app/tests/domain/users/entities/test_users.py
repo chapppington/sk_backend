@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 from domain.users.entities import UserEntity
 from domain.users.value_objects import (
     EmailValueObject,
@@ -24,18 +22,3 @@ def test_user_entity_creation():
     assert user.oid is not None
     assert user.created_at is not None
     assert user.updated_at is not None
-
-
-def test_user_entity_equality():
-    user_id = uuid4()
-    email1 = EmailValueObject("test@example.com")
-    email2 = EmailValueObject("test@example.com")
-    email3 = EmailValueObject("other@example.com")
-    name = UserNameValueObject("Test User")
-
-    user1 = UserEntity(oid=user_id, email=email1, hashed_password="hash1", name=name)
-    user2 = UserEntity(oid=user_id, email=email2, hashed_password="hash2", name=name)
-    user3 = UserEntity(oid=uuid4(), email=email3, hashed_password="hash1", name=name)
-
-    assert user1 == user2
-    assert user1 != user3

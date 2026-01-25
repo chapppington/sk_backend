@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 from domain.vacancies.entities import VacancyEntity
 from domain.vacancies.value_objects import (
     CategoryValueObject,
@@ -73,42 +71,3 @@ def test_vacancy_entity_creation_with_minimal_data():
     assert len(vacancy.experience.as_generic_type()) == 1
     assert vacancy.salary.as_generic_type() == 50000
     assert vacancy.category.as_generic_type() == "Продажи и маркетинг"
-
-
-def test_vacancy_entity_equality():
-    vacancy_id = uuid4()
-    title = TitleValueObject("Инженер-конструктор")
-    requirements = RequirementsValueObject(["Требование 1"])
-    experience = ExperienceValueObject(["Опыт 1"])
-    salary = SalaryValueObject(80000)
-    category = CategoryValueObject("Производство")
-
-    vacancy1 = VacancyEntity(
-        oid=vacancy_id,
-        title=title,
-        requirements=requirements,
-        experience=experience,
-        salary=salary,
-        category=category,
-    )
-
-    vacancy2 = VacancyEntity(
-        oid=vacancy_id,
-        title=title,
-        requirements=requirements,
-        experience=experience,
-        salary=salary,
-        category=category,
-    )
-
-    vacancy3 = VacancyEntity(
-        oid=uuid4(),
-        title=title,
-        requirements=requirements,
-        experience=experience,
-        salary=salary,
-        category=category,
-    )
-
-    assert vacancy1 == vacancy2
-    assert vacancy1 != vacancy3

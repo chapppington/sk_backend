@@ -17,7 +17,7 @@ async def test_find_many_news_query_success(
             CreateNewsCommand(**data),
         )
 
-    result = await mediator.handle_query(
+    news_list = await mediator.handle_query(
         FindManyNewsQuery(
             sort_field="created_at",
             sort_order=-1,
@@ -25,8 +25,6 @@ async def test_find_many_news_query_success(
             limit=10,
         ),
     )
-
-    news_list = [news async for news in result]
 
     assert len(news_list) == 5
     assert all(isinstance(news, NewsEntity) for news in news_list)
@@ -43,7 +41,7 @@ async def test_find_many_news_query_with_pagination(
             CreateNewsCommand(**data),
         )
 
-    result = await mediator.handle_query(
+    news_list = await mediator.handle_query(
         FindManyNewsQuery(
             sort_field="created_at",
             sort_order=-1,
@@ -52,11 +50,9 @@ async def test_find_many_news_query_with_pagination(
         ),
     )
 
-    news_list = [news async for news in result]
-
     assert len(news_list) == 2
 
-    result = await mediator.handle_query(
+    news_list = await mediator.handle_query(
         FindManyNewsQuery(
             sort_field="created_at",
             sort_order=-1,
@@ -64,8 +60,6 @@ async def test_find_many_news_query_with_pagination(
             limit=2,
         ),
     )
-
-    news_list = [news async for news in result]
 
     assert len(news_list) == 2
 
@@ -87,7 +81,7 @@ async def test_find_many_news_query_with_category_filter(
             CreateNewsCommand(**data),
         )
 
-    result = await mediator.handle_query(
+    news_list = await mediator.handle_query(
         FindManyNewsQuery(
             sort_field="created_at",
             sort_order=-1,
@@ -96,8 +90,6 @@ async def test_find_many_news_query_with_category_filter(
             category="События",
         ),
     )
-
-    news_list = [news async for news in result]
 
     assert len(news_list) == 3
     assert all(news.category.as_generic_type() == "События" for news in news_list)
@@ -120,7 +112,7 @@ async def test_find_many_news_query_with_search(
         CreateNewsCommand(**data2),
     )
 
-    result = await mediator.handle_query(
+    news_list = await mediator.handle_query(
         FindManyNewsQuery(
             sort_field="created_at",
             sort_order=-1,
@@ -129,8 +121,6 @@ async def test_find_many_news_query_with_search(
             search="Python",
         ),
     )
-
-    news_list = [news async for news in result]
 
     assert len(news_list) == 1
     assert "Python" in news_list[0].title.as_generic_type()
@@ -153,7 +143,7 @@ async def test_find_many_news_query_with_sorting(
         CreateNewsCommand(**data2),
     )
 
-    result = await mediator.handle_query(
+    news_list = await mediator.handle_query(
         FindManyNewsQuery(
             sort_field="title",
             sort_order=1,
@@ -161,8 +151,6 @@ async def test_find_many_news_query_with_sorting(
             limit=10,
         ),
     )
-
-    news_list = [news async for news in result]
 
     assert len(news_list) == 2
     assert news_list[0].title.as_generic_type() < news_list[1].title.as_generic_type()

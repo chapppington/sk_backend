@@ -1,4 +1,3 @@
-from collections.abc import AsyncIterable
 from dataclasses import dataclass
 from typing import Optional
 
@@ -22,15 +21,15 @@ class FindManyPortfoliosQuery(BaseQuery):
 
 @dataclass(frozen=True)
 class FindManyPortfoliosQueryHandler(
-    BaseQueryHandler[FindManyPortfoliosQuery, AsyncIterable[PortfolioEntity]],
+    BaseQueryHandler[FindManyPortfoliosQuery, list[PortfolioEntity]],
 ):
     portfolio_service: PortfolioService
 
     async def handle(
         self,
         query: FindManyPortfoliosQuery,
-    ) -> AsyncIterable[PortfolioEntity]:
-        return self.portfolio_service.find_many(
+    ) -> list[PortfolioEntity]:
+        portfolios_iterable = self.portfolio_service.find_many(
             sort_field=query.sort_field,
             sort_order=query.sort_order,
             offset=query.offset,
@@ -38,3 +37,4 @@ class FindManyPortfoliosQueryHandler(
             search=query.search,
             year=query.year,
         )
+        return [portfolio async for portfolio in portfolios_iterable]

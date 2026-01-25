@@ -1,4 +1,3 @@
-from collections.abc import AsyncIterable
 from dataclasses import dataclass
 from typing import Optional
 
@@ -22,15 +21,15 @@ class FindManyNewsQuery(BaseQuery):
 
 @dataclass(frozen=True)
 class FindManyNewsQueryHandler(
-    BaseQueryHandler[FindManyNewsQuery, AsyncIterable[NewsEntity]],
+    BaseQueryHandler[FindManyNewsQuery, list[NewsEntity]],
 ):
     news_repository: BaseNewsRepository
 
     async def handle(
         self,
         query: FindManyNewsQuery,
-    ) -> AsyncIterable[NewsEntity]:
-        return self.news_repository.find_many(
+    ) -> list[NewsEntity]:
+        news_iterable = self.news_repository.find_many(
             sort_field=query.sort_field,
             sort_order=query.sort_order,
             offset=query.offset,
@@ -38,3 +37,4 @@ class FindManyNewsQueryHandler(
             search=query.search,
             category=query.category,
         )
+        return [news async for news in news_iterable]

@@ -17,7 +17,7 @@ async def test_find_many_vacancies_query_success(
             CreateVacancyCommand(**data),
         )
 
-    result = await mediator.handle_query(
+    vacancy_list = await mediator.handle_query(
         FindManyVacanciesQuery(
             sort_field="created_at",
             sort_order=-1,
@@ -25,8 +25,6 @@ async def test_find_many_vacancies_query_success(
             limit=10,
         ),
     )
-
-    vacancy_list = [vacancy async for vacancy in result]
 
     assert len(vacancy_list) == 5
     assert all(isinstance(vacancy, VacancyEntity) for vacancy in vacancy_list)
@@ -43,7 +41,7 @@ async def test_find_many_vacancies_query_with_pagination(
             CreateVacancyCommand(**data),
         )
 
-    result = await mediator.handle_query(
+    vacancy_list = await mediator.handle_query(
         FindManyVacanciesQuery(
             sort_field="created_at",
             sort_order=-1,
@@ -52,11 +50,9 @@ async def test_find_many_vacancies_query_with_pagination(
         ),
     )
 
-    vacancy_list = [vacancy async for vacancy in result]
-
     assert len(vacancy_list) == 2
 
-    result = await mediator.handle_query(
+    vacancy_list = await mediator.handle_query(
         FindManyVacanciesQuery(
             sort_field="created_at",
             sort_order=-1,
@@ -64,8 +60,6 @@ async def test_find_many_vacancies_query_with_pagination(
             limit=2,
         ),
     )
-
-    vacancy_list = [vacancy async for vacancy in result]
 
     assert len(vacancy_list) == 2
 
@@ -87,7 +81,7 @@ async def test_find_many_vacancies_query_with_category_filter(
             CreateVacancyCommand(**data),
         )
 
-    result = await mediator.handle_query(
+    vacancy_list = await mediator.handle_query(
         FindManyVacanciesQuery(
             sort_field="created_at",
             sort_order=-1,
@@ -96,8 +90,6 @@ async def test_find_many_vacancies_query_with_category_filter(
             category="Производство",
         ),
     )
-
-    vacancy_list = [vacancy async for vacancy in result]
 
     assert len(vacancy_list) == 3
     assert all(vacancy.category.as_generic_type() == "Производство" for vacancy in vacancy_list)
@@ -120,7 +112,7 @@ async def test_find_many_vacancies_query_with_search(
         CreateVacancyCommand(**data2),
     )
 
-    result = await mediator.handle_query(
+    vacancy_list = await mediator.handle_query(
         FindManyVacanciesQuery(
             sort_field="created_at",
             sort_order=-1,
@@ -129,8 +121,6 @@ async def test_find_many_vacancies_query_with_search(
             search="Python",
         ),
     )
-
-    vacancy_list = [vacancy async for vacancy in result]
 
     assert len(vacancy_list) == 1
     assert "Python" in vacancy_list[0].title.as_generic_type()
@@ -153,7 +143,7 @@ async def test_find_many_vacancies_query_with_sorting(
         CreateVacancyCommand(**data2),
     )
 
-    result = await mediator.handle_query(
+    vacancy_list = await mediator.handle_query(
         FindManyVacanciesQuery(
             sort_field="title",
             sort_order=1,
@@ -161,8 +151,6 @@ async def test_find_many_vacancies_query_with_sorting(
             limit=10,
         ),
     )
-
-    vacancy_list = [vacancy async for vacancy in result]
 
     assert len(vacancy_list) == 2
     assert vacancy_list[0].title.as_generic_type() < vacancy_list[1].title.as_generic_type()

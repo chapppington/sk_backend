@@ -20,7 +20,6 @@ from domain.portfolios.exceptions.portfolios import (
 async def test_update_portfolio_command_success(
     mediator: Mediator,
     valid_portfolio_data: dict,
-    faker: Faker,
 ):
     create_result, *_ = await mediator.handle_command(
         CreatePortfolioCommand(**valid_portfolio_data),

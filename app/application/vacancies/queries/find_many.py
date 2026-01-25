@@ -1,4 +1,3 @@
-from collections.abc import AsyncIterable
 from dataclasses import dataclass
 from typing import Optional
 
@@ -22,15 +21,15 @@ class FindManyVacanciesQuery(BaseQuery):
 
 @dataclass(frozen=True)
 class FindManyVacanciesQueryHandler(
-    BaseQueryHandler[FindManyVacanciesQuery, AsyncIterable[VacancyEntity]],
+    BaseQueryHandler[FindManyVacanciesQuery, list[VacancyEntity]],
 ):
     vacancy_repository: BaseVacancyRepository
 
     async def handle(
         self,
         query: FindManyVacanciesQuery,
-    ) -> AsyncIterable[VacancyEntity]:
-        return self.vacancy_repository.find_many(
+    ) -> list[VacancyEntity]:
+        vacancies_iterable = self.vacancy_repository.find_many(
             sort_field=query.sort_field,
             sort_order=query.sort_order,
             offset=query.offset,
@@ -38,3 +37,4 @@ class FindManyVacanciesQueryHandler(
             search=query.search,
             category=query.category,
         )
+        return [vacancy async for vacancy in vacancies_iterable]

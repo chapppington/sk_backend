@@ -70,8 +70,7 @@ async def get_news_list(
         category=category,
     )
 
-    news_iterable = await mediator.handle_query(query)
-    news_list = [news async for news in news_iterable]
+    news_list = await mediator.handle_query(query)
 
     count_query = CountManyNewsQuery(search=search, category=category)
     total = await mediator.handle_query(count_query)

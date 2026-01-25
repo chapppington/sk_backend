@@ -69,8 +69,7 @@ async def get_vacancies_list(
         category=category,
     )
 
-    vacancies_iterable = await mediator.handle_query(query)
-    vacancies_list = [vacancy async for vacancy in vacancies_iterable]
+    vacancies_list = await mediator.handle_query(query)
 
     count_query = CountManyVacanciesQuery(search=search, category=category)
     total = await mediator.handle_query(count_query)

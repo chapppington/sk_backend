@@ -13,5 +13,4 @@ ruff_cache/
 .ruff_cache/
 .mypy_cache/
 .pytest_cache/
-app/alembic.ini
-count_lines.py
+old_backend/

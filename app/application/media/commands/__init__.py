@@ -1,4 +1,4 @@
-from application.media.commands.media import (
+from application.media.commands.upload import (
     UploadFileCommand,
     UploadFileCommandHandler,
 )

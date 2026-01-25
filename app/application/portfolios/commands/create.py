@@ -43,10 +43,10 @@ class CreatePortfolioCommand(BaseCommand):
     solution_subdescription: str
     solution_image_left: str
     solution_image_right: str
-    preview_video_path: str
-    full_video_path: str
     description: str
     has_review: bool
+    preview_video_path: Optional[str] = None
+    full_video_path: Optional[str] = None
     review_title: Optional[str] = None
     review_text: Optional[str] = None
     review_name: Optional[str] = None
@@ -74,8 +74,10 @@ class CreatePortfolioCommandHandler(
             solution_subdescription=SolutionSubdescriptionValueObject(value=command.solution_subdescription),
             solution_image_left=SolutionImageUrlValueObject(value=command.solution_image_left),
             solution_image_right=SolutionImageUrlValueObject(value=command.solution_image_right),
-            preview_video_path=VideoUrlValueObject(value=command.preview_video_path),
-            full_video_path=VideoUrlValueObject(value=command.full_video_path),
+            preview_video_path=VideoUrlValueObject(value=command.preview_video_path)
+            if command.preview_video_path
+            else None,
+            full_video_path=VideoUrlValueObject(value=command.full_video_path) if command.full_video_path else None,
             description=DescriptionValueObject(value=command.description),
             has_review=command.has_review,
             review_title=ReviewTitleValueObject(value=command.review_title) if command.review_title else None,

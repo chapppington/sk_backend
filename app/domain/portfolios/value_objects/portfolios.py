@@ -181,17 +181,18 @@ class SolutionImageUrlValueObject(BaseValueObject):
 
 @dataclass(frozen=True)
 class VideoUrlValueObject(BaseValueObject):
-    value: str
+    value: str | None
 
     def validate(self):
+        if self.value is None:
+            return
         if not self.value:
             raise VideoUrlInvalidException(url=self.value)
-
         if not self.value.startswith(("http://", "https://")):
             raise VideoUrlInvalidException(url=self.value)
 
-    def as_generic_type(self) -> str:
-        return str(self.value)
+    def as_generic_type(self) -> str | None:
+        return self.value if self.value else None
 
 
 @dataclass(frozen=True)

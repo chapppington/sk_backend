@@ -37,10 +37,10 @@ class PortfolioEntity(BaseEntity):
     solution_subdescription: SolutionSubdescriptionValueObject
     solution_image_left: SolutionImageUrlValueObject
     solution_image_right: SolutionImageUrlValueObject
-    preview_video_path: VideoUrlValueObject
-    full_video_path: VideoUrlValueObject
     description: DescriptionValueObject
     has_review: bool
+    preview_video_path: VideoUrlValueObject | None = None
+    full_video_path: VideoUrlValueObject | None = None
     review_title: ReviewTitleValueObject | None = None
     review_text: ReviewTextValueObject | None = None
     review_name: ReviewNameValueObject | None = None

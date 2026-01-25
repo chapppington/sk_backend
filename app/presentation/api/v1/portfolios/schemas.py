@@ -21,8 +21,8 @@ class PortfolioResponseSchema(BaseModel):
     solution_subdescription: str
     solution_image_left: str
     solution_image_right: str
-    preview_video_path: str
-    full_video_path: str
+    preview_video_path: Optional[str] = None
+    full_video_path: Optional[str] = None
     description: str
     has_review: bool
     review_title: Optional[str] = None
@@ -49,8 +49,8 @@ class PortfolioResponseSchema(BaseModel):
             solution_subdescription=entity.solution_subdescription.as_generic_type(),
             solution_image_left=entity.solution_image_left.as_generic_type(),
             solution_image_right=entity.solution_image_right.as_generic_type(),
-            preview_video_path=entity.preview_video_path.as_generic_type(),
-            full_video_path=entity.full_video_path.as_generic_type(),
+            preview_video_path=entity.preview_video_path.as_generic_type() if entity.preview_video_path else None,
+            full_video_path=entity.full_video_path.as_generic_type() if entity.full_video_path else None,
             description=entity.description.as_generic_type(),
             has_review=entity.has_review,
             review_title=entity.review_title.as_generic_type() if entity.review_title else None,
@@ -76,8 +76,8 @@ class CreatePortfolioRequestSchema(BaseModel):
     solution_subdescription: str
     solution_image_left: str
     solution_image_right: str
-    preview_video_path: str
-    full_video_path: str
+    preview_video_path: Optional[str] = None
+    full_video_path: Optional[str] = None
     description: str
     has_review: bool
     review_title: Optional[str] = None
@@ -100,8 +100,8 @@ class UpdatePortfolioRequestSchema(BaseModel):
     solution_subdescription: str
     solution_image_left: str
     solution_image_right: str
-    preview_video_path: str
-    full_video_path: str
+    preview_video_path: Optional[str] = None
+    full_video_path: Optional[str] = None
     description: str
     has_review: bool
     review_title: Optional[str] = None

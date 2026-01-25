@@ -39,14 +39,16 @@ def portfolio_entity_to_document(entity: PortfolioEntity) -> dict:
         "solution_subdescription": entity.solution_subdescription.as_generic_type(),
         "solution_image_left": entity.solution_image_left.as_generic_type(),
         "solution_image_right": entity.solution_image_right.as_generic_type(),
-        "preview_video_path": entity.preview_video_path.as_generic_type(),
-        "full_video_path": entity.full_video_path.as_generic_type(),
         "description": entity.description.as_generic_type(),
         "has_review": entity.has_review,
         "created_at": entity.created_at.isoformat(),
         "updated_at": entity.updated_at.isoformat(),
     }
 
+    if entity.preview_video_path:
+        document["preview_video_path"] = entity.preview_video_path.as_generic_type()
+    if entity.full_video_path:
+        document["full_video_path"] = entity.full_video_path.as_generic_type()
     if entity.review_title:
         document["review_title"] = entity.review_title.as_generic_type()
     if entity.review_text:
@@ -76,8 +78,12 @@ def portfolio_document_to_entity(document: dict) -> PortfolioEntity:
         solution_subdescription=SolutionSubdescriptionValueObject(value=document["solution_subdescription"]),
         solution_image_left=SolutionImageUrlValueObject(value=document["solution_image_left"]),
         solution_image_right=SolutionImageUrlValueObject(value=document["solution_image_right"]),
-        preview_video_path=VideoUrlValueObject(value=document["preview_video_path"]),
-        full_video_path=VideoUrlValueObject(value=document["full_video_path"]),
+        preview_video_path=VideoUrlValueObject(value=document["preview_video_path"])
+        if document.get("preview_video_path")
+        else None,
+        full_video_path=VideoUrlValueObject(value=document["full_video_path"])
+        if document.get("full_video_path")
+        else None,
         description=DescriptionValueObject(value=document["description"]),
         has_review=document["has_review"],
         review_title=ReviewTitleValueObject(value=document.get("review_title"))

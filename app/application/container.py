@@ -4,6 +4,7 @@ from infrastructure.database.gateways.mongo import MongoDatabase
 from infrastructure.database.repositories.news.mongo import MongoNewsRepository
 from infrastructure.database.repositories.portfolios.mongo import MongoPortfolioRepository
 from infrastructure.database.repositories.products.mongo import MongoProductRepository
+from infrastructure.database.repositories.seo_settings.mongo import MongoSeoSettingsRepository
 from infrastructure.database.repositories.users.mongo import MongoUserRepository
 from infrastructure.database.repositories.vacancies.mongo import MongoVacancyRepository
 from infrastructure.s3.base import BaseFileStorage
@@ -67,6 +68,22 @@ from application.products.queries import (
     GetProductListQuery,
     GetProductListQueryHandler,
 )
+from application.seo_settings.commands import (
+    CreateSeoSettingsCommand,
+    CreateSeoSettingsCommandHandler,
+    DeleteSeoSettingsCommand,
+    DeleteSeoSettingsCommandHandler,
+    UpdateSeoSettingsCommand,
+    UpdateSeoSettingsCommandHandler,
+)
+from application.seo_settings.queries import (
+    GetSeoSettingsByIdQuery,
+    GetSeoSettingsByIdQueryHandler,
+    GetSeoSettingsByPathQuery,
+    GetSeoSettingsByPathQueryHandler,
+    GetSeoSettingsListQuery,
+    GetSeoSettingsListQueryHandler,
+)
 from application.users.commands import (
     CreateUserCommand,
     CreateUserCommandHandler,
@@ -97,6 +114,8 @@ from domain.portfolios.interfaces.repository import BasePortfolioRepository
 from domain.portfolios.services.portfolios import PortfolioService
 from domain.products.interfaces.repository import BaseProductRepository
 from domain.products.services import ProductService
+from domain.seo_settings.interfaces.repository import BaseSeoSettingsRepository
+from domain.seo_settings.services import SeoSettingsService
 from domain.users.interfaces.repository import BaseUserRepository
 from domain.users.services import UserService
 from domain.vacancies.interfaces.repository import BaseVacancyRepository
@@ -139,6 +158,7 @@ def _init_container() -> Container:
     container.register(BaseVacancyRepository, MongoVacancyRepository)
     container.register(BasePortfolioRepository, MongoPortfolioRepository)
     container.register(BaseProductRepository, MongoProductRepository)
+    container.register(BaseSeoSettingsRepository, MongoSeoSettingsRepository)
 
     # Регистрируем доменные сервисы
     container.register(UserService)
@@ -146,6 +166,7 @@ def _init_container() -> Container:
     container.register(VacancyService)
     container.register(PortfolioService)
     container.register(ProductService)
+    container.register(SeoSettingsService)
 
     # Регистрируем command handlers
     # Media
@@ -168,6 +189,10 @@ def _init_container() -> Container:
     container.register(CreateProductCommandHandler)
     container.register(UpdateProductCommandHandler)
     container.register(DeleteProductCommandHandler)
+    # SEO Settings
+    container.register(CreateSeoSettingsCommandHandler)
+    container.register(UpdateSeoSettingsCommandHandler)
+    container.register(DeleteSeoSettingsCommandHandler)
 
     # Регистрируем query handlers
     # Users
@@ -188,6 +213,10 @@ def _init_container() -> Container:
     container.register(GetProductByIdQueryHandler)
     container.register(GetProductBySlugQueryHandler)
     container.register(GetProductListQueryHandler)
+    # SEO Settings
+    container.register(GetSeoSettingsByIdQueryHandler)
+    container.register(GetSeoSettingsByPathQueryHandler)
+    container.register(GetSeoSettingsListQueryHandler)
 
     # Инициализируем медиатор
     def init_mediator() -> Mediator:
@@ -256,6 +285,19 @@ def _init_container() -> Container:
             DeleteProductCommand,
             [container.resolve(DeleteProductCommandHandler)],
         )
+        # SEO Settings
+        mediator.register_command(
+            CreateSeoSettingsCommand,
+            [container.resolve(CreateSeoSettingsCommandHandler)],
+        )
+        mediator.register_command(
+            UpdateSeoSettingsCommand,
+            [container.resolve(UpdateSeoSettingsCommandHandler)],
+        )
+        mediator.register_command(
+            DeleteSeoSettingsCommand,
+            [container.resolve(DeleteSeoSettingsCommandHandler)],
+        )
 
         # Регистрируем queries
         # Users
@@ -314,6 +356,19 @@ def _init_container() -> Container:
         mediator.register_query(
             GetProductListQuery,
             container.resolve(GetProductListQueryHandler),
+        )
+        # SEO Settings
+        mediator.register_query(
+            GetSeoSettingsByIdQuery,
+            container.resolve(GetSeoSettingsByIdQueryHandler),
+        )
+        mediator.register_query(
+            GetSeoSettingsByPathQuery,
+            container.resolve(GetSeoSettingsByPathQueryHandler),
+        )
+        mediator.register_query(
+            GetSeoSettingsListQuery,
+            container.resolve(GetSeoSettingsListQueryHandler),
         )
 
         return mediator

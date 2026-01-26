@@ -3,12 +3,11 @@ from io import BytesIO
 from pathlib import Path
 from uuid import uuid4
 
-from infrastructure.s3.base import BaseFileStorage
-
 from application.base.command import (
     BaseCommand,
     BaseCommandHandler,
 )
+from infrastructure.s3.base import BaseFileStorage
 
 
 @dataclass(frozen=True)

@@ -2,14 +2,13 @@ from collections.abc import AsyncIterable
 from dataclasses import dataclass
 from uuid import UUID
 
+from domain.vacancies.entities.vacancies import VacancyEntity
+from domain.vacancies.interfaces.repository import BaseVacancyRepository
 from infrastructure.database.converters.vacancies.mongo import (
     vacancy_document_to_entity,
     vacancy_entity_to_document,
 )
 from infrastructure.database.repositories.base.mongo import BaseMongoRepository
-
-from domain.vacancies.entities.vacancies import VacancyEntity
-from domain.vacancies.interfaces.repository import BaseVacancyRepository
 
 
 @dataclass

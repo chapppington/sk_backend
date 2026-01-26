@@ -1,15 +1,5 @@
 from functools import lru_cache
 
-from infrastructure.database.gateways.mongo import MongoDatabase
-from infrastructure.database.repositories.news.mongo import MongoNewsRepository
-from infrastructure.database.repositories.portfolios.mongo import MongoPortfolioRepository
-from infrastructure.database.repositories.products.mongo import MongoProductRepository
-from infrastructure.database.repositories.seo_settings.mongo import MongoSeoSettingsRepository
-from infrastructure.database.repositories.users.mongo import MongoUserRepository
-from infrastructure.database.repositories.vacancies.mongo import MongoVacancyRepository
-from infrastructure.s3.base import BaseFileStorage
-from infrastructure.s3.client import S3Client
-from infrastructure.s3.storage import S3FileStorage
 from punq import (
     Container,
     Scope,
@@ -120,6 +110,16 @@ from domain.users.interfaces.repository import BaseUserRepository
 from domain.users.services import UserService
 from domain.vacancies.interfaces.repository import BaseVacancyRepository
 from domain.vacancies.services import VacancyService
+from infrastructure.database.gateways.mongo import MongoDatabase
+from infrastructure.database.repositories.news.mongo import MongoNewsRepository
+from infrastructure.database.repositories.portfolios.mongo import MongoPortfolioRepository
+from infrastructure.database.repositories.products.mongo import MongoProductRepository
+from infrastructure.database.repositories.seo_settings.mongo import MongoSeoSettingsRepository
+from infrastructure.database.repositories.users.mongo import MongoUserRepository
+from infrastructure.database.repositories.vacancies.mongo import MongoVacancyRepository
+from infrastructure.s3.base import BaseFileStorage
+from infrastructure.s3.client import S3Client
+from infrastructure.s3.storage import S3FileStorage
 from settings.config import Config
 
 

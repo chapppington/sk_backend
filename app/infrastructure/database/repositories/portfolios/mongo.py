@@ -2,14 +2,13 @@ from collections.abc import AsyncIterable
 from dataclasses import dataclass
 from uuid import UUID
 
+from domain.portfolios.entities.portfolios import PortfolioEntity
+from domain.portfolios.interfaces.repository import BasePortfolioRepository
 from infrastructure.database.converters.portfolios.mongo import (
     portfolio_document_to_entity,
     portfolio_entity_to_document,
 )
 from infrastructure.database.repositories.base.mongo import BaseMongoRepository
-
-from domain.portfolios.entities.portfolios import PortfolioEntity
-from domain.portfolios.interfaces.repository import BasePortfolioRepository
 
 
 @dataclass

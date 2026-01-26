@@ -2,14 +2,13 @@ from collections.abc import AsyncIterable
 from dataclasses import dataclass
 from uuid import UUID
 
+from domain.news.entities.news import NewsEntity
+from domain.news.interfaces.repository import BaseNewsRepository
 from infrastructure.database.converters.news.mongo import (
     news_document_to_entity,
     news_entity_to_document,
 )
 from infrastructure.database.repositories.base.mongo import BaseMongoRepository
-
-from domain.news.entities.news import NewsEntity
-from domain.news.interfaces.repository import BaseNewsRepository
 
 
 @dataclass

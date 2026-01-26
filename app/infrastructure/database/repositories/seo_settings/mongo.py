@@ -2,14 +2,13 @@ from collections.abc import AsyncIterable
 from dataclasses import dataclass
 from uuid import UUID
 
+from domain.seo_settings.entities import SeoSettingsEntity
+from domain.seo_settings.interfaces.repository import BaseSeoSettingsRepository
 from infrastructure.database.converters.seo_settings.mongo import (
     seo_settings_document_to_entity,
     seo_settings_entity_to_document,
 )
 from infrastructure.database.repositories.base.mongo import BaseMongoRepository
-
-from domain.seo_settings.entities import SeoSettingsEntity
-from domain.seo_settings.interfaces.repository import BaseSeoSettingsRepository
 
 
 @dataclass

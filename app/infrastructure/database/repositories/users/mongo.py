@@ -1,14 +1,13 @@
 from dataclasses import dataclass
 from uuid import UUID
 
+from domain.users.entities.users import UserEntity
+from domain.users.interfaces.repository import BaseUserRepository
 from infrastructure.database.converters.users.mongo import (
     user_document_to_entity,
     user_entity_to_document,
 )
 from infrastructure.database.repositories.base.mongo import BaseMongoRepository
-
-from domain.users.entities.users import UserEntity
-from domain.users.interfaces.repository import BaseUserRepository
 
 
 @dataclass

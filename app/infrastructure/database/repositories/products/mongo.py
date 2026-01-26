@@ -2,14 +2,13 @@ from collections.abc import AsyncIterable
 from dataclasses import dataclass
 from uuid import UUID
 
+from domain.products.entities import ProductEntity
+from domain.products.interfaces.repository import BaseProductRepository
 from infrastructure.database.converters.products.mongo import (
     product_document_to_entity,
     product_entity_to_document,
 )
 from infrastructure.database.repositories.base.mongo import BaseMongoRepository
-
-from domain.products.entities import ProductEntity
-from domain.products.interfaces.repository import BaseProductRepository
 
 
 @dataclass

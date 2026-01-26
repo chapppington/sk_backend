@@ -1,6 +1,7 @@
 from infrastructure.database.repositories.dummy.news.news import DummyInMemoryNewsRepository
 from infrastructure.database.repositories.dummy.portfolios.portfolios import DummyInMemoryPortfolioRepository
 from infrastructure.database.repositories.dummy.products.products import DummyInMemoryProductRepository
+from infrastructure.database.repositories.dummy.seo_settings.seo_settings import DummyInMemorySeoSettingsRepository
 from infrastructure.database.repositories.dummy.users.users import DummyInMemoryUserRepository
 from infrastructure.database.repositories.dummy.vacancies.vacancies import DummyInMemoryVacancyRepository
 from punq import (
@@ -12,6 +13,7 @@ from application.container import _init_container
 from domain.news.interfaces.repository import BaseNewsRepository
 from domain.portfolios.interfaces.repository import BasePortfolioRepository
 from domain.products.interfaces.repository import BaseProductRepository
+from domain.seo_settings.interfaces.repository import BaseSeoSettingsRepository
 from domain.users.interfaces.repository import BaseUserRepository
 from domain.vacancies.interfaces.repository import BaseVacancyRepository
 
@@ -43,6 +45,11 @@ def init_dummy_container() -> Container:
     container.register(
         BaseProductRepository,
         DummyInMemoryProductRepository,
+        scope=Scope.singleton,
+    )
+    container.register(
+        BaseSeoSettingsRepository,
+        DummyInMemorySeoSettingsRepository,
         scope=Scope.singleton,
     )
 

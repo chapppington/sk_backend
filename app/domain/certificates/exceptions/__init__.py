@@ -10,13 +10,9 @@ from domain.certificates.exceptions.items import (
     ItemAlreadyExistsException,
     ItemException,
     ItemNotFoundException,
+    SectionInvalidException,
     TitleEmptyException,
     TitleTooLongException,
-)
-from domain.certificates.exceptions.sections import (
-    SectionAlreadyExistsException,
-    SectionException,
-    SectionNotFoundException,
 )
 
 
@@ -30,9 +26,7 @@ __all__ = [
     "ItemAlreadyExistsException",
     "ItemException",
     "ItemNotFoundException",
-    "SectionAlreadyExistsException",
-    "SectionException",
-    "SectionNotFoundException",
+    "SectionInvalidException",
     "TitleEmptyException",
     "TitleTooLongException",
 ]

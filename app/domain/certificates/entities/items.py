@@ -2,19 +2,19 @@ from dataclasses import (
     dataclass,
     field,
 )
-from uuid import UUID
 
 from domain.base.entity import BaseEntity
 from domain.certificates.entities.certificates import CertificateEntity
 from domain.certificates.value_objects.items import (
     ContentValueObject,
+    SectionValueObject,
     TitleValueObject,
 )
 
 
 @dataclass(eq=False)
 class ItemEntity(BaseEntity):
-    section_id: UUID
+    section: SectionValueObject
     title: TitleValueObject
     content: ContentValueObject
     order: int = 0

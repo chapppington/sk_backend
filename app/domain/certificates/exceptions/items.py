@@ -54,3 +54,12 @@ class ItemAlreadyExistsException(ItemException):
     @property
     def message(self) -> str:
         return f"Пункт с названием '{self.title}' уже существует"
+
+
+@dataclass(eq=False)
+class SectionInvalidException(ItemException):
+    section: str
+
+    @property
+    def message(self) -> str:
+        return f"Невалидная секция '{self.section}'"

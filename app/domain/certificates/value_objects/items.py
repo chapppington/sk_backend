@@ -3,12 +3,31 @@ from dataclasses import dataclass
 from domain.base.value_object import BaseValueObject
 from domain.certificates.exceptions.items import (
     ContentEmptyException,
+    SectionInvalidException,
     TitleEmptyException,
     TitleTooLongException,
 )
 
 
 MAX_TITLE_LENGTH = 255
+
+VALID_SECTIONS = {
+    "Сертификаты",
+    "Лицензии",
+    "Награды",
+}
+
+
+@dataclass(frozen=True)
+class SectionValueObject(BaseValueObject):
+    value: str
+
+    def validate(self):
+        if self.value not in VALID_SECTIONS:
+            raise SectionInvalidException(section=self.value)
+
+    def as_generic_type(self) -> str:
+        return str(self.value)
 
 
 @dataclass(frozen=True)

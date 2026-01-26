@@ -19,7 +19,8 @@ class ItemService:
         item: ItemEntity,
     ) -> ItemEntity:
         title = item.title.as_generic_type()
-        existing_item = await self.item_repository.get_by_title(title, item.section_id)
+        section = item.section.as_generic_type()
+        existing_item = await self.item_repository.get_by_title(title, section)
 
         if existing_item:
             raise ItemAlreadyExistsException(title=title)
@@ -54,7 +55,8 @@ class ItemService:
         new_title = item.title.as_generic_type()
 
         if new_title != current_title:
-            existing_item = await self.item_repository.get_by_title(new_title, item.section_id)
+            section = item.section.as_generic_type()
+            existing_item = await self.item_repository.get_by_title(new_title, section)
 
             if existing_item and existing_item.oid != item.oid:
                 raise ItemAlreadyExistsException(title=new_title)
@@ -77,7 +79,7 @@ class ItemService:
         offset: int,
         limit: int,
         search: Optional[str] = None,
-        section_id: Optional[UUID] = None,
+        section: Optional[str] = None,
         is_active: Optional[bool] = None,
     ) -> list[ItemEntity]:
         items_iterable = self.item_repository.find_many(
@@ -86,7 +88,7 @@ class ItemService:
             offset=offset,
             limit=limit,
             search=search,
-            section_id=section_id,
+            section=section,
             is_active=is_active,
         )
         return [item async for item in items_iterable]
@@ -94,11 +96,11 @@ class ItemService:
     async def count_many(
         self,
         search: Optional[str] = None,
-        section_id: Optional[UUID] = None,
+        section: Optional[str] = None,
         is_active: Optional[bool] = None,
     ) -> int:
         return await self.item_repository.count_many(
             search=search,
-            section_id=section_id,
+            section=section,
             is_active=is_active,
         )

@@ -16,7 +16,7 @@ class BaseItemRepository(ABC):
     async def get_by_id(self, item_id: UUID) -> ItemEntity | None: ...
 
     @abstractmethod
-    async def get_by_title(self, title: str, section_id: UUID) -> ItemEntity | None: ...
+    async def get_by_title(self, title: str, section: str) -> ItemEntity | None: ...
 
     @abstractmethod
     async def update(self, item: ItemEntity) -> None: ...
@@ -32,7 +32,7 @@ class BaseItemRepository(ABC):
         offset: int,
         limit: int,
         search: str | None = None,
-        section_id: UUID | None = None,
+        section: str | None = None,
         is_active: bool | None = None,
     ) -> AsyncIterable[ItemEntity]: ...
 
@@ -40,6 +40,6 @@ class BaseItemRepository(ABC):
     async def count_many(
         self,
         search: str | None = None,
-        section_id: UUID | None = None,
+        section: str | None = None,
         is_active: bool | None = None,
     ) -> int: ...

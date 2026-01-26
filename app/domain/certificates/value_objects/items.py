@@ -12,9 +12,11 @@ from domain.certificates.exceptions.items import (
 MAX_TITLE_LENGTH = 255
 
 VALID_SECTIONS = {
+    "Декларации",
     "Сертификаты",
-    "Лицензии",
-    "Награды",
+    "Бухгалтерские документы",
+    "Юридические документы",
+    "Опросные листы",
 }
 
 

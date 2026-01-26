@@ -59,3 +59,15 @@ precommit:
 .PHONY: test 
 test:
 	${EXEC} ${APP_CONTAINER} pytest
+
+.PHONY: test-domain
+test-domain:
+	${EXEC} ${APP_CONTAINER} pytest tests/domain
+
+.PHONY: test-logic
+test-logic:
+	${EXEC} ${APP_CONTAINER} pytest tests/application
+
+.PHONY: test-e2e
+test-e2e:
+	${EXEC} ${APP_CONTAINER} pytest tests/presentation

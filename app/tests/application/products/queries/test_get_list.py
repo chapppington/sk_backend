@@ -1,20 +1,22 @@
 import pytest
+from faker import Faker
 
 from application.mediator import Mediator
 from application.products.commands import CreateProductCommand
 from application.products.queries import GetProductListQuery
 from domain.products.entities import ProductEntity
+from domain.products.value_objects import NameValueObject
 
 
 @pytest.mark.asyncio
 async def test_get_product_list_query_success(
     mediator: Mediator,
-    valid_product_data_with_category,
+    valid_product_entity_with_category,
 ):
     for _ in range(5):
-        data = valid_product_data_with_category("Трансформаторные подстанции")
+        product = valid_product_entity_with_category("Трансформаторные подстанции")
         await mediator.handle_command(
-            CreateProductCommand(**data),
+            CreateProductCommand(product=product),
         )
 
     product_list, total = await mediator.handle_query(
@@ -34,12 +36,12 @@ async def test_get_product_list_query_success(
 @pytest.mark.asyncio
 async def test_get_product_list_query_with_pagination(
     mediator: Mediator,
-    valid_product_data_with_category,
+    valid_product_entity_with_category,
 ):
     for _ in range(5):
-        data = valid_product_data_with_category()
+        product = valid_product_entity_with_category()
         await mediator.handle_command(
-            CreateProductCommand(**data),
+            CreateProductCommand(product=product),
         )
 
     product_list, total = await mediator.handle_query(
@@ -70,18 +72,18 @@ async def test_get_product_list_query_with_pagination(
 @pytest.mark.asyncio
 async def test_get_product_list_query_with_category_filter(
     mediator: Mediator,
-    valid_product_data_with_category,
+    valid_product_entity_with_category,
 ):
     for _ in range(3):
-        data = valid_product_data_with_category("Трансформаторные подстанции")
+        product = valid_product_entity_with_category("Трансформаторные подстанции")
         await mediator.handle_command(
-            CreateProductCommand(**data),
+            CreateProductCommand(product=product),
         )
 
     for _ in range(2):
-        data = valid_product_data_with_category("Распределительные устройства среднего напряжения 6(10) кВ")
+        product = valid_product_entity_with_category("Распределительные устройства среднего напряжения 6(10) кВ")
         await mediator.handle_command(
-            CreateProductCommand(**data),
+            CreateProductCommand(product=product),
         )
 
     product_list, total = await mediator.handle_query(
@@ -102,18 +104,51 @@ async def test_get_product_list_query_with_category_filter(
 @pytest.mark.asyncio
 async def test_get_product_list_query_with_search(
     mediator: Mediator,
-    valid_product_data_with_category,
+    valid_product_entity_with_category,
+    faker: Faker,
 ):
-    data1 = valid_product_data_with_category()
-    data1["name"] = "Python Transformer"
+    product1 = valid_product_entity_with_category()
+    product1 = ProductEntity(
+        category=product1.category,
+        name=NameValueObject(value="Python Transformer"),
+        slug=product1.slug,
+        description=product1.description,
+        preview_image_url=product1.preview_image_url,
+        preview_image_alt=product1.preview_image_alt,
+        important_characteristics=product1.important_characteristics,
+        advantages=product1.advantages,
+        simple_description=product1.simple_description,
+        detailed_description=product1.detailed_description,
+        documentation=product1.documentation,
+        order=product1.order,
+        is_shown=product1.is_shown,
+        show_advantages=product1.show_advantages,
+        portfolio_ids=product1.portfolio_ids,
+    )
     await mediator.handle_command(
-        CreateProductCommand(**data1),
+        CreateProductCommand(product=product1),
     )
 
-    data2 = valid_product_data_with_category()
-    data2["name"] = "JavaScript Switchgear"
+    product2 = valid_product_entity_with_category()
+    product2 = ProductEntity(
+        category=product2.category,
+        name=NameValueObject(value="JavaScript Switchgear"),
+        slug=product2.slug,
+        description=product2.description,
+        preview_image_url=product2.preview_image_url,
+        preview_image_alt=product2.preview_image_alt,
+        important_characteristics=product2.important_characteristics,
+        advantages=product2.advantages,
+        simple_description=product2.simple_description,
+        detailed_description=product2.detailed_description,
+        documentation=product2.documentation,
+        order=product2.order,
+        is_shown=product2.is_shown,
+        show_advantages=product2.show_advantages,
+        portfolio_ids=product2.portfolio_ids,
+    )
     await mediator.handle_command(
-        CreateProductCommand(**data2),
+        CreateProductCommand(product=product2),
     )
 
     product_list, total = await mediator.handle_query(
@@ -134,18 +169,50 @@ async def test_get_product_list_query_with_search(
 @pytest.mark.asyncio
 async def test_get_product_list_query_with_sorting(
     mediator: Mediator,
-    valid_product_data_with_category,
+    valid_product_entity_with_category,
 ):
-    data1 = valid_product_data_with_category()
-    data1["name"] = "First Product"
+    product1 = valid_product_entity_with_category()
+    product1 = ProductEntity(
+        category=product1.category,
+        name=NameValueObject(value="First Product"),
+        slug=product1.slug,
+        description=product1.description,
+        preview_image_url=product1.preview_image_url,
+        preview_image_alt=product1.preview_image_alt,
+        important_characteristics=product1.important_characteristics,
+        advantages=product1.advantages,
+        simple_description=product1.simple_description,
+        detailed_description=product1.detailed_description,
+        documentation=product1.documentation,
+        order=product1.order,
+        is_shown=product1.is_shown,
+        show_advantages=product1.show_advantages,
+        portfolio_ids=product1.portfolio_ids,
+    )
     await mediator.handle_command(
-        CreateProductCommand(**data1),
+        CreateProductCommand(product=product1),
     )
 
-    data2 = valid_product_data_with_category()
-    data2["name"] = "Second Product"
+    product2 = valid_product_entity_with_category()
+    product2 = ProductEntity(
+        category=product2.category,
+        name=NameValueObject(value="Second Product"),
+        slug=product2.slug,
+        description=product2.description,
+        preview_image_url=product2.preview_image_url,
+        preview_image_alt=product2.preview_image_alt,
+        important_characteristics=product2.important_characteristics,
+        advantages=product2.advantages,
+        simple_description=product2.simple_description,
+        detailed_description=product2.detailed_description,
+        documentation=product2.documentation,
+        order=product2.order,
+        is_shown=product2.is_shown,
+        show_advantages=product2.show_advantages,
+        portfolio_ids=product2.portfolio_ids,
+    )
     await mediator.handle_command(
-        CreateProductCommand(**data2),
+        CreateProductCommand(product=product2),
     )
 
     product_list, total = await mediator.handle_query(
@@ -165,18 +232,50 @@ async def test_get_product_list_query_with_sorting(
 @pytest.mark.asyncio
 async def test_get_product_list_query_with_is_shown_filter(
     mediator: Mediator,
-    valid_product_data_with_category,
+    valid_product_entity_with_category,
 ):
-    data1 = valid_product_data_with_category()
-    data1["is_shown"] = True
+    product1 = valid_product_entity_with_category()
+    product1 = ProductEntity(
+        category=product1.category,
+        name=product1.name,
+        slug=product1.slug,
+        description=product1.description,
+        preview_image_url=product1.preview_image_url,
+        preview_image_alt=product1.preview_image_alt,
+        important_characteristics=product1.important_characteristics,
+        advantages=product1.advantages,
+        simple_description=product1.simple_description,
+        detailed_description=product1.detailed_description,
+        documentation=product1.documentation,
+        order=product1.order,
+        is_shown=True,
+        show_advantages=product1.show_advantages,
+        portfolio_ids=product1.portfolio_ids,
+    )
     await mediator.handle_command(
-        CreateProductCommand(**data1),
+        CreateProductCommand(product=product1),
     )
 
-    data2 = valid_product_data_with_category()
-    data2["is_shown"] = False
+    product2 = valid_product_entity_with_category()
+    product2 = ProductEntity(
+        category=product2.category,
+        name=product2.name,
+        slug=product2.slug,
+        description=product2.description,
+        preview_image_url=product2.preview_image_url,
+        preview_image_alt=product2.preview_image_alt,
+        important_characteristics=product2.important_characteristics,
+        advantages=product2.advantages,
+        simple_description=product2.simple_description,
+        detailed_description=product2.detailed_description,
+        documentation=product2.documentation,
+        order=product2.order,
+        is_shown=False,
+        show_advantages=product2.show_advantages,
+        portfolio_ids=product2.portfolio_ids,
+    )
     await mediator.handle_command(
-        CreateProductCommand(**data2),
+        CreateProductCommand(product=product2),
     )
 
     product_list, total = await mediator.handle_query(
@@ -197,12 +296,12 @@ async def test_get_product_list_query_with_is_shown_filter(
 @pytest.mark.asyncio
 async def test_get_product_list_query_count_only(
     mediator: Mediator,
-    valid_product_data_with_category,
+    valid_product_entity_with_category,
 ):
     for _ in range(3):
-        data = valid_product_data_with_category()
+        product = valid_product_entity_with_category()
         await mediator.handle_command(
-            CreateProductCommand(**data),
+            CreateProductCommand(product=product),
         )
 
     _, total = await mediator.handle_query(
@@ -220,18 +319,18 @@ async def test_get_product_list_query_count_only(
 @pytest.mark.asyncio
 async def test_get_product_list_query_count_with_category(
     mediator: Mediator,
-    valid_product_data_with_category,
+    valid_product_entity_with_category,
 ):
     for _ in range(3):
-        data = valid_product_data_with_category("Трансформаторные подстанции")
+        product = valid_product_entity_with_category("Трансформаторные подстанции")
         await mediator.handle_command(
-            CreateProductCommand(**data),
+            CreateProductCommand(product=product),
         )
 
     for _ in range(2):
-        data = valid_product_data_with_category("Распределительные устройства среднего напряжения 6(10) кВ")
+        product = valid_product_entity_with_category("Распределительные устройства среднего напряжения 6(10) кВ")
         await mediator.handle_command(
-            CreateProductCommand(**data),
+            CreateProductCommand(product=product),
         )
 
     _, total = await mediator.handle_query(
@@ -250,18 +349,51 @@ async def test_get_product_list_query_count_with_category(
 @pytest.mark.asyncio
 async def test_get_product_list_query_count_with_search(
     mediator: Mediator,
-    valid_product_data_with_category,
+    valid_product_entity_with_category,
+    faker: Faker,
 ):
-    data1 = valid_product_data_with_category()
-    data1["name"] = "Python Transformer"
+    product1 = valid_product_entity_with_category()
+    product1 = ProductEntity(
+        category=product1.category,
+        name=NameValueObject(value="Python Transformer"),
+        slug=product1.slug,
+        description=product1.description,
+        preview_image_url=product1.preview_image_url,
+        preview_image_alt=product1.preview_image_alt,
+        important_characteristics=product1.important_characteristics,
+        advantages=product1.advantages,
+        simple_description=product1.simple_description,
+        detailed_description=product1.detailed_description,
+        documentation=product1.documentation,
+        order=product1.order,
+        is_shown=product1.is_shown,
+        show_advantages=product1.show_advantages,
+        portfolio_ids=product1.portfolio_ids,
+    )
     await mediator.handle_command(
-        CreateProductCommand(**data1),
+        CreateProductCommand(product=product1),
     )
 
-    data2 = valid_product_data_with_category()
-    data2["name"] = "JavaScript Switchgear"
+    product2 = valid_product_entity_with_category()
+    product2 = ProductEntity(
+        category=product2.category,
+        name=NameValueObject(value="JavaScript Switchgear"),
+        slug=product2.slug,
+        description=product2.description,
+        preview_image_url=product2.preview_image_url,
+        preview_image_alt=product2.preview_image_alt,
+        important_characteristics=product2.important_characteristics,
+        advantages=product2.advantages,
+        simple_description=product2.simple_description,
+        detailed_description=product2.detailed_description,
+        documentation=product2.documentation,
+        order=product2.order,
+        is_shown=product2.is_shown,
+        show_advantages=product2.show_advantages,
+        portfolio_ids=product2.portfolio_ids,
+    )
     await mediator.handle_command(
-        CreateProductCommand(**data2),
+        CreateProductCommand(product=product2),
     )
 
     _, total = await mediator.handle_query(

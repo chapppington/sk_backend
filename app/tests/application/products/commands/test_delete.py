@@ -15,10 +15,10 @@ from domain.products.exceptions.products import ProductNotFoundException
 @pytest.mark.asyncio
 async def test_delete_product_command_success(
     mediator: Mediator,
-    valid_product_data: dict,
+    valid_product_entity: ProductEntity,
 ):
     create_result, *_ = await mediator.handle_command(
-        CreateProductCommand(**valid_product_data),
+        CreateProductCommand(product=valid_product_entity),
     )
     created_product: ProductEntity = create_result
 

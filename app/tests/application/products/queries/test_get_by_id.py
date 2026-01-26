@@ -12,10 +12,10 @@ from domain.products.exceptions.products import ProductNotFoundException
 @pytest.mark.asyncio
 async def test_get_product_by_id_success(
     mediator: Mediator,
-    valid_product_data: dict,
+    valid_product_entity: ProductEntity,
 ):
     create_result, *_ = await mediator.handle_command(
-        CreateProductCommand(**valid_product_data),
+        CreateProductCommand(product=valid_product_entity),
     )
     created_product: ProductEntity = create_result
 
@@ -24,9 +24,9 @@ async def test_get_product_by_id_success(
     )
 
     assert retrieved_product.oid == created_product.oid
-    assert retrieved_product.category.as_generic_type() == valid_product_data["category"]
-    assert retrieved_product.name.as_generic_type() == valid_product_data["name"]
-    assert retrieved_product.slug.as_generic_type() == valid_product_data["slug"]
+    assert retrieved_product.category.as_generic_type() == valid_product_entity.category.as_generic_type()
+    assert retrieved_product.name.as_generic_type() == valid_product_entity.name.as_generic_type()
+    assert retrieved_product.slug.as_generic_type() == valid_product_entity.slug.as_generic_type()
 
 
 @pytest.mark.asyncio

@@ -43,6 +43,3 @@ class BaseProductRepository(ABC):
         category: str | None = None,
         is_shown: bool | None = None,
     ) -> int: ...
-
-    @abstractmethod
-    async def update_order(self, orders: list[dict[str, UUID | int]]) -> None: ...

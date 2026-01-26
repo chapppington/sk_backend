@@ -31,9 +31,8 @@ from application.vacancies.commands import (
     UpdateVacancyCommand,
 )
 from application.vacancies.queries import (
-    CountManyVacanciesQuery,
-    FindManyVacanciesQuery,
     GetVacancyByIdQuery,
+    GetVacancyListQuery,
 )
 
 
@@ -60,7 +59,7 @@ async def get_vacancies_list(
     """Получение списка вакансий с фильтрацией и пагинацией."""
     mediator: Mediator = container.resolve(Mediator)
 
-    query = FindManyVacanciesQuery(
+    query = GetVacancyListQuery(
         sort_field=sort_field,
         sort_order=sort_order,
         offset=pagination.offset,
@@ -69,10 +68,7 @@ async def get_vacancies_list(
         category=category,
     )
 
-    vacancies_list = await mediator.handle_query(query)
-
-    count_query = CountManyVacanciesQuery(search=search, category=category)
-    total = await mediator.handle_query(count_query)
+    vacancies_list, total = await mediator.handle_query(query)
 
     return ApiResponse[ListPaginatedResponse[VacancyResponseSchema]](
         data=ListPaginatedResponse[VacancyResponseSchema](

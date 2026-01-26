@@ -31,10 +31,9 @@ from application.news.commands import (
     UpdateNewsCommand,
 )
 from application.news.queries import (
-    CountManyNewsQuery,
-    FindManyNewsQuery,
     GetNewsByIdQuery,
     GetNewsBySlugQuery,
+    GetNewsListQuery,
 )
 
 
@@ -61,7 +60,7 @@ async def get_news_list(
     """Получение списка новостей с фильтрацией и пагинацией."""
     mediator: Mediator = container.resolve(Mediator)
 
-    query = FindManyNewsQuery(
+    query = GetNewsListQuery(
         sort_field=sort_field,
         sort_order=sort_order,
         offset=pagination.offset,
@@ -70,10 +69,7 @@ async def get_news_list(
         category=category,
     )
 
-    news_list = await mediator.handle_query(query)
-
-    count_query = CountManyNewsQuery(search=search, category=category)
-    total = await mediator.handle_query(count_query)
+    news_list, total = await mediator.handle_query(query)
 
     return ApiResponse[ListPaginatedResponse[NewsResponseSchema]](
         data=ListPaginatedResponse[NewsResponseSchema](

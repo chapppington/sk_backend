@@ -31,10 +31,9 @@ from application.portfolios.commands import (
     UpdatePortfolioCommand,
 )
 from application.portfolios.queries import (
-    CountManyPortfoliosQuery,
-    FindManyPortfoliosQuery,
     GetPortfolioByIdQuery,
     GetPortfolioBySlugQuery,
+    GetPortfolioListQuery,
 )
 
 
@@ -61,7 +60,7 @@ async def get_portfolios_list(
     """Получение списка портфолио с фильтрацией и пагинацией."""
     mediator: Mediator = container.resolve(Mediator)
 
-    query = FindManyPortfoliosQuery(
+    query = GetPortfolioListQuery(
         sort_field=sort_field,
         sort_order=sort_order,
         offset=pagination.offset,
@@ -70,10 +69,7 @@ async def get_portfolios_list(
         year=year,
     )
 
-    portfolios_list = await mediator.handle_query(query)
-
-    count_query = CountManyPortfoliosQuery(search=search, year=year)
-    total = await mediator.handle_query(count_query)
+    portfolios_list, total = await mediator.handle_query(query)
 
     return ApiResponse[ListPaginatedResponse[PortfolioResponseSchema]](
         data=ListPaginatedResponse[PortfolioResponseSchema](

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 from uuid import UUID
 
 from domain.news.entities import NewsEntity
@@ -74,3 +75,32 @@ class NewsService:
     ) -> None:
         await self.get_by_id(news_id)
         await self.news_repository.delete(news_id)
+
+    async def find_many(
+        self,
+        sort_field: str,
+        sort_order: int,
+        offset: int,
+        limit: int,
+        search: Optional[str] = None,
+        category: Optional[str] = None,
+    ) -> list[NewsEntity]:
+        news_iterable = self.news_repository.find_many(
+            sort_field=sort_field,
+            sort_order=sort_order,
+            offset=offset,
+            limit=limit,
+            search=search,
+            category=category,
+        )
+        return [news async for news in news_iterable]
+
+    async def count_many(
+        self,
+        search: Optional[str] = None,
+        category: Optional[str] = None,
+    ) -> int:
+        return await self.news_repository.count_many(
+            search=search,
+            category=category,
+        )

@@ -1,4 +1,3 @@
-from collections.abc import AsyncIterable
 from dataclasses import dataclass
 from typing import Optional
 from uuid import UUID
@@ -81,7 +80,7 @@ class ProductService:
         await self.get_by_id(product_id)
         await self.product_repository.delete(product_id)
 
-    def find_many(
+    async def find_many(
         self,
         sort_field: str,
         sort_order: int,
@@ -90,8 +89,8 @@ class ProductService:
         search: Optional[str] = None,
         category: Optional[str] = None,
         is_shown: Optional[bool] = None,
-    ) -> AsyncIterable[ProductEntity]:
-        return self.product_repository.find_many(
+    ) -> list[ProductEntity]:
+        products_iterable = self.product_repository.find_many(
             sort_field=sort_field,
             sort_order=sort_order,
             offset=offset,
@@ -100,6 +99,7 @@ class ProductService:
             category=category,
             is_shown=is_shown,
         )
+        return [product async for product in products_iterable]
 
     async def count_many(
         self,

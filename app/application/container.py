@@ -28,14 +28,12 @@ from application.news.commands import (
     UpdateNewsCommandHandler,
 )
 from application.news.queries import (
-    CountManyNewsQuery,
-    CountManyNewsQueryHandler,
-    FindManyNewsQuery,
-    FindManyNewsQueryHandler,
     GetNewsByIdQuery,
     GetNewsByIdQueryHandler,
     GetNewsBySlugQuery,
     GetNewsBySlugQueryHandler,
+    GetNewsListQuery,
+    GetNewsListQueryHandler,
 )
 from application.portfolios.commands import (
     CreatePortfolioCommand,
@@ -46,14 +44,28 @@ from application.portfolios.commands import (
     UpdatePortfolioCommandHandler,
 )
 from application.portfolios.queries import (
-    CountManyPortfoliosQuery,
-    CountManyPortfoliosQueryHandler,
-    FindManyPortfoliosQuery,
-    FindManyPortfoliosQueryHandler,
     GetPortfolioByIdQuery,
     GetPortfolioByIdQueryHandler,
     GetPortfolioBySlugQuery,
     GetPortfolioBySlugQueryHandler,
+    GetPortfolioListQuery,
+    GetPortfolioListQueryHandler,
+)
+from application.products.commands import (
+    CreateProductCommand,
+    CreateProductCommandHandler,
+    DeleteProductCommand,
+    DeleteProductCommandHandler,
+    UpdateProductCommand,
+    UpdateProductCommandHandler,
+)
+from application.products.queries import (
+    GetProductByIdQuery,
+    GetProductByIdQueryHandler,
+    GetProductBySlugQuery,
+    GetProductBySlugQueryHandler,
+    GetProductListQuery,
+    GetProductListQueryHandler,
 )
 from application.users.commands import (
     CreateUserCommand,
@@ -74,12 +86,10 @@ from application.vacancies.commands import (
     UpdateVacancyCommandHandler,
 )
 from application.vacancies.queries import (
-    CountManyVacanciesQuery,
-    CountManyVacanciesQueryHandler,
-    FindManyVacanciesQuery,
-    FindManyVacanciesQueryHandler,
     GetVacancyByIdQuery,
     GetVacancyByIdQueryHandler,
+    GetVacancyListQuery,
+    GetVacancyListQueryHandler,
 )
 from domain.news.interfaces.repository import BaseNewsRepository
 from domain.news.services import NewsService
@@ -106,18 +116,6 @@ def _init_container() -> Container:
     config = Config()
     container.register(Config, instance=config, scope=Scope.singleton)
 
-    # Регистрируем Mongo Database
-    def init_mongo_database() -> MongoDatabase:
-        return MongoDatabase(mongo_url=config.mongo_connection_url, mongo_database=config.mongo_database)
-
-    container.register(MongoDatabase, factory=init_mongo_database, scope=Scope.singleton)
-
-    container.register(BaseUserRepository, MongoUserRepository)
-    container.register(BaseNewsRepository, MongoNewsRepository)
-    container.register(BaseVacancyRepository, MongoVacancyRepository)
-    container.register(BasePortfolioRepository, MongoPortfolioRepository)
-    container.register(BaseProductRepository, MongoProductRepository)
-
     # Регистрируем S3
     def init_s3_client() -> S3Client:
         return S3Client(config=config)
@@ -128,6 +126,19 @@ def _init_container() -> Container:
         return S3FileStorage(s3_client=container.resolve(S3Client))
 
     container.register(BaseFileStorage, factory=init_s3_file_storage, scope=Scope.singleton)
+
+    # Регистрируем Mongo Database
+    def init_mongo_database() -> MongoDatabase:
+        return MongoDatabase(mongo_url=config.mongo_connection_url, mongo_database=config.mongo_database)
+
+    container.register(MongoDatabase, factory=init_mongo_database, scope=Scope.singleton)
+
+    # Регистрируем репозитории
+    container.register(BaseUserRepository, MongoUserRepository)
+    container.register(BaseNewsRepository, MongoNewsRepository)
+    container.register(BaseVacancyRepository, MongoVacancyRepository)
+    container.register(BasePortfolioRepository, MongoPortfolioRepository)
+    container.register(BaseProductRepository, MongoProductRepository)
 
     # Регистрируем доменные сервисы
     container.register(UserService)
@@ -153,6 +164,10 @@ def _init_container() -> Container:
     container.register(CreatePortfolioCommandHandler)
     container.register(UpdatePortfolioCommandHandler)
     container.register(DeletePortfolioCommandHandler)
+    # Products
+    container.register(CreateProductCommandHandler)
+    container.register(UpdateProductCommandHandler)
+    container.register(DeleteProductCommandHandler)
 
     # Регистрируем query handlers
     # Users
@@ -161,17 +176,18 @@ def _init_container() -> Container:
     # News
     container.register(GetNewsByIdQueryHandler)
     container.register(GetNewsBySlugQueryHandler)
-    container.register(FindManyNewsQueryHandler)
-    container.register(CountManyNewsQueryHandler)
+    container.register(GetNewsListQueryHandler)
     # Vacancies
     container.register(GetVacancyByIdQueryHandler)
-    container.register(FindManyVacanciesQueryHandler)
-    container.register(CountManyVacanciesQueryHandler)
+    container.register(GetVacancyListQueryHandler)
     # Portfolios
     container.register(GetPortfolioByIdQueryHandler)
     container.register(GetPortfolioBySlugQueryHandler)
-    container.register(FindManyPortfoliosQueryHandler)
-    container.register(CountManyPortfoliosQueryHandler)
+    container.register(GetPortfolioListQueryHandler)
+    # Products
+    container.register(GetProductByIdQueryHandler)
+    container.register(GetProductBySlugQueryHandler)
+    container.register(GetProductListQueryHandler)
 
     # Инициализируем медиатор
     def init_mediator() -> Mediator:
@@ -227,6 +243,19 @@ def _init_container() -> Container:
             DeletePortfolioCommand,
             [container.resolve(DeletePortfolioCommandHandler)],
         )
+        # Products
+        mediator.register_command(
+            CreateProductCommand,
+            [container.resolve(CreateProductCommandHandler)],
+        )
+        mediator.register_command(
+            UpdateProductCommand,
+            [container.resolve(UpdateProductCommandHandler)],
+        )
+        mediator.register_command(
+            DeleteProductCommand,
+            [container.resolve(DeleteProductCommandHandler)],
+        )
 
         # Регистрируем queries
         # Users
@@ -248,12 +277,8 @@ def _init_container() -> Container:
             container.resolve(GetNewsBySlugQueryHandler),
         )
         mediator.register_query(
-            FindManyNewsQuery,
-            container.resolve(FindManyNewsQueryHandler),
-        )
-        mediator.register_query(
-            CountManyNewsQuery,
-            container.resolve(CountManyNewsQueryHandler),
+            GetNewsListQuery,
+            container.resolve(GetNewsListQueryHandler),
         )
         # Vacancies
         mediator.register_query(
@@ -261,12 +286,8 @@ def _init_container() -> Container:
             container.resolve(GetVacancyByIdQueryHandler),
         )
         mediator.register_query(
-            FindManyVacanciesQuery,
-            container.resolve(FindManyVacanciesQueryHandler),
-        )
-        mediator.register_query(
-            CountManyVacanciesQuery,
-            container.resolve(CountManyVacanciesQueryHandler),
+            GetVacancyListQuery,
+            container.resolve(GetVacancyListQueryHandler),
         )
         # Portfolios
         mediator.register_query(
@@ -278,12 +299,21 @@ def _init_container() -> Container:
             container.resolve(GetPortfolioBySlugQueryHandler),
         )
         mediator.register_query(
-            FindManyPortfoliosQuery,
-            container.resolve(FindManyPortfoliosQueryHandler),
+            GetPortfolioListQuery,
+            container.resolve(GetPortfolioListQueryHandler),
+        )
+        # Products
+        mediator.register_query(
+            GetProductByIdQuery,
+            container.resolve(GetProductByIdQueryHandler),
         )
         mediator.register_query(
-            CountManyPortfoliosQuery,
-            container.resolve(CountManyPortfoliosQueryHandler),
+            GetProductBySlugQuery,
+            container.resolve(GetProductBySlugQueryHandler),
+        )
+        mediator.register_query(
+            GetProductListQuery,
+            container.resolve(GetProductListQueryHandler),
         )
 
         return mediator

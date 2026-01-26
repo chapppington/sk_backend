@@ -1,4 +1,3 @@
-from collections.abc import AsyncIterable
 from dataclasses import dataclass
 from typing import Optional
 from uuid import UUID
@@ -73,10 +72,10 @@ class PortfolioService:
         self,
         portfolio_id: UUID,
     ) -> None:
-        await self.get_by_id(portfolio_id)
+        await self.check_exists(portfolio_id)
         await self.portfolio_repository.delete(portfolio_id)
 
-    def find_many(
+    async def find_many(
         self,
         sort_field: str,
         sort_order: int,
@@ -84,8 +83,8 @@ class PortfolioService:
         limit: int,
         search: Optional[str] = None,
         year: Optional[int] = None,
-    ) -> AsyncIterable[PortfolioEntity]:
-        return self.portfolio_repository.find_many(
+    ) -> list[PortfolioEntity]:
+        portfolios_iterable = self.portfolio_repository.find_many(
             sort_field=sort_field,
             sort_order=sort_order,
             offset=offset,
@@ -93,6 +92,7 @@ class PortfolioService:
             search=search,
             year=year,
         )
+        return [portfolio async for portfolio in portfolios_iterable]
 
     async def count_many(
         self,
@@ -103,3 +103,9 @@ class PortfolioService:
             search=search,
             year=year,
         )
+
+    async def check_exists(
+        self,
+        portfolio_id: UUID,
+    ) -> None:
+        await self.get_by_id(portfolio_id)

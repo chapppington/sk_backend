@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 from uuid import UUID
 
 from domain.vacancies.entities import VacancyEntity
@@ -43,3 +44,32 @@ class VacancyService:
     ) -> None:
         await self.get_by_id(vacancy_id)
         await self.vacancy_repository.delete(vacancy_id)
+
+    async def find_many(
+        self,
+        sort_field: str,
+        sort_order: int,
+        offset: int,
+        limit: int,
+        search: Optional[str] = None,
+        category: Optional[str] = None,
+    ) -> list[VacancyEntity]:
+        vacancies_iterable = self.vacancy_repository.find_many(
+            sort_field=sort_field,
+            sort_order=sort_order,
+            offset=offset,
+            limit=limit,
+            search=search,
+            category=category,
+        )
+        return [vacancy async for vacancy in vacancies_iterable]
+
+    async def count_many(
+        self,
+        search: Optional[str] = None,
+        category: Optional[str] = None,
+    ) -> int:
+        return await self.vacancy_repository.count_many(
+            search=search,
+            category=category,
+        )

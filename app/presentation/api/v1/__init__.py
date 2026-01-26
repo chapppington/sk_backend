@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from presentation.api.v1.auth.handlers import router as auth_router
+from presentation.api.v1.certificates.handlers import router as certificates_router
 from presentation.api.v1.media.handlers import router as media_router
 from presentation.api.v1.news.handlers import router as news_router
 from presentation.api.v1.portfolios.handlers import router as portfolios_router
@@ -20,3 +21,4 @@ v1_router.include_router(vacancies_router)
 v1_router.include_router(portfolios_router)
 v1_router.include_router(products_router)
 v1_router.include_router(seo_settings_router)
+v1_router.include_router(certificates_router)

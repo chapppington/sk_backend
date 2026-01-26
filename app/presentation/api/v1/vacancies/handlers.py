@@ -18,8 +18,7 @@ from presentation.api.schemas import (
     ListPaginatedResponse,
 )
 from presentation.api.v1.vacancies.schemas import (
-    CreateVacancyRequestSchema,
-    UpdateVacancyRequestSchema,
+    VacancyRequestSchema,
     VacancyResponseSchema,
 )
 
@@ -119,20 +118,15 @@ async def get_vacancy_by_id(
     },
 )
 async def create_vacancy(
-    request: CreateVacancyRequestSchema,
+    request: VacancyRequestSchema,
     _=Depends(get_current_user_id),
     container=Depends(init_container),
 ) -> ApiResponse[VacancyResponseSchema]:
     """Создание новой вакансии."""
     mediator: Mediator = container.resolve(Mediator)
 
-    command = CreateVacancyCommand(
-        title=request.title,
-        requirements=request.requirements,
-        experience=request.experience,
-        salary=request.salary,
-        category=request.category,
-    )
+    vacancy = request.to_entity()
+    command = CreateVacancyCommand(vacancy=vacancy)
 
     vacancy, *_ = await mediator.handle_command(command)
 
@@ -155,21 +149,15 @@ async def create_vacancy(
 )
 async def update_vacancy(
     vacancy_id: UUID,
-    request: UpdateVacancyRequestSchema,
+    request: VacancyRequestSchema,
     _=Depends(get_current_user_id),
     container=Depends(init_container),
 ) -> ApiResponse[VacancyResponseSchema]:
     """Обновление вакансии."""
     mediator: Mediator = container.resolve(Mediator)
 
-    command = UpdateVacancyCommand(
-        vacancy_id=vacancy_id,
-        title=request.title,
-        requirements=request.requirements,
-        experience=request.experience,
-        salary=request.salary,
-        category=request.category,
-    )
+    vacancy = request.to_entity()
+    command = UpdateVacancyCommand(vacancy_id=vacancy_id, vacancy=vacancy)
 
     vacancy, *_ = await mediator.handle_command(command)
 

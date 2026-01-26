@@ -5,17 +5,17 @@ import pytest
 from application.mediator import Mediator
 from application.portfolios.commands import CreatePortfolioCommand
 from application.portfolios.queries import GetPortfolioByIdQuery
-from domain.portfolios.entities.portfolios import PortfolioEntity
+from domain.portfolios.entities import PortfolioEntity
 from domain.portfolios.exceptions.portfolios import PortfolioNotFoundException
 
 
 @pytest.mark.asyncio
 async def test_get_portfolio_by_id_success(
     mediator: Mediator,
-    valid_portfolio_data: dict,
+    valid_portfolio_entity: PortfolioEntity,
 ):
     create_result, *_ = await mediator.handle_command(
-        CreatePortfolioCommand(**valid_portfolio_data),
+        CreatePortfolioCommand(portfolio=valid_portfolio_entity),
     )
     created_portfolio: PortfolioEntity = create_result
 
@@ -24,8 +24,8 @@ async def test_get_portfolio_by_id_success(
     )
 
     assert retrieved_portfolio.oid == created_portfolio.oid
-    assert retrieved_portfolio.name.as_generic_type() == valid_portfolio_data["name"]
-    assert retrieved_portfolio.slug.as_generic_type() == valid_portfolio_data["slug"]
+    assert retrieved_portfolio.name.as_generic_type() == valid_portfolio_entity.name.as_generic_type()
+    assert retrieved_portfolio.slug.as_generic_type() == valid_portfolio_entity.slug.as_generic_type()
 
 
 @pytest.mark.asyncio

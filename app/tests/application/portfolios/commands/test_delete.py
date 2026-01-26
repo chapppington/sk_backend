@@ -8,18 +8,19 @@ from application.portfolios.commands import (
     DeletePortfolioCommand,
 )
 from application.portfolios.queries import GetPortfolioByIdQuery
+from domain.portfolios.entities import PortfolioEntity
 from domain.portfolios.exceptions.portfolios import PortfolioNotFoundException
 
 
 @pytest.mark.asyncio
 async def test_delete_portfolio_command_success(
     mediator: Mediator,
-    valid_portfolio_data: dict,
+    valid_portfolio_entity: PortfolioEntity,
 ):
     create_result, *_ = await mediator.handle_command(
-        CreatePortfolioCommand(**valid_portfolio_data),
+        CreatePortfolioCommand(portfolio=valid_portfolio_entity),
     )
-    created_portfolio = create_result
+    created_portfolio: PortfolioEntity = create_result
 
     await mediator.handle_command(
         DeletePortfolioCommand(portfolio_id=created_portfolio.oid),

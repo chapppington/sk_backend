@@ -1,20 +1,22 @@
 import pytest
+from faker import Faker
 
 from application.mediator import Mediator
 from application.portfolios.commands import CreatePortfolioCommand
 from application.portfolios.queries import GetPortfolioListQuery
-from domain.portfolios.entities.portfolios import PortfolioEntity
+from domain.portfolios.entities import PortfolioEntity
+from domain.portfolios.value_objects.portfolios import NameValueObject
 
 
 @pytest.mark.asyncio
 async def test_get_portfolio_list_query_success(
     mediator: Mediator,
-    valid_portfolio_data_with_year,
+    valid_portfolio_entity_with_year,
 ):
     for _ in range(5):
-        data = valid_portfolio_data_with_year()
+        portfolio = valid_portfolio_entity_with_year()
         await mediator.handle_command(
-            CreatePortfolioCommand(**data),
+            CreatePortfolioCommand(portfolio=portfolio),
         )
 
     portfolio_list, total = await mediator.handle_query(
@@ -34,12 +36,12 @@ async def test_get_portfolio_list_query_success(
 @pytest.mark.asyncio
 async def test_get_portfolio_list_query_with_pagination(
     mediator: Mediator,
-    valid_portfolio_data_with_year,
+    valid_portfolio_entity_with_year,
 ):
     for _ in range(5):
-        data = valid_portfolio_data_with_year()
+        portfolio = valid_portfolio_entity_with_year()
         await mediator.handle_command(
-            CreatePortfolioCommand(**data),
+            CreatePortfolioCommand(portfolio=portfolio),
         )
 
     portfolio_list, total = await mediator.handle_query(
@@ -70,18 +72,18 @@ async def test_get_portfolio_list_query_with_pagination(
 @pytest.mark.asyncio
 async def test_get_portfolio_list_query_with_year_filter(
     mediator: Mediator,
-    valid_portfolio_data_with_year,
+    valid_portfolio_entity_with_year,
 ):
     for _ in range(3):
-        data = valid_portfolio_data_with_year(2020)
+        portfolio = valid_portfolio_entity_with_year(2020)
         await mediator.handle_command(
-            CreatePortfolioCommand(**data),
+            CreatePortfolioCommand(portfolio=portfolio),
         )
 
     for _ in range(2):
-        data = valid_portfolio_data_with_year(2021)
+        portfolio = valid_portfolio_entity_with_year(2021)
         await mediator.handle_command(
-            CreatePortfolioCommand(**data),
+            CreatePortfolioCommand(portfolio=portfolio),
         )
 
     portfolio_list, total = await mediator.handle_query(
@@ -102,18 +104,63 @@ async def test_get_portfolio_list_query_with_year_filter(
 @pytest.mark.asyncio
 async def test_get_portfolio_list_query_with_search(
     mediator: Mediator,
-    valid_portfolio_data_with_year,
+    valid_portfolio_entity_with_year,
+    faker: Faker,
 ):
-    data1 = valid_portfolio_data_with_year()
-    data1["name"] = "Python Project"
+    portfolio1 = valid_portfolio_entity_with_year()
+    portfolio1 = PortfolioEntity(
+        name=NameValueObject(value="Python Project"),
+        slug=portfolio1.slug,
+        poster=portfolio1.poster,
+        year=portfolio1.year,
+        task_title=portfolio1.task_title,
+        task_description=portfolio1.task_description,
+        solution_title=portfolio1.solution_title,
+        solution_description=portfolio1.solution_description,
+        solution_subtitle=portfolio1.solution_subtitle,
+        solution_subdescription=portfolio1.solution_subdescription,
+        solution_image_left=portfolio1.solution_image_left,
+        solution_image_right=portfolio1.solution_image_right,
+        preview_video_path=portfolio1.preview_video_path,
+        full_video_path=portfolio1.full_video_path,
+        description=portfolio1.description,
+        has_review=portfolio1.has_review,
+        review_title=portfolio1.review_title,
+        review_text=portfolio1.review_text,
+        review_name=portfolio1.review_name,
+        review_image=portfolio1.review_image,
+        review_role=portfolio1.review_role,
+    )
     await mediator.handle_command(
-        CreatePortfolioCommand(**data1),
+        CreatePortfolioCommand(portfolio=portfolio1),
     )
 
-    data2 = valid_portfolio_data_with_year()
-    data2["name"] = "JavaScript Project"
+    portfolio2 = valid_portfolio_entity_with_year()
+    portfolio2 = PortfolioEntity(
+        name=NameValueObject(value="JavaScript Project"),
+        slug=portfolio2.slug,
+        poster=portfolio2.poster,
+        year=portfolio2.year,
+        task_title=portfolio2.task_title,
+        task_description=portfolio2.task_description,
+        solution_title=portfolio2.solution_title,
+        solution_description=portfolio2.solution_description,
+        solution_subtitle=portfolio2.solution_subtitle,
+        solution_subdescription=portfolio2.solution_subdescription,
+        solution_image_left=portfolio2.solution_image_left,
+        solution_image_right=portfolio2.solution_image_right,
+        preview_video_path=portfolio2.preview_video_path,
+        full_video_path=portfolio2.full_video_path,
+        description=portfolio2.description,
+        has_review=portfolio2.has_review,
+        review_title=portfolio2.review_title,
+        review_text=portfolio2.review_text,
+        review_name=portfolio2.review_name,
+        review_image=portfolio2.review_image,
+        review_role=portfolio2.review_role,
+    )
     await mediator.handle_command(
-        CreatePortfolioCommand(**data2),
+        CreatePortfolioCommand(portfolio=portfolio2),
     )
 
     portfolio_list, total = await mediator.handle_query(
@@ -134,18 +181,62 @@ async def test_get_portfolio_list_query_with_search(
 @pytest.mark.asyncio
 async def test_get_portfolio_list_query_with_sorting(
     mediator: Mediator,
-    valid_portfolio_data_with_year,
+    valid_portfolio_entity_with_year,
 ):
-    data1 = valid_portfolio_data_with_year()
-    data1["name"] = "First Portfolio"
+    portfolio1 = valid_portfolio_entity_with_year()
+    portfolio1 = PortfolioEntity(
+        name=NameValueObject(value="First Portfolio"),
+        slug=portfolio1.slug,
+        poster=portfolio1.poster,
+        year=portfolio1.year,
+        task_title=portfolio1.task_title,
+        task_description=portfolio1.task_description,
+        solution_title=portfolio1.solution_title,
+        solution_description=portfolio1.solution_description,
+        solution_subtitle=portfolio1.solution_subtitle,
+        solution_subdescription=portfolio1.solution_subdescription,
+        solution_image_left=portfolio1.solution_image_left,
+        solution_image_right=portfolio1.solution_image_right,
+        preview_video_path=portfolio1.preview_video_path,
+        full_video_path=portfolio1.full_video_path,
+        description=portfolio1.description,
+        has_review=portfolio1.has_review,
+        review_title=portfolio1.review_title,
+        review_text=portfolio1.review_text,
+        review_name=portfolio1.review_name,
+        review_image=portfolio1.review_image,
+        review_role=portfolio1.review_role,
+    )
     await mediator.handle_command(
-        CreatePortfolioCommand(**data1),
+        CreatePortfolioCommand(portfolio=portfolio1),
     )
 
-    data2 = valid_portfolio_data_with_year()
-    data2["name"] = "Second Portfolio"
+    portfolio2 = valid_portfolio_entity_with_year()
+    portfolio2 = PortfolioEntity(
+        name=NameValueObject(value="Second Portfolio"),
+        slug=portfolio2.slug,
+        poster=portfolio2.poster,
+        year=portfolio2.year,
+        task_title=portfolio2.task_title,
+        task_description=portfolio2.task_description,
+        solution_title=portfolio2.solution_title,
+        solution_description=portfolio2.solution_description,
+        solution_subtitle=portfolio2.solution_subtitle,
+        solution_subdescription=portfolio2.solution_subdescription,
+        solution_image_left=portfolio2.solution_image_left,
+        solution_image_right=portfolio2.solution_image_right,
+        preview_video_path=portfolio2.preview_video_path,
+        full_video_path=portfolio2.full_video_path,
+        description=portfolio2.description,
+        has_review=portfolio2.has_review,
+        review_title=portfolio2.review_title,
+        review_text=portfolio2.review_text,
+        review_name=portfolio2.review_name,
+        review_image=portfolio2.review_image,
+        review_role=portfolio2.review_role,
+    )
     await mediator.handle_command(
-        CreatePortfolioCommand(**data2),
+        CreatePortfolioCommand(portfolio=portfolio2),
     )
 
     portfolio_list, total = await mediator.handle_query(
@@ -165,12 +256,12 @@ async def test_get_portfolio_list_query_with_sorting(
 @pytest.mark.asyncio
 async def test_get_portfolio_list_query_count_only(
     mediator: Mediator,
-    valid_portfolio_data_with_year,
+    valid_portfolio_entity_with_year,
 ):
     for _ in range(3):
-        data = valid_portfolio_data_with_year()
+        portfolio = valid_portfolio_entity_with_year()
         await mediator.handle_command(
-            CreatePortfolioCommand(**data),
+            CreatePortfolioCommand(portfolio=portfolio),
         )
 
     _, total = await mediator.handle_query(
@@ -188,18 +279,18 @@ async def test_get_portfolio_list_query_count_only(
 @pytest.mark.asyncio
 async def test_get_portfolio_list_query_count_with_year(
     mediator: Mediator,
-    valid_portfolio_data_with_year,
+    valid_portfolio_entity_with_year,
 ):
     for _ in range(3):
-        data = valid_portfolio_data_with_year(2020)
+        portfolio = valid_portfolio_entity_with_year(2020)
         await mediator.handle_command(
-            CreatePortfolioCommand(**data),
+            CreatePortfolioCommand(portfolio=portfolio),
         )
 
     for _ in range(2):
-        data = valid_portfolio_data_with_year(2021)
+        portfolio = valid_portfolio_entity_with_year(2021)
         await mediator.handle_command(
-            CreatePortfolioCommand(**data),
+            CreatePortfolioCommand(portfolio=portfolio),
         )
 
     _, total = await mediator.handle_query(
@@ -218,18 +309,63 @@ async def test_get_portfolio_list_query_count_with_year(
 @pytest.mark.asyncio
 async def test_get_portfolio_list_query_count_with_search(
     mediator: Mediator,
-    valid_portfolio_data_with_year,
+    valid_portfolio_entity_with_year,
+    faker: Faker,
 ):
-    data1 = valid_portfolio_data_with_year()
-    data1["name"] = "Python tutorial"
+    portfolio1 = valid_portfolio_entity_with_year()
+    portfolio1 = PortfolioEntity(
+        name=NameValueObject(value="Python tutorial"),
+        slug=portfolio1.slug,
+        poster=portfolio1.poster,
+        year=portfolio1.year,
+        task_title=portfolio1.task_title,
+        task_description=portfolio1.task_description,
+        solution_title=portfolio1.solution_title,
+        solution_description=portfolio1.solution_description,
+        solution_subtitle=portfolio1.solution_subtitle,
+        solution_subdescription=portfolio1.solution_subdescription,
+        solution_image_left=portfolio1.solution_image_left,
+        solution_image_right=portfolio1.solution_image_right,
+        preview_video_path=portfolio1.preview_video_path,
+        full_video_path=portfolio1.full_video_path,
+        description=portfolio1.description,
+        has_review=portfolio1.has_review,
+        review_title=portfolio1.review_title,
+        review_text=portfolio1.review_text,
+        review_name=portfolio1.review_name,
+        review_image=portfolio1.review_image,
+        review_role=portfolio1.review_role,
+    )
     await mediator.handle_command(
-        CreatePortfolioCommand(**data1),
+        CreatePortfolioCommand(portfolio=portfolio1),
     )
 
-    data2 = valid_portfolio_data_with_year()
-    data2["name"] = "JavaScript guide"
+    portfolio2 = valid_portfolio_entity_with_year()
+    portfolio2 = PortfolioEntity(
+        name=NameValueObject(value="JavaScript guide"),
+        slug=portfolio2.slug,
+        poster=portfolio2.poster,
+        year=portfolio2.year,
+        task_title=portfolio2.task_title,
+        task_description=portfolio2.task_description,
+        solution_title=portfolio2.solution_title,
+        solution_description=portfolio2.solution_description,
+        solution_subtitle=portfolio2.solution_subtitle,
+        solution_subdescription=portfolio2.solution_subdescription,
+        solution_image_left=portfolio2.solution_image_left,
+        solution_image_right=portfolio2.solution_image_right,
+        preview_video_path=portfolio2.preview_video_path,
+        full_video_path=portfolio2.full_video_path,
+        description=portfolio2.description,
+        has_review=portfolio2.has_review,
+        review_title=portfolio2.review_title,
+        review_text=portfolio2.review_text,
+        review_name=portfolio2.review_name,
+        review_image=portfolio2.review_image,
+        review_role=portfolio2.review_role,
+    )
     await mediator.handle_command(
-        CreatePortfolioCommand(**data2),
+        CreatePortfolioCommand(portfolio=portfolio2),
     )
 
     _, total = await mediator.handle_query(

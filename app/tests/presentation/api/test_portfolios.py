@@ -9,6 +9,7 @@ from fastapi.testclient import TestClient
 import pytest
 from faker import Faker
 from httpx import Response
+from presentation.api.v1.portfolios.schemas import PortfolioRequestSchema
 
 from application.mediator import Mediator
 from application.portfolios.commands import CreatePortfolioCommand
@@ -43,7 +44,8 @@ async def test_get_portfolios_list_success(
             "description": faker.text(max_nb_chars=1000),
             "has_review": False,
         }
-        await mediator.handle_command(CreatePortfolioCommand(**data))
+        request_schema = PortfolioRequestSchema(**data)
+        await mediator.handle_command(CreatePortfolioCommand(portfolio=request_schema.to_entity()))
 
     response: Response = client.get(url=url)
 
@@ -88,7 +90,8 @@ async def test_get_portfolios_list_with_pagination(
             "description": faker.text(max_nb_chars=1000),
             "has_review": False,
         }
-        await mediator.handle_command(CreatePortfolioCommand(**data))
+        request_schema = PortfolioRequestSchema(**data)
+        await mediator.handle_command(CreatePortfolioCommand(portfolio=request_schema.to_entity()))
 
     response: Response = client.get(url=url, params={"limit": 2, "offset": 0})
 
@@ -128,7 +131,8 @@ async def test_get_portfolios_list_with_year_filter(
             "description": faker.text(max_nb_chars=1000),
             "has_review": False,
         }
-        await mediator.handle_command(CreatePortfolioCommand(**data))
+        request_schema = PortfolioRequestSchema(**data)
+        await mediator.handle_command(CreatePortfolioCommand(portfolio=request_schema.to_entity()))
 
     for _ in range(2):
         data = {
@@ -149,7 +153,8 @@ async def test_get_portfolios_list_with_year_filter(
             "description": faker.text(max_nb_chars=1000),
             "has_review": False,
         }
-        await mediator.handle_command(CreatePortfolioCommand(**data))
+        request_schema = PortfolioRequestSchema(**data)
+        await mediator.handle_command(CreatePortfolioCommand(portfolio=request_schema.to_entity()))
 
     response: Response = client.get(url=url, params={"year": 2023})
 
@@ -187,7 +192,8 @@ async def test_get_portfolios_list_with_search(
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
-    await mediator.handle_command(CreatePortfolioCommand(**data1))
+    request_schema1 = PortfolioRequestSchema(**data1)
+    await mediator.handle_command(CreatePortfolioCommand(portfolio=request_schema1.to_entity()))
 
     data2 = {
         "name": "JavaScript Project",
@@ -207,7 +213,8 @@ async def test_get_portfolios_list_with_search(
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
-    await mediator.handle_command(CreatePortfolioCommand(**data2))
+    request_schema2 = PortfolioRequestSchema(**data2)
+    await mediator.handle_command(CreatePortfolioCommand(portfolio=request_schema2.to_entity()))
 
     response: Response = client.get(url=url, params={"search": "Python"})
 
@@ -245,7 +252,8 @@ async def test_get_portfolios_list_with_sorting(
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
-    await mediator.handle_command(CreatePortfolioCommand(**data1))
+    request_schema1 = PortfolioRequestSchema(**data1)
+    await mediator.handle_command(CreatePortfolioCommand(portfolio=request_schema1.to_entity()))
 
     data2 = {
         "name": "B Project",
@@ -265,7 +273,8 @@ async def test_get_portfolios_list_with_sorting(
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
-    await mediator.handle_command(CreatePortfolioCommand(**data2))
+    request_schema2 = PortfolioRequestSchema(**data2)
+    await mediator.handle_command(CreatePortfolioCommand(portfolio=request_schema2.to_entity()))
 
     response: Response = client.get(url=url, params={"sort_field": "name", "sort_order": 1})
 
@@ -302,7 +311,8 @@ async def test_get_portfolio_by_id_success(
         "has_review": False,
     }
 
-    result, *_ = await mediator.handle_command(CreatePortfolioCommand(**data))
+    request_schema = PortfolioRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreatePortfolioCommand(portfolio=request_schema.to_entity()))
     portfolio_id = result.oid
 
     url = app.url_path_for("get_portfolio_by_id", portfolio_id=portfolio_id)
@@ -364,7 +374,8 @@ async def test_get_portfolio_by_slug_success(
         "has_review": False,
     }
 
-    result, *_ = await mediator.handle_command(CreatePortfolioCommand(**data))
+    request_schema = PortfolioRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreatePortfolioCommand(portfolio=request_schema.to_entity()))
     slug = result.slug.as_generic_type()
 
     url = app.url_path_for("get_portfolio_by_slug", slug=slug)
@@ -551,7 +562,8 @@ async def test_update_portfolio_success(
         "has_review": False,
     }
 
-    result, *_ = await mediator.handle_command(CreatePortfolioCommand(**data))
+    request_schema = PortfolioRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreatePortfolioCommand(portfolio=request_schema.to_entity()))
     portfolio_id = result.oid
 
     url = app.url_path_for("update_portfolio", portfolio_id=portfolio_id)
@@ -600,7 +612,8 @@ async def test_update_portfolio_unauthorized(
         "has_review": False,
     }
 
-    result, *_ = await mediator.handle_command(CreatePortfolioCommand(**data))
+    request_schema = PortfolioRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreatePortfolioCommand(portfolio=request_schema.to_entity()))
     portfolio_id = result.oid
 
     url = app.url_path_for("update_portfolio", portfolio_id=portfolio_id)
@@ -677,7 +690,8 @@ async def test_delete_portfolio_success(
         "has_review": False,
     }
 
-    result, *_ = await mediator.handle_command(CreatePortfolioCommand(**data))
+    request_schema = PortfolioRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreatePortfolioCommand(portfolio=request_schema.to_entity()))
     portfolio_id = result.oid
 
     url = app.url_path_for("delete_portfolio", portfolio_id=portfolio_id)
@@ -719,7 +733,8 @@ async def test_delete_portfolio_unauthorized(
         "has_review": False,
     }
 
-    result, *_ = await mediator.handle_command(CreatePortfolioCommand(**data))
+    request_schema = PortfolioRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreatePortfolioCommand(portfolio=request_schema.to_entity()))
     portfolio_id = result.oid
 
     url = app.url_path_for("delete_portfolio", portfolio_id=portfolio_id)

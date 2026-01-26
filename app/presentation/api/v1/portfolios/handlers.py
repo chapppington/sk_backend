@@ -18,9 +18,8 @@ from presentation.api.schemas import (
     ListPaginatedResponse,
 )
 from presentation.api.v1.portfolios.schemas import (
-    CreatePortfolioRequestSchema,
+    PortfolioRequestSchema,
     PortfolioResponseSchema,
-    UpdatePortfolioRequestSchema,
 )
 
 from application.container import init_container
@@ -146,36 +145,15 @@ async def get_portfolio_by_slug(
     },
 )
 async def create_portfolio(
-    request: CreatePortfolioRequestSchema,
+    request: PortfolioRequestSchema,
     _=Depends(get_current_user_id),
     container=Depends(init_container),
 ) -> ApiResponse[PortfolioResponseSchema]:
     """Создание нового портфолио."""
     mediator: Mediator = container.resolve(Mediator)
 
-    command = CreatePortfolioCommand(
-        name=request.name,
-        slug=request.slug,
-        poster=request.poster,
-        year=request.year,
-        task_title=request.task_title,
-        task_description=request.task_description,
-        solution_title=request.solution_title,
-        solution_description=request.solution_description,
-        solution_subtitle=request.solution_subtitle,
-        solution_subdescription=request.solution_subdescription,
-        solution_image_left=request.solution_image_left,
-        solution_image_right=request.solution_image_right,
-        preview_video_path=request.preview_video_path,
-        full_video_path=request.full_video_path,
-        description=request.description,
-        has_review=request.has_review,
-        review_title=request.review_title,
-        review_text=request.review_text,
-        review_name=request.review_name,
-        review_image=request.review_image,
-        review_role=request.review_role,
-    )
+    portfolio = request.to_entity()
+    command = CreatePortfolioCommand(portfolio=portfolio)
 
     portfolio, *_ = await mediator.handle_command(command)
 
@@ -199,37 +177,15 @@ async def create_portfolio(
 )
 async def update_portfolio(
     portfolio_id: UUID,
-    request: UpdatePortfolioRequestSchema,
+    request: PortfolioRequestSchema,
     _=Depends(get_current_user_id),
     container=Depends(init_container),
 ) -> ApiResponse[PortfolioResponseSchema]:
     """Обновление портфолио."""
     mediator: Mediator = container.resolve(Mediator)
 
-    command = UpdatePortfolioCommand(
-        portfolio_id=portfolio_id,
-        name=request.name,
-        slug=request.slug,
-        poster=request.poster,
-        year=request.year,
-        task_title=request.task_title,
-        task_description=request.task_description,
-        solution_title=request.solution_title,
-        solution_description=request.solution_description,
-        solution_subtitle=request.solution_subtitle,
-        solution_subdescription=request.solution_subdescription,
-        solution_image_left=request.solution_image_left,
-        solution_image_right=request.solution_image_right,
-        preview_video_path=request.preview_video_path,
-        full_video_path=request.full_video_path,
-        description=request.description,
-        has_review=request.has_review,
-        review_title=request.review_title,
-        review_text=request.review_text,
-        review_name=request.review_name,
-        review_image=request.review_image,
-        review_role=request.review_role,
-    )
+    portfolio = request.to_entity()
+    command = UpdatePortfolioCommand(portfolio_id=portfolio_id, portfolio=portfolio)
 
     portfolio, *_ = await mediator.handle_command(command)
 

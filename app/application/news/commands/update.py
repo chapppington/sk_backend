@@ -1,6 +1,4 @@
 from dataclasses import dataclass
-from datetime import datetime
-from typing import Optional
 from uuid import UUID
 
 from application.base.command import (
@@ -9,30 +7,12 @@ from application.base.command import (
 )
 from domain.news.entities.news import NewsEntity
 from domain.news.services import NewsService
-from domain.news.value_objects.news import (
-    AltValueObject,
-    CategoryValueObject,
-    ContentValueObject,
-    ImageUrlValueObject,
-    ReadingTimeValueObject,
-    ShortContentValueObject,
-    SlugValueObject,
-    TitleValueObject,
-)
 
 
 @dataclass(frozen=True)
 class UpdateNewsCommand(BaseCommand):
     news_id: UUID
-    category: str
-    title: str
-    slug: str
-    content: str
-    short_content: str
-    image_url: Optional[str]
-    alt: Optional[str]
-    reading_time: int
-    date: datetime
+    news: NewsEntity
 
 
 @dataclass(frozen=True)
@@ -44,18 +24,18 @@ class UpdateNewsCommandHandler(
     async def handle(self, command: UpdateNewsCommand) -> NewsEntity:
         existing_news = await self.news_service.get_by_id(command.news_id)
 
-        news = NewsEntity(
+        updated_news = NewsEntity(
             oid=existing_news.oid,
             created_at=existing_news.created_at,
-            category=CategoryValueObject(value=command.category),
-            title=TitleValueObject(value=command.title),
-            slug=SlugValueObject(value=command.slug),
-            content=ContentValueObject(value=command.content),
-            short_content=ShortContentValueObject(value=command.short_content),
-            image_url=ImageUrlValueObject(value=command.image_url),
-            alt=AltValueObject(value=command.alt),
-            reading_time=ReadingTimeValueObject(value=command.reading_time),
-            date=command.date,
+            category=command.news.category,
+            title=command.news.title,
+            slug=command.news.slug,
+            content=command.news.content,
+            short_content=command.news.short_content,
+            image_url=command.news.image_url,
+            alt=command.news.alt,
+            reading_time=command.news.reading_time,
+            date=command.news.date,
         )
 
-        return await self.news_service.update(news)
+        return await self.news_service.update(updated_news)

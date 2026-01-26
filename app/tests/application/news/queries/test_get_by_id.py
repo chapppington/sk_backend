@@ -12,10 +12,10 @@ from domain.news.exceptions.news import NewsNotFoundException
 @pytest.mark.asyncio
 async def test_get_news_by_id_success(
     mediator: Mediator,
-    valid_news_data: dict,
+    valid_news_entity: NewsEntity,
 ):
     create_result, *_ = await mediator.handle_command(
-        CreateNewsCommand(**valid_news_data),
+        CreateNewsCommand(news=valid_news_entity),
     )
     created_news: NewsEntity = create_result
 
@@ -24,9 +24,9 @@ async def test_get_news_by_id_success(
     )
 
     assert retrieved_news.oid == created_news.oid
-    assert retrieved_news.category.as_generic_type() == valid_news_data["category"]
-    assert retrieved_news.title.as_generic_type() == valid_news_data["title"]
-    assert retrieved_news.slug.as_generic_type() == valid_news_data["slug"]
+    assert retrieved_news.category.as_generic_type() == valid_news_entity.category.as_generic_type()
+    assert retrieved_news.title.as_generic_type() == valid_news_entity.title.as_generic_type()
+    assert retrieved_news.slug.as_generic_type() == valid_news_entity.slug.as_generic_type()
 
 
 @pytest.mark.asyncio

@@ -9,6 +9,7 @@ from fastapi.testclient import TestClient
 import pytest
 from faker import Faker
 from httpx import Response
+from presentation.api.v1.vacancies.schemas import VacancyRequestSchema
 
 from application.mediator import Mediator
 from application.vacancies.commands import CreateVacancyCommand
@@ -37,7 +38,8 @@ async def test_get_vacancies_list_success(
             "salary": faker.random_int(min=30000, max=200000),
             "category": "Производство",
         }
-        await mediator.handle_command(CreateVacancyCommand(**data))
+        request_schema = VacancyRequestSchema(**data)
+        await mediator.handle_command(CreateVacancyCommand(vacancy=request_schema.to_entity()))
 
     response: Response = client.get(url=url)
 
@@ -75,7 +77,8 @@ async def test_get_vacancies_list_with_pagination(
             "salary": faker.random_int(min=30000, max=200000),
             "category": "Производство",
         }
-        await mediator.handle_command(CreateVacancyCommand(**data))
+        request_schema = VacancyRequestSchema(**data)
+        await mediator.handle_command(CreateVacancyCommand(vacancy=request_schema.to_entity()))
 
     response: Response = client.get(url=url, params={"limit": 2, "offset": 0})
 
@@ -108,7 +111,8 @@ async def test_get_vacancies_list_with_category_filter(
             "salary": faker.random_int(min=30000, max=200000),
             "category": "Производство",
         }
-        await mediator.handle_command(CreateVacancyCommand(**data))
+        request_schema = VacancyRequestSchema(**data)
+        await mediator.handle_command(CreateVacancyCommand(vacancy=request_schema.to_entity()))
 
     for _ in range(2):
         data = {
@@ -122,7 +126,8 @@ async def test_get_vacancies_list_with_category_filter(
             "salary": faker.random_int(min=30000, max=200000),
             "category": "Продажи и маркетинг",
         }
-        await mediator.handle_command(CreateVacancyCommand(**data))
+        request_schema = VacancyRequestSchema(**data)
+        await mediator.handle_command(CreateVacancyCommand(vacancy=request_schema.to_entity()))
 
     response: Response = client.get(url=url, params={"category": "Производство"})
 
@@ -153,7 +158,8 @@ async def test_get_vacancies_list_with_search(
         "salary": faker.random_int(min=30000, max=200000),
         "category": "Производство",
     }
-    await mediator.handle_command(CreateVacancyCommand(**data1))
+    request_schema1 = VacancyRequestSchema(**data1)
+    await mediator.handle_command(CreateVacancyCommand(vacancy=request_schema1.to_entity()))
 
     data2 = {
         "title": "JavaScript Developer",
@@ -166,7 +172,8 @@ async def test_get_vacancies_list_with_search(
         "salary": faker.random_int(min=30000, max=200000),
         "category": "Производство",
     }
-    await mediator.handle_command(CreateVacancyCommand(**data2))
+    request_schema2 = VacancyRequestSchema(**data2)
+    await mediator.handle_command(CreateVacancyCommand(vacancy=request_schema2.to_entity()))
 
     response: Response = client.get(url=url, params={"search": "Python"})
 
@@ -197,7 +204,8 @@ async def test_get_vacancy_by_id_success(
         "category": "Производство",
     }
 
-    result, *_ = await mediator.handle_command(CreateVacancyCommand(**data))
+    request_schema = VacancyRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreateVacancyCommand(vacancy=request_schema.to_entity()))
     vacancy_id = result.oid
 
     url = app.url_path_for("get_vacancy_by_id", vacancy_id=vacancy_id)
@@ -319,7 +327,8 @@ async def test_update_vacancy_success(
         "category": "Производство",
     }
 
-    result, *_ = await mediator.handle_command(CreateVacancyCommand(**data))
+    request_schema = VacancyRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreateVacancyCommand(vacancy=request_schema.to_entity()))
     vacancy_id = result.oid
 
     url = app.url_path_for("update_vacancy", vacancy_id=vacancy_id)
@@ -361,7 +370,8 @@ async def test_update_vacancy_unauthorized(
         "category": "Производство",
     }
 
-    result, *_ = await mediator.handle_command(CreateVacancyCommand(**data))
+    request_schema = VacancyRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreateVacancyCommand(vacancy=request_schema.to_entity()))
     vacancy_id = result.oid
 
     url = app.url_path_for("update_vacancy", vacancy_id=vacancy_id)
@@ -424,7 +434,8 @@ async def test_delete_vacancy_success(
         "category": "Производство",
     }
 
-    result, *_ = await mediator.handle_command(CreateVacancyCommand(**data))
+    request_schema = VacancyRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreateVacancyCommand(vacancy=request_schema.to_entity()))
     vacancy_id = result.oid
 
     url = app.url_path_for("delete_vacancy", vacancy_id=vacancy_id)
@@ -459,7 +470,8 @@ async def test_delete_vacancy_unauthorized(
         "category": "Производство",
     }
 
-    result, *_ = await mediator.handle_command(CreateVacancyCommand(**data))
+    request_schema = VacancyRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreateVacancyCommand(vacancy=request_schema.to_entity()))
     vacancy_id = result.oid
 
     url = app.url_path_for("delete_vacancy", vacancy_id=vacancy_id)

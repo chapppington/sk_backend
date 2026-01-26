@@ -5,6 +5,16 @@ from uuid import UUID
 from pydantic import BaseModel
 
 from domain.news.entities.news import NewsEntity
+from domain.news.value_objects.news import (
+    AltValueObject,
+    CategoryValueObject,
+    ContentValueObject,
+    ImageUrlValueObject,
+    ReadingTimeValueObject,
+    ShortContentValueObject,
+    SlugValueObject,
+    TitleValueObject,
+)
 
 
 class NewsResponseSchema(BaseModel):
@@ -39,7 +49,7 @@ class NewsResponseSchema(BaseModel):
         )
 
 
-class CreateNewsRequestSchema(BaseModel):
+class NewsRequestSchema(BaseModel):
     category: str
     title: str
     slug: str
@@ -50,14 +60,15 @@ class CreateNewsRequestSchema(BaseModel):
     reading_time: int
     date: datetime
 
-
-class UpdateNewsRequestSchema(BaseModel):
-    category: str
-    title: str
-    slug: str
-    content: str
-    short_content: str
-    image_url: Optional[str] = None
-    alt: Optional[str] = None
-    reading_time: int
-    date: datetime
+    def to_entity(self) -> NewsEntity:
+        return NewsEntity(
+            category=CategoryValueObject(value=self.category),
+            title=TitleValueObject(value=self.title),
+            slug=SlugValueObject(value=self.slug),
+            content=ContentValueObject(value=self.content),
+            short_content=ShortContentValueObject(value=self.short_content),
+            image_url=ImageUrlValueObject(value=self.image_url),
+            alt=AltValueObject(value=self.alt),
+            reading_time=ReadingTimeValueObject(value=self.reading_time),
+            date=self.date,
+        )

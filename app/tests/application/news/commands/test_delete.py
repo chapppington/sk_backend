@@ -15,10 +15,10 @@ from domain.news.exceptions.news import NewsNotFoundException
 @pytest.mark.asyncio
 async def test_delete_news_command_success(
     mediator: Mediator,
-    valid_news_data: dict,
+    valid_news_entity: NewsEntity,
 ):
     create_result, *_ = await mediator.handle_command(
-        CreateNewsCommand(**valid_news_data),
+        CreateNewsCommand(news=valid_news_entity),
     )
     created_news: NewsEntity = create_result
 

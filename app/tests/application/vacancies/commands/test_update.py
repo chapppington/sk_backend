@@ -10,31 +10,31 @@ from application.vacancies.commands import (
 from application.vacancies.queries import GetVacancyByIdQuery
 from domain.vacancies.entities import VacancyEntity
 from domain.vacancies.exceptions.vacancies import VacancyNotFoundException
+from domain.vacancies.value_objects.vacancies import TitleValueObject
 
 
 @pytest.mark.asyncio
-async def test_update_vacancy_command_success(
-    mediator: Mediator,
-    valid_vacancy_data: dict,
-):
-    create_result, *_ = await mediator.handle_command(
-        CreateVacancyCommand(**valid_vacancy_data),
-    )
+async def test_update_vacancy_command_success(mediator: Mediator, valid_vacancy_entity: VacancyEntity):
+    create_command = CreateVacancyCommand(vacancy=valid_vacancy_entity)
+    create_result, *_ = await mediator.handle_command(create_command)
     created_vacancy: VacancyEntity = create_result
 
-    update_data = valid_vacancy_data.copy()
-    update_data["vacancy_id"] = created_vacancy.oid
-    update_data["title"] = "Updated Title"
-
-    update_result, *_ = await mediator.handle_command(
-        UpdateVacancyCommand(**update_data),
+    updated_vacancy = VacancyEntity(
+        title=TitleValueObject(value="Updated Title"),
+        requirements=created_vacancy.requirements,
+        experience=created_vacancy.experience,
+        salary=created_vacancy.salary,
+        category=created_vacancy.category,
     )
 
-    updated_vacancy: VacancyEntity = update_result
+    update_command = UpdateVacancyCommand(vacancy_id=created_vacancy.oid, vacancy=updated_vacancy)
+    update_result, *_ = await mediator.handle_command(update_command)
 
-    assert updated_vacancy.oid == created_vacancy.oid
-    assert updated_vacancy.title.as_generic_type() == "Updated Title"
-    assert updated_vacancy.category.as_generic_type() == update_data["category"]
+    updated: VacancyEntity = update_result
+
+    assert updated.oid == created_vacancy.oid
+    assert updated.title.as_generic_type() == "Updated Title"
+    assert updated.category.as_generic_type() == created_vacancy.category.as_generic_type()
 
     retrieved_vacancy = await mediator.handle_query(
         GetVacancyByIdQuery(vacancy_id=created_vacancy.oid),
@@ -44,13 +44,14 @@ async def test_update_vacancy_command_success(
 
 
 @pytest.mark.asyncio
-async def test_update_vacancy_command_not_found(mediator: Mediator, valid_vacancy_data: dict):
-    update_data = valid_vacancy_data.copy()
-    update_data["vacancy_id"] = uuid4()
+async def test_update_vacancy_command_not_found(
+    mediator: Mediator,
+    valid_vacancy_entity: VacancyEntity,
+):
+    non_existent_id = uuid4()
+    update_command = UpdateVacancyCommand(vacancy_id=non_existent_id, vacancy=valid_vacancy_entity)
 
     with pytest.raises(VacancyNotFoundException) as exc_info:
-        await mediator.handle_command(
-            UpdateVacancyCommand(**update_data),
-        )
+        await mediator.handle_command(update_command)
 
-    assert exc_info.value.vacancy_id == update_data["vacancy_id"]
+    assert exc_info.value.vacancy_id == non_existent_id

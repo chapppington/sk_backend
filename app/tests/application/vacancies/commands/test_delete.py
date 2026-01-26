@@ -15,10 +15,10 @@ from domain.vacancies.exceptions.vacancies import VacancyNotFoundException
 @pytest.mark.asyncio
 async def test_delete_vacancy_command_success(
     mediator: Mediator,
-    valid_vacancy_data: dict,
+    valid_vacancy_entity: VacancyEntity,
 ):
     create_result, *_ = await mediator.handle_command(
-        CreateVacancyCommand(**valid_vacancy_data),
+        CreateVacancyCommand(vacancy=valid_vacancy_entity),
     )
     created_vacancy: VacancyEntity = create_result
 

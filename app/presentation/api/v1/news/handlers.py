@@ -18,9 +18,8 @@ from presentation.api.schemas import (
     ListPaginatedResponse,
 )
 from presentation.api.v1.news.schemas import (
-    CreateNewsRequestSchema,
+    NewsRequestSchema,
     NewsResponseSchema,
-    UpdateNewsRequestSchema,
 )
 
 from application.container import init_container
@@ -146,24 +145,15 @@ async def get_news_by_slug(
     },
 )
 async def create_news(
-    request: CreateNewsRequestSchema,
+    request: NewsRequestSchema,
     _=Depends(get_current_user_id),
     container=Depends(init_container),
 ) -> ApiResponse[NewsResponseSchema]:
     """Создание новой новости."""
     mediator: Mediator = container.resolve(Mediator)
 
-    command = CreateNewsCommand(
-        category=request.category,
-        title=request.title,
-        slug=request.slug,
-        content=request.content,
-        short_content=request.short_content,
-        image_url=request.image_url,
-        alt=request.alt,
-        reading_time=request.reading_time,
-        date=request.date,
-    )
+    news = request.to_entity()
+    command = CreateNewsCommand(news=news)
 
     news, *_ = await mediator.handle_command(command)
 
@@ -187,25 +177,15 @@ async def create_news(
 )
 async def update_news(
     news_id: UUID,
-    request: UpdateNewsRequestSchema,
+    request: NewsRequestSchema,
     _=Depends(get_current_user_id),
     container=Depends(init_container),
 ) -> ApiResponse[NewsResponseSchema]:
     """Обновление новости."""
     mediator: Mediator = container.resolve(Mediator)
 
-    command = UpdateNewsCommand(
-        news_id=news_id,
-        category=request.category,
-        title=request.title,
-        slug=request.slug,
-        content=request.content,
-        short_content=request.short_content,
-        image_url=request.image_url,
-        alt=request.alt,
-        reading_time=request.reading_time,
-        date=request.date,
-    )
+    news = request.to_entity()
+    command = UpdateNewsCommand(news_id=news_id, news=news)
 
     news, *_ = await mediator.handle_command(command)
 

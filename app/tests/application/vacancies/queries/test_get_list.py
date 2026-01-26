@@ -1,20 +1,22 @@
 import pytest
+from faker import Faker
 
 from application.mediator import Mediator
 from application.vacancies.commands import CreateVacancyCommand
 from application.vacancies.queries import GetVacancyListQuery
 from domain.vacancies.entities import VacancyEntity
+from domain.vacancies.value_objects.vacancies import TitleValueObject
 
 
 @pytest.mark.asyncio
 async def test_get_vacancy_list_query_success(
     mediator: Mediator,
-    valid_vacancy_data_with_category,
+    valid_vacancy_entity_with_category,
 ):
     for _ in range(5):
-        data = valid_vacancy_data_with_category("Производство")
+        vacancy = valid_vacancy_entity_with_category("Производство")
         await mediator.handle_command(
-            CreateVacancyCommand(**data),
+            CreateVacancyCommand(vacancy=vacancy),
         )
 
     vacancy_list, total = await mediator.handle_query(
@@ -34,12 +36,12 @@ async def test_get_vacancy_list_query_success(
 @pytest.mark.asyncio
 async def test_get_vacancy_list_query_with_pagination(
     mediator: Mediator,
-    valid_vacancy_data_with_category,
+    valid_vacancy_entity_with_category,
 ):
     for _ in range(5):
-        data = valid_vacancy_data_with_category()
+        vacancy = valid_vacancy_entity_with_category()
         await mediator.handle_command(
-            CreateVacancyCommand(**data),
+            CreateVacancyCommand(vacancy=vacancy),
         )
 
     vacancy_list, total = await mediator.handle_query(
@@ -70,18 +72,18 @@ async def test_get_vacancy_list_query_with_pagination(
 @pytest.mark.asyncio
 async def test_get_vacancy_list_query_with_category_filter(
     mediator: Mediator,
-    valid_vacancy_data_with_category,
+    valid_vacancy_entity_with_category,
 ):
     for _ in range(3):
-        data = valid_vacancy_data_with_category("Производство")
+        vacancy = valid_vacancy_entity_with_category("Производство")
         await mediator.handle_command(
-            CreateVacancyCommand(**data),
+            CreateVacancyCommand(vacancy=vacancy),
         )
 
     for _ in range(2):
-        data = valid_vacancy_data_with_category("Продажи и маркетинг")
+        vacancy = valid_vacancy_entity_with_category("Продажи и маркетинг")
         await mediator.handle_command(
-            CreateVacancyCommand(**data),
+            CreateVacancyCommand(vacancy=vacancy),
         )
 
     vacancy_list, total = await mediator.handle_query(
@@ -102,18 +104,31 @@ async def test_get_vacancy_list_query_with_category_filter(
 @pytest.mark.asyncio
 async def test_get_vacancy_list_query_with_search(
     mediator: Mediator,
-    valid_vacancy_data_with_category,
+    valid_vacancy_entity_with_category,
+    faker: Faker,
 ):
-    data1 = valid_vacancy_data_with_category()
-    data1["title"] = "Python Developer"
+    vacancy1 = valid_vacancy_entity_with_category()
+    vacancy1 = VacancyEntity(
+        title=TitleValueObject(value="Python Developer"),
+        requirements=vacancy1.requirements,
+        experience=vacancy1.experience,
+        salary=vacancy1.salary,
+        category=vacancy1.category,
+    )
     await mediator.handle_command(
-        CreateVacancyCommand(**data1),
+        CreateVacancyCommand(vacancy=vacancy1),
     )
 
-    data2 = valid_vacancy_data_with_category()
-    data2["title"] = "JavaScript Developer"
+    vacancy2 = valid_vacancy_entity_with_category()
+    vacancy2 = VacancyEntity(
+        title=TitleValueObject(value="JavaScript Developer"),
+        requirements=vacancy2.requirements,
+        experience=vacancy2.experience,
+        salary=vacancy2.salary,
+        category=vacancy2.category,
+    )
     await mediator.handle_command(
-        CreateVacancyCommand(**data2),
+        CreateVacancyCommand(vacancy=vacancy2),
     )
 
     vacancy_list, total = await mediator.handle_query(
@@ -134,18 +149,30 @@ async def test_get_vacancy_list_query_with_search(
 @pytest.mark.asyncio
 async def test_get_vacancy_list_query_with_sorting(
     mediator: Mediator,
-    valid_vacancy_data_with_category,
+    valid_vacancy_entity_with_category,
 ):
-    data1 = valid_vacancy_data_with_category()
-    data1["title"] = "First Vacancy"
+    vacancy1 = valid_vacancy_entity_with_category()
+    vacancy1 = VacancyEntity(
+        title=TitleValueObject(value="First Vacancy"),
+        requirements=vacancy1.requirements,
+        experience=vacancy1.experience,
+        salary=vacancy1.salary,
+        category=vacancy1.category,
+    )
     await mediator.handle_command(
-        CreateVacancyCommand(**data1),
+        CreateVacancyCommand(vacancy=vacancy1),
     )
 
-    data2 = valid_vacancy_data_with_category()
-    data2["title"] = "Second Vacancy"
+    vacancy2 = valid_vacancy_entity_with_category()
+    vacancy2 = VacancyEntity(
+        title=TitleValueObject(value="Second Vacancy"),
+        requirements=vacancy2.requirements,
+        experience=vacancy2.experience,
+        salary=vacancy2.salary,
+        category=vacancy2.category,
+    )
     await mediator.handle_command(
-        CreateVacancyCommand(**data2),
+        CreateVacancyCommand(vacancy=vacancy2),
     )
 
     vacancy_list, total = await mediator.handle_query(
@@ -165,12 +192,12 @@ async def test_get_vacancy_list_query_with_sorting(
 @pytest.mark.asyncio
 async def test_get_vacancy_list_query_count_only(
     mediator: Mediator,
-    valid_vacancy_data_with_category,
+    valid_vacancy_entity_with_category,
 ):
     for _ in range(3):
-        data = valid_vacancy_data_with_category()
+        vacancy = valid_vacancy_entity_with_category()
         await mediator.handle_command(
-            CreateVacancyCommand(**data),
+            CreateVacancyCommand(vacancy=vacancy),
         )
 
     _, total = await mediator.handle_query(
@@ -188,18 +215,18 @@ async def test_get_vacancy_list_query_count_only(
 @pytest.mark.asyncio
 async def test_get_vacancy_list_query_count_with_category(
     mediator: Mediator,
-    valid_vacancy_data_with_category,
+    valid_vacancy_entity_with_category,
 ):
     for _ in range(3):
-        data = valid_vacancy_data_with_category("Производство")
+        vacancy = valid_vacancy_entity_with_category("Производство")
         await mediator.handle_command(
-            CreateVacancyCommand(**data),
+            CreateVacancyCommand(vacancy=vacancy),
         )
 
     for _ in range(2):
-        data = valid_vacancy_data_with_category("Продажи и маркетинг")
+        vacancy = valid_vacancy_entity_with_category("Продажи и маркетинг")
         await mediator.handle_command(
-            CreateVacancyCommand(**data),
+            CreateVacancyCommand(vacancy=vacancy),
         )
 
     _, total = await mediator.handle_query(
@@ -218,18 +245,31 @@ async def test_get_vacancy_list_query_count_with_category(
 @pytest.mark.asyncio
 async def test_get_vacancy_list_query_count_with_search(
     mediator: Mediator,
-    valid_vacancy_data_with_category,
+    valid_vacancy_entity_with_category,
+    faker: Faker,
 ):
-    data1 = valid_vacancy_data_with_category()
-    data1["title"] = "Python Developer"
+    vacancy1 = valid_vacancy_entity_with_category()
+    vacancy1 = VacancyEntity(
+        title=TitleValueObject(value="Python Developer"),
+        requirements=vacancy1.requirements,
+        experience=vacancy1.experience,
+        salary=vacancy1.salary,
+        category=vacancy1.category,
+    )
     await mediator.handle_command(
-        CreateVacancyCommand(**data1),
+        CreateVacancyCommand(vacancy=vacancy1),
     )
 
-    data2 = valid_vacancy_data_with_category()
-    data2["title"] = "JavaScript Developer"
+    vacancy2 = valid_vacancy_entity_with_category()
+    vacancy2 = VacancyEntity(
+        title=TitleValueObject(value="JavaScript Developer"),
+        requirements=vacancy2.requirements,
+        experience=vacancy2.experience,
+        salary=vacancy2.salary,
+        category=vacancy2.category,
+    )
     await mediator.handle_command(
-        CreateVacancyCommand(**data2),
+        CreateVacancyCommand(vacancy=vacancy2),
     )
 
     _, total = await mediator.handle_query(

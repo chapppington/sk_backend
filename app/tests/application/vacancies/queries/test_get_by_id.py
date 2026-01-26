@@ -12,10 +12,10 @@ from domain.vacancies.exceptions.vacancies import VacancyNotFoundException
 @pytest.mark.asyncio
 async def test_get_vacancy_by_id_success(
     mediator: Mediator,
-    valid_vacancy_data: dict,
+    valid_vacancy_entity: VacancyEntity,
 ):
     create_result, *_ = await mediator.handle_command(
-        CreateVacancyCommand(**valid_vacancy_data),
+        CreateVacancyCommand(vacancy=valid_vacancy_entity),
     )
     created_vacancy: VacancyEntity = create_result
 
@@ -24,8 +24,8 @@ async def test_get_vacancy_by_id_success(
     )
 
     assert retrieved_vacancy.oid == created_vacancy.oid
-    assert retrieved_vacancy.category.as_generic_type() == valid_vacancy_data["category"]
-    assert retrieved_vacancy.title.as_generic_type() == valid_vacancy_data["title"]
+    assert retrieved_vacancy.category.as_generic_type() == valid_vacancy_entity.category.as_generic_type()
+    assert retrieved_vacancy.title.as_generic_type() == valid_vacancy_entity.title.as_generic_type()
 
 
 @pytest.mark.asyncio

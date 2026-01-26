@@ -10,6 +10,7 @@ from fastapi.testclient import TestClient
 import pytest
 from faker import Faker
 from httpx import Response
+from presentation.api.v1.news.schemas import NewsRequestSchema
 
 from application.mediator import Mediator
 from application.news.commands import CreateNewsCommand
@@ -35,9 +36,10 @@ async def test_get_news_list_success(
             "image_url": faker.image_url(),
             "alt": faker.sentence(nb_words=3),
             "reading_time": faker.random_int(min=1, max=60),
-            "date": datetime.now().isoformat(),
+            "date": datetime.now(),
         }
-        await mediator.handle_command(CreateNewsCommand(**data))
+        request_schema = NewsRequestSchema(**data)
+        await mediator.handle_command(CreateNewsCommand(news=request_schema.to_entity()))
 
     response: Response = client.get(url=url)
 
@@ -73,9 +75,10 @@ async def test_get_news_list_with_pagination(
             "image_url": faker.image_url(),
             "alt": faker.sentence(nb_words=3),
             "reading_time": faker.random_int(min=1, max=60),
-            "date": datetime.now().isoformat(),
+            "date": datetime.now(),
         }
-        await mediator.handle_command(CreateNewsCommand(**data))
+        request_schema = NewsRequestSchema(**data)
+        await mediator.handle_command(CreateNewsCommand(news=request_schema.to_entity()))
 
     response: Response = client.get(url=url, params={"limit": 2, "offset": 0})
 
@@ -106,9 +109,10 @@ async def test_get_news_list_with_category_filter(
             "image_url": faker.image_url(),
             "alt": faker.sentence(nb_words=3),
             "reading_time": faker.random_int(min=1, max=60),
-            "date": datetime.now().isoformat(),
+            "date": datetime.now(),
         }
-        await mediator.handle_command(CreateNewsCommand(**data))
+        request_schema = NewsRequestSchema(**data)
+        await mediator.handle_command(CreateNewsCommand(news=request_schema.to_entity()))
 
     for _ in range(2):
         data = {
@@ -120,9 +124,10 @@ async def test_get_news_list_with_category_filter(
             "image_url": faker.image_url(),
             "alt": faker.sentence(nb_words=3),
             "reading_time": faker.random_int(min=1, max=60),
-            "date": datetime.now().isoformat(),
+            "date": datetime.now(),
         }
-        await mediator.handle_command(CreateNewsCommand(**data))
+        request_schema = NewsRequestSchema(**data)
+        await mediator.handle_command(CreateNewsCommand(news=request_schema.to_entity()))
 
     response: Response = client.get(url=url, params={"category": "События"})
 
@@ -151,9 +156,10 @@ async def test_get_news_list_with_search(
         "image_url": faker.image_url(),
         "alt": faker.sentence(nb_words=3),
         "reading_time": faker.random_int(min=1, max=60),
-        "date": datetime.now().isoformat(),
+        "date": datetime.now(),
     }
-    await mediator.handle_command(CreateNewsCommand(**data1))
+    request_schema1 = NewsRequestSchema(**data1)
+    await mediator.handle_command(CreateNewsCommand(news=request_schema1.to_entity()))
 
     data2 = {
         "category": "События",
@@ -164,9 +170,10 @@ async def test_get_news_list_with_search(
         "image_url": faker.image_url(),
         "alt": faker.sentence(nb_words=3),
         "reading_time": faker.random_int(min=1, max=60),
-        "date": datetime.now().isoformat(),
+        "date": datetime.now(),
     }
-    await mediator.handle_command(CreateNewsCommand(**data2))
+    request_schema2 = NewsRequestSchema(**data2)
+    await mediator.handle_command(CreateNewsCommand(news=request_schema2.to_entity()))
 
     response: Response = client.get(url=url, params={"search": "Python"})
 
@@ -193,10 +200,11 @@ async def test_get_news_by_id_success(
         "image_url": faker.image_url(),
         "alt": faker.sentence(nb_words=3),
         "reading_time": faker.random_int(min=1, max=60),
-        "date": datetime.now().isoformat(),
+        "date": datetime.now(),
     }
 
-    result, *_ = await mediator.handle_command(CreateNewsCommand(**data))
+    request_schema = NewsRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreateNewsCommand(news=request_schema.to_entity()))
     news_id = result.oid
 
     url = app.url_path_for("get_news_by_id", news_id=news_id)
@@ -249,10 +257,11 @@ async def test_get_news_by_slug_success(
         "image_url": faker.image_url(),
         "alt": faker.sentence(nb_words=3),
         "reading_time": faker.random_int(min=1, max=60),
-        "date": datetime.now().isoformat(),
+        "date": datetime.now(),
     }
 
-    await mediator.handle_command(CreateNewsCommand(**data))
+    request_schema = NewsRequestSchema(**data)
+    await mediator.handle_command(CreateNewsCommand(news=request_schema.to_entity()))
 
     url = app.url_path_for("get_news_by_slug", slug=slug)
 
@@ -373,7 +382,8 @@ async def test_create_news_duplicate_slug(
         "date": datetime.now().isoformat(),
     }
 
-    await mediator.handle_command(CreateNewsCommand(**data))
+    request_schema = NewsRequestSchema(**data)
+    await mediator.handle_command(CreateNewsCommand(news=request_schema.to_entity()))
 
     response: Response = authenticated_client.post(url=url, json=data)
 
@@ -400,17 +410,26 @@ async def test_update_news_success(
         "image_url": faker.image_url(),
         "alt": faker.sentence(nb_words=3),
         "reading_time": faker.random_int(min=1, max=60),
-        "date": datetime.now().isoformat(),
+        "date": datetime.now(),
     }
 
-    result, *_ = await mediator.handle_command(CreateNewsCommand(**data))
+    request_schema = NewsRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreateNewsCommand(news=request_schema.to_entity()))
     news_id = result.oid
 
     url = app.url_path_for("update_news", news_id=news_id)
 
-    update_data = data.copy()
-    update_data["title"] = "Updated Title"
-    update_data["slug"] = faker.slug()
+    update_data = {
+        "category": data["category"],
+        "title": "Updated Title",
+        "slug": faker.slug(),
+        "content": data["content"],
+        "short_content": data["short_content"],
+        "image_url": data["image_url"],
+        "alt": data["alt"],
+        "reading_time": data["reading_time"],
+        "date": datetime.now().isoformat(),
+    }
 
     response: Response = authenticated_client.put(url=url, json=update_data)
 
@@ -441,15 +460,28 @@ async def test_update_news_unauthorized(
         "image_url": faker.image_url(),
         "alt": faker.sentence(nb_words=3),
         "reading_time": faker.random_int(min=1, max=60),
-        "date": datetime.now().isoformat(),
+        "date": datetime.now(),
     }
 
-    result, *_ = await mediator.handle_command(CreateNewsCommand(**data))
+    request_schema = NewsRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreateNewsCommand(news=request_schema.to_entity()))
     news_id = result.oid
 
     url = app.url_path_for("update_news", news_id=news_id)
 
-    response: Response = client.put(url=url, json=data)
+    api_data = {
+        "category": data["category"],
+        "title": data["title"],
+        "slug": data["slug"],
+        "content": data["content"],
+        "short_content": data["short_content"],
+        "image_url": data["image_url"],
+        "alt": data["alt"],
+        "reading_time": data["reading_time"],
+        "date": datetime.now().isoformat(),
+    }
+
+    response: Response = client.put(url=url, json=api_data)
 
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     json_response = response.json()
@@ -504,10 +536,11 @@ async def test_delete_news_success(
         "image_url": faker.image_url(),
         "alt": faker.sentence(nb_words=3),
         "reading_time": faker.random_int(min=1, max=60),
-        "date": datetime.now().isoformat(),
+        "date": datetime.now(),
     }
 
-    result, *_ = await mediator.handle_command(CreateNewsCommand(**data))
+    request_schema = NewsRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreateNewsCommand(news=request_schema.to_entity()))
     news_id = result.oid
 
     url = app.url_path_for("delete_news", news_id=news_id)
@@ -539,10 +572,11 @@ async def test_delete_news_unauthorized(
         "image_url": faker.image_url(),
         "alt": faker.sentence(nb_words=3),
         "reading_time": faker.random_int(min=1, max=60),
-        "date": datetime.now().isoformat(),
+        "date": datetime.now(),
     }
 
-    result, *_ = await mediator.handle_command(CreateNewsCommand(**data))
+    request_schema = NewsRequestSchema(**data)
+    result, *_ = await mediator.handle_command(CreateNewsCommand(news=request_schema.to_entity()))
     news_id = result.oid
 
     url = app.url_path_for("delete_news", news_id=news_id)

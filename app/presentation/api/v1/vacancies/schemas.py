@@ -3,6 +3,13 @@ from uuid import UUID
 from pydantic import BaseModel
 
 from domain.vacancies.entities.vacancies import VacancyEntity
+from domain.vacancies.value_objects.vacancies import (
+    CategoryValueObject,
+    ExperienceValueObject,
+    RequirementsValueObject,
+    SalaryValueObject,
+    TitleValueObject,
+)
 
 
 class VacancyResponseSchema(BaseModel):
@@ -29,17 +36,18 @@ class VacancyResponseSchema(BaseModel):
         )
 
 
-class CreateVacancyRequestSchema(BaseModel):
+class VacancyRequestSchema(BaseModel):
     title: str
     requirements: list[str]
     experience: list[str]
     salary: int
     category: str
 
-
-class UpdateVacancyRequestSchema(BaseModel):
-    title: str
-    requirements: list[str]
-    experience: list[str]
-    salary: int
-    category: str
+    def to_entity(self) -> VacancyEntity:
+        return VacancyEntity(
+            title=TitleValueObject(value=self.title),
+            requirements=RequirementsValueObject(value=self.requirements),
+            experience=ExperienceValueObject(value=self.experience),
+            salary=SalaryValueObject(value=self.salary),
+            category=CategoryValueObject(value=self.category),
+        )

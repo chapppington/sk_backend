@@ -4,18 +4,19 @@ from faker import Faker
 from application.mediator import Mediator
 from application.news.commands import CreateNewsCommand
 from application.news.queries import GetNewsBySlugQuery
+from domain.news.entities import NewsEntity
 from domain.news.exceptions.news import NewsNotFoundBySlugException
 
 
 @pytest.mark.asyncio
 async def test_get_news_by_slug_success(
     mediator: Mediator,
-    valid_news_data: dict,
+    valid_news_entity: NewsEntity,
 ):
-    slug = valid_news_data["slug"]
+    slug = valid_news_entity.slug.as_generic_type()
 
     await mediator.handle_command(
-        CreateNewsCommand(**valid_news_data),
+        CreateNewsCommand(news=valid_news_entity),
     )
 
     retrieved_news = await mediator.handle_query(
@@ -23,7 +24,7 @@ async def test_get_news_by_slug_success(
     )
 
     assert retrieved_news.slug.as_generic_type() == slug
-    assert retrieved_news.title.as_generic_type() == valid_news_data["title"]
+    assert retrieved_news.title.as_generic_type() == valid_news_entity.title.as_generic_type()
 
 
 @pytest.mark.asyncio

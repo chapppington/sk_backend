@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 from uuid import UUID
 
 from application.base.command import (
@@ -8,52 +7,12 @@ from application.base.command import (
 )
 from domain.portfolios.entities.portfolios import PortfolioEntity
 from domain.portfolios.services.portfolios import PortfolioService
-from domain.portfolios.value_objects.portfolios import (
-    DescriptionValueObject,
-    NameValueObject,
-    PosterUrlValueObject,
-    ReviewImageUrlValueObject,
-    ReviewNameValueObject,
-    ReviewRoleValueObject,
-    ReviewTextValueObject,
-    ReviewTitleValueObject,
-    SlugValueObject,
-    SolutionDescriptionValueObject,
-    SolutionImageUrlValueObject,
-    SolutionSubdescriptionValueObject,
-    SolutionSubtitleValueObject,
-    SolutionTitleValueObject,
-    TaskDescriptionValueObject,
-    TaskTitleValueObject,
-    VideoUrlValueObject,
-    YearValueObject,
-)
 
 
 @dataclass(frozen=True)
 class UpdatePortfolioCommand(BaseCommand):
     portfolio_id: UUID
-    name: str
-    slug: str
-    poster: str
-    year: int
-    task_title: str
-    task_description: str
-    solution_title: str
-    solution_description: str
-    solution_subtitle: str
-    solution_subdescription: str
-    solution_image_left: str
-    solution_image_right: str
-    description: str
-    has_review: bool
-    preview_video_path: Optional[str] = None
-    full_video_path: Optional[str] = None
-    review_title: Optional[str] = None
-    review_text: Optional[str] = None
-    review_name: Optional[str] = None
-    review_image: Optional[str] = None
-    review_role: Optional[str] = None
+    portfolio: PortfolioEntity
 
 
 @dataclass(frozen=True)
@@ -65,32 +24,30 @@ class UpdatePortfolioCommandHandler(
     async def handle(self, command: UpdatePortfolioCommand) -> PortfolioEntity:
         existing_portfolio = await self.portfolio_service.get_by_id(command.portfolio_id)
 
-        portfolio = PortfolioEntity(
+        updated_portfolio = PortfolioEntity(
             oid=existing_portfolio.oid,
             created_at=existing_portfolio.created_at,
-            name=NameValueObject(value=command.name),
-            slug=SlugValueObject(value=command.slug),
-            poster=PosterUrlValueObject(value=command.poster),
-            year=YearValueObject(value=command.year),
-            task_title=TaskTitleValueObject(value=command.task_title),
-            task_description=TaskDescriptionValueObject(value=command.task_description),
-            solution_title=SolutionTitleValueObject(value=command.solution_title),
-            solution_description=SolutionDescriptionValueObject(value=command.solution_description),
-            solution_subtitle=SolutionSubtitleValueObject(value=command.solution_subtitle),
-            solution_subdescription=SolutionSubdescriptionValueObject(value=command.solution_subdescription),
-            solution_image_left=SolutionImageUrlValueObject(value=command.solution_image_left),
-            solution_image_right=SolutionImageUrlValueObject(value=command.solution_image_right),
-            preview_video_path=VideoUrlValueObject(value=command.preview_video_path)
-            if command.preview_video_path
-            else None,
-            full_video_path=VideoUrlValueObject(value=command.full_video_path) if command.full_video_path else None,
-            description=DescriptionValueObject(value=command.description),
-            has_review=command.has_review,
-            review_title=ReviewTitleValueObject(value=command.review_title) if command.review_title else None,
-            review_text=ReviewTextValueObject(value=command.review_text) if command.review_text else None,
-            review_name=ReviewNameValueObject(value=command.review_name) if command.review_name else None,
-            review_image=ReviewImageUrlValueObject(value=command.review_image) if command.review_image else None,
-            review_role=ReviewRoleValueObject(value=command.review_role) if command.review_role else None,
+            name=command.portfolio.name,
+            slug=command.portfolio.slug,
+            poster=command.portfolio.poster,
+            year=command.portfolio.year,
+            task_title=command.portfolio.task_title,
+            task_description=command.portfolio.task_description,
+            solution_title=command.portfolio.solution_title,
+            solution_description=command.portfolio.solution_description,
+            solution_subtitle=command.portfolio.solution_subtitle,
+            solution_subdescription=command.portfolio.solution_subdescription,
+            solution_image_left=command.portfolio.solution_image_left,
+            solution_image_right=command.portfolio.solution_image_right,
+            preview_video_path=command.portfolio.preview_video_path,
+            full_video_path=command.portfolio.full_video_path,
+            description=command.portfolio.description,
+            has_review=command.portfolio.has_review,
+            review_title=command.portfolio.review_title,
+            review_text=command.portfolio.review_text,
+            review_name=command.portfolio.review_name,
+            review_image=command.portfolio.review_image,
+            review_role=command.portfolio.review_role,
         )
 
-        return await self.portfolio_service.update(portfolio)
+        return await self.portfolio_service.update(updated_portfolio)

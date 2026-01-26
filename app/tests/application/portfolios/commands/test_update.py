@@ -9,36 +9,58 @@ from application.portfolios.commands import (
     UpdatePortfolioCommand,
 )
 from application.portfolios.queries import GetPortfolioByIdQuery
-from domain.portfolios.entities.portfolios import PortfolioEntity
+from domain.portfolios.entities import PortfolioEntity
 from domain.portfolios.exceptions.portfolios import (
     PortfolioAlreadyExistsException,
     PortfolioNotFoundException,
+)
+from domain.portfolios.value_objects.portfolios import (
+    NameValueObject,
+    SlugValueObject,
 )
 
 
 @pytest.mark.asyncio
 async def test_update_portfolio_command_success(
     mediator: Mediator,
-    valid_portfolio_data: dict,
+    valid_portfolio_entity: PortfolioEntity,
 ):
-    create_result, *_ = await mediator.handle_command(
-        CreatePortfolioCommand(**valid_portfolio_data),
-    )
+    create_command = CreatePortfolioCommand(portfolio=valid_portfolio_entity)
+    create_result, *_ = await mediator.handle_command(create_command)
     created_portfolio: PortfolioEntity = create_result
 
-    update_data = valid_portfolio_data.copy()
-    update_data["portfolio_id"] = created_portfolio.oid
-    update_data["name"] = "Updated Name"
-
-    update_result, *_ = await mediator.handle_command(
-        UpdatePortfolioCommand(**update_data),
+    updated_portfolio = PortfolioEntity(
+        name=NameValueObject(value="Updated Name"),
+        slug=created_portfolio.slug,
+        poster=created_portfolio.poster,
+        year=created_portfolio.year,
+        task_title=created_portfolio.task_title,
+        task_description=created_portfolio.task_description,
+        solution_title=created_portfolio.solution_title,
+        solution_description=created_portfolio.solution_description,
+        solution_subtitle=created_portfolio.solution_subtitle,
+        solution_subdescription=created_portfolio.solution_subdescription,
+        solution_image_left=created_portfolio.solution_image_left,
+        solution_image_right=created_portfolio.solution_image_right,
+        preview_video_path=created_portfolio.preview_video_path,
+        full_video_path=created_portfolio.full_video_path,
+        description=created_portfolio.description,
+        has_review=created_portfolio.has_review,
+        review_title=created_portfolio.review_title,
+        review_text=created_portfolio.review_text,
+        review_name=created_portfolio.review_name,
+        review_image=created_portfolio.review_image,
+        review_role=created_portfolio.review_role,
     )
 
-    updated_portfolio: PortfolioEntity = update_result
+    update_command = UpdatePortfolioCommand(portfolio_id=created_portfolio.oid, portfolio=updated_portfolio)
+    update_result, *_ = await mediator.handle_command(update_command)
 
-    assert updated_portfolio.oid == created_portfolio.oid
-    assert updated_portfolio.name.as_generic_type() == "Updated Name"
-    assert updated_portfolio.slug.as_generic_type() == update_data["slug"]
+    updated: PortfolioEntity = update_result
+
+    assert updated.oid == created_portfolio.oid
+    assert updated.name.as_generic_type() == "Updated Name"
+    assert updated.slug.as_generic_type() == created_portfolio.slug.as_generic_type()
 
     retrieved_portfolio = await mediator.handle_query(
         GetPortfolioByIdQuery(portfolio_id=created_portfolio.oid),
@@ -48,44 +70,106 @@ async def test_update_portfolio_command_success(
 
 
 @pytest.mark.asyncio
-async def test_update_portfolio_command_not_found(mediator: Mediator, valid_portfolio_data: dict):
-    update_data = valid_portfolio_data.copy()
-    update_data["portfolio_id"] = uuid4()
+async def test_update_portfolio_command_not_found(
+    mediator: Mediator,
+    valid_portfolio_entity: PortfolioEntity,
+):
+    non_existent_id = uuid4()
+    update_command = UpdatePortfolioCommand(portfolio_id=non_existent_id, portfolio=valid_portfolio_entity)
 
     with pytest.raises(PortfolioNotFoundException) as exc_info:
-        await mediator.handle_command(
-            UpdatePortfolioCommand(**update_data),
-        )
+        await mediator.handle_command(update_command)
 
-    assert exc_info.value.portfolio_id == update_data["portfolio_id"]
+    assert exc_info.value.portfolio_id == non_existent_id
 
 
 @pytest.mark.asyncio
 async def test_update_portfolio_command_duplicate_slug(
     mediator: Mediator,
-    valid_portfolio_data: dict,
+    valid_portfolio_entity: PortfolioEntity,
     faker: Faker,
 ):
-    data1 = valid_portfolio_data.copy()
-    data2 = valid_portfolio_data.copy()
-    data2["slug"] = faker.slug()
-
-    create_result1, *_ = await mediator.handle_command(
-        CreatePortfolioCommand(**data1),
+    portfolio1 = PortfolioEntity(
+        name=valid_portfolio_entity.name,
+        slug=valid_portfolio_entity.slug,
+        poster=valid_portfolio_entity.poster,
+        year=valid_portfolio_entity.year,
+        task_title=valid_portfolio_entity.task_title,
+        task_description=valid_portfolio_entity.task_description,
+        solution_title=valid_portfolio_entity.solution_title,
+        solution_description=valid_portfolio_entity.solution_description,
+        solution_subtitle=valid_portfolio_entity.solution_subtitle,
+        solution_subdescription=valid_portfolio_entity.solution_subdescription,
+        solution_image_left=valid_portfolio_entity.solution_image_left,
+        solution_image_right=valid_portfolio_entity.solution_image_right,
+        preview_video_path=valid_portfolio_entity.preview_video_path,
+        full_video_path=valid_portfolio_entity.full_video_path,
+        description=valid_portfolio_entity.description,
+        has_review=valid_portfolio_entity.has_review,
+        review_title=valid_portfolio_entity.review_title,
+        review_text=valid_portfolio_entity.review_text,
+        review_name=valid_portfolio_entity.review_name,
+        review_image=valid_portfolio_entity.review_image,
+        review_role=valid_portfolio_entity.review_role,
     )
+
+    portfolio2 = PortfolioEntity(
+        name=NameValueObject(value=faker.sentence(nb_words=3)),
+        slug=SlugValueObject(value=faker.slug()),
+        poster=valid_portfolio_entity.poster,
+        year=valid_portfolio_entity.year,
+        task_title=valid_portfolio_entity.task_title,
+        task_description=valid_portfolio_entity.task_description,
+        solution_title=valid_portfolio_entity.solution_title,
+        solution_description=valid_portfolio_entity.solution_description,
+        solution_subtitle=valid_portfolio_entity.solution_subtitle,
+        solution_subdescription=valid_portfolio_entity.solution_subdescription,
+        solution_image_left=valid_portfolio_entity.solution_image_left,
+        solution_image_right=valid_portfolio_entity.solution_image_right,
+        preview_video_path=valid_portfolio_entity.preview_video_path,
+        full_video_path=valid_portfolio_entity.full_video_path,
+        description=valid_portfolio_entity.description,
+        has_review=valid_portfolio_entity.has_review,
+        review_title=valid_portfolio_entity.review_title,
+        review_text=valid_portfolio_entity.review_text,
+        review_name=valid_portfolio_entity.review_name,
+        review_image=valid_portfolio_entity.review_image,
+        review_role=valid_portfolio_entity.review_role,
+    )
+
+    create_result1, *_ = await mediator.handle_command(CreatePortfolioCommand(portfolio=portfolio1))
     created_portfolio1: PortfolioEntity = create_result1
 
-    await mediator.handle_command(
-        CreatePortfolioCommand(**data2),
+    create_result2, *_ = await mediator.handle_command(CreatePortfolioCommand(portfolio=portfolio2))
+    created_portfolio2: PortfolioEntity = create_result2
+
+    updated_portfolio = PortfolioEntity(
+        name=created_portfolio1.name,
+        slug=created_portfolio2.slug,
+        poster=created_portfolio1.poster,
+        year=created_portfolio1.year,
+        task_title=created_portfolio1.task_title,
+        task_description=created_portfolio1.task_description,
+        solution_title=created_portfolio1.solution_title,
+        solution_description=created_portfolio1.solution_description,
+        solution_subtitle=created_portfolio1.solution_subtitle,
+        solution_subdescription=created_portfolio1.solution_subdescription,
+        solution_image_left=created_portfolio1.solution_image_left,
+        solution_image_right=created_portfolio1.solution_image_right,
+        preview_video_path=created_portfolio1.preview_video_path,
+        full_video_path=created_portfolio1.full_video_path,
+        description=created_portfolio1.description,
+        has_review=created_portfolio1.has_review,
+        review_title=created_portfolio1.review_title,
+        review_text=created_portfolio1.review_text,
+        review_name=created_portfolio1.review_name,
+        review_image=created_portfolio1.review_image,
+        review_role=created_portfolio1.review_role,
     )
 
-    update_data = valid_portfolio_data.copy()
-    update_data["portfolio_id"] = created_portfolio1.oid
-    update_data["slug"] = data2["slug"]
+    update_command = UpdatePortfolioCommand(portfolio_id=created_portfolio1.oid, portfolio=updated_portfolio)
 
     with pytest.raises(PortfolioAlreadyExistsException) as exc_info:
-        await mediator.handle_command(
-            UpdatePortfolioCommand(**update_data),
-        )
+        await mediator.handle_command(update_command)
 
-    assert exc_info.value.slug == data2["slug"]
+    assert exc_info.value.slug == created_portfolio2.slug.as_generic_type()

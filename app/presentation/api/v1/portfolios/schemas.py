@@ -5,6 +5,26 @@ from uuid import UUID
 from pydantic import BaseModel
 
 from domain.portfolios.entities.portfolios import PortfolioEntity
+from domain.portfolios.value_objects.portfolios import (
+    DescriptionValueObject,
+    NameValueObject,
+    PosterUrlValueObject,
+    ReviewImageUrlValueObject,
+    ReviewNameValueObject,
+    ReviewRoleValueObject,
+    ReviewTextValueObject,
+    ReviewTitleValueObject,
+    SlugValueObject,
+    SolutionDescriptionValueObject,
+    SolutionImageUrlValueObject,
+    SolutionSubdescriptionValueObject,
+    SolutionSubtitleValueObject,
+    SolutionTitleValueObject,
+    TaskDescriptionValueObject,
+    TaskTitleValueObject,
+    VideoUrlValueObject,
+    YearValueObject,
+)
 
 
 class PortfolioResponseSchema(BaseModel):
@@ -63,7 +83,7 @@ class PortfolioResponseSchema(BaseModel):
         )
 
 
-class CreatePortfolioRequestSchema(BaseModel):
+class PortfolioRequestSchema(BaseModel):
     name: str
     slug: str
     poster: str
@@ -86,26 +106,27 @@ class CreatePortfolioRequestSchema(BaseModel):
     review_image: Optional[str] = None
     review_role: Optional[str] = None
 
-
-class UpdatePortfolioRequestSchema(BaseModel):
-    name: str
-    slug: str
-    poster: str
-    year: int
-    task_title: str
-    task_description: str
-    solution_title: str
-    solution_description: str
-    solution_subtitle: str
-    solution_subdescription: str
-    solution_image_left: str
-    solution_image_right: str
-    preview_video_path: Optional[str] = None
-    full_video_path: Optional[str] = None
-    description: str
-    has_review: bool
-    review_title: Optional[str] = None
-    review_text: Optional[str] = None
-    review_name: Optional[str] = None
-    review_image: Optional[str] = None
-    review_role: Optional[str] = None
+    def to_entity(self) -> PortfolioEntity:
+        return PortfolioEntity(
+            name=NameValueObject(value=self.name),
+            slug=SlugValueObject(value=self.slug),
+            poster=PosterUrlValueObject(value=self.poster),
+            year=YearValueObject(value=self.year),
+            task_title=TaskTitleValueObject(value=self.task_title),
+            task_description=TaskDescriptionValueObject(value=self.task_description),
+            solution_title=SolutionTitleValueObject(value=self.solution_title),
+            solution_description=SolutionDescriptionValueObject(value=self.solution_description),
+            solution_subtitle=SolutionSubtitleValueObject(value=self.solution_subtitle),
+            solution_subdescription=SolutionSubdescriptionValueObject(value=self.solution_subdescription),
+            solution_image_left=SolutionImageUrlValueObject(value=self.solution_image_left),
+            solution_image_right=SolutionImageUrlValueObject(value=self.solution_image_right),
+            preview_video_path=VideoUrlValueObject(value=self.preview_video_path) if self.preview_video_path else None,
+            full_video_path=VideoUrlValueObject(value=self.full_video_path) if self.full_video_path else None,
+            description=DescriptionValueObject(value=self.description),
+            has_review=self.has_review,
+            review_title=ReviewTitleValueObject(value=self.review_title) if self.review_title else None,
+            review_text=ReviewTextValueObject(value=self.review_text) if self.review_text else None,
+            review_name=ReviewNameValueObject(value=self.review_name) if self.review_name else None,
+            review_image=ReviewImageUrlValueObject(value=self.review_image) if self.review_image else None,
+            review_role=ReviewRoleValueObject(value=self.review_role) if self.review_role else None,
+        )

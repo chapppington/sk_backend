@@ -1,20 +1,22 @@
 import pytest
+from faker import Faker
 
 from application.mediator import Mediator
 from application.news.commands import CreateNewsCommand
 from application.news.queries import GetNewsListQuery
 from domain.news.entities import NewsEntity
+from domain.news.value_objects.news import TitleValueObject
 
 
 @pytest.mark.asyncio
 async def test_get_news_list_query_success(
     mediator: Mediator,
-    valid_news_data_with_category,
+    valid_news_entity_with_category,
 ):
     for _ in range(5):
-        data = valid_news_data_with_category("События")
+        news = valid_news_entity_with_category("События")
         await mediator.handle_command(
-            CreateNewsCommand(**data),
+            CreateNewsCommand(news=news),
         )
 
     news_list, total = await mediator.handle_query(
@@ -34,12 +36,12 @@ async def test_get_news_list_query_success(
 @pytest.mark.asyncio
 async def test_get_news_list_query_with_pagination(
     mediator: Mediator,
-    valid_news_data_with_category,
+    valid_news_entity_with_category,
 ):
     for _ in range(5):
-        data = valid_news_data_with_category()
+        news = valid_news_entity_with_category()
         await mediator.handle_command(
-            CreateNewsCommand(**data),
+            CreateNewsCommand(news=news),
         )
 
     news_list, total = await mediator.handle_query(
@@ -70,18 +72,18 @@ async def test_get_news_list_query_with_pagination(
 @pytest.mark.asyncio
 async def test_get_news_list_query_with_category_filter(
     mediator: Mediator,
-    valid_news_data_with_category,
+    valid_news_entity_with_category,
 ):
     for _ in range(3):
-        data = valid_news_data_with_category("События")
+        news = valid_news_entity_with_category("События")
         await mediator.handle_command(
-            CreateNewsCommand(**data),
+            CreateNewsCommand(news=news),
         )
 
     for _ in range(2):
-        data = valid_news_data_with_category("Полезное")
+        news = valid_news_entity_with_category("Полезное")
         await mediator.handle_command(
-            CreateNewsCommand(**data),
+            CreateNewsCommand(news=news),
         )
 
     news_list, total = await mediator.handle_query(
@@ -102,18 +104,39 @@ async def test_get_news_list_query_with_category_filter(
 @pytest.mark.asyncio
 async def test_get_news_list_query_with_search(
     mediator: Mediator,
-    valid_news_data_with_category,
+    valid_news_entity_with_category,
+    faker: Faker,
 ):
-    data1 = valid_news_data_with_category()
-    data1["title"] = "Python programming"
+    news1 = valid_news_entity_with_category()
+    news1 = NewsEntity(
+        category=news1.category,
+        title=TitleValueObject(value="Python programming"),
+        slug=news1.slug,
+        content=news1.content,
+        short_content=news1.short_content,
+        image_url=news1.image_url,
+        alt=news1.alt,
+        reading_time=news1.reading_time,
+        date=news1.date,
+    )
     await mediator.handle_command(
-        CreateNewsCommand(**data1),
+        CreateNewsCommand(news=news1),
     )
 
-    data2 = valid_news_data_with_category()
-    data2["title"] = "JavaScript development"
+    news2 = valid_news_entity_with_category()
+    news2 = NewsEntity(
+        category=news2.category,
+        title=TitleValueObject(value="JavaScript development"),
+        slug=news2.slug,
+        content=news2.content,
+        short_content=news2.short_content,
+        image_url=news2.image_url,
+        alt=news2.alt,
+        reading_time=news2.reading_time,
+        date=news2.date,
+    )
     await mediator.handle_command(
-        CreateNewsCommand(**data2),
+        CreateNewsCommand(news=news2),
     )
 
     news_list, total = await mediator.handle_query(
@@ -134,18 +157,38 @@ async def test_get_news_list_query_with_search(
 @pytest.mark.asyncio
 async def test_get_news_list_query_with_sorting(
     mediator: Mediator,
-    valid_news_data_with_category,
+    valid_news_entity_with_category,
 ):
-    data1 = valid_news_data_with_category()
-    data1["title"] = "First News"
+    news1 = valid_news_entity_with_category()
+    news1 = NewsEntity(
+        category=news1.category,
+        title=TitleValueObject(value="First News"),
+        slug=news1.slug,
+        content=news1.content,
+        short_content=news1.short_content,
+        image_url=news1.image_url,
+        alt=news1.alt,
+        reading_time=news1.reading_time,
+        date=news1.date,
+    )
     await mediator.handle_command(
-        CreateNewsCommand(**data1),
+        CreateNewsCommand(news=news1),
     )
 
-    data2 = valid_news_data_with_category()
-    data2["title"] = "Second News"
+    news2 = valid_news_entity_with_category()
+    news2 = NewsEntity(
+        category=news2.category,
+        title=TitleValueObject(value="Second News"),
+        slug=news2.slug,
+        content=news2.content,
+        short_content=news2.short_content,
+        image_url=news2.image_url,
+        alt=news2.alt,
+        reading_time=news2.reading_time,
+        date=news2.date,
+    )
     await mediator.handle_command(
-        CreateNewsCommand(**data2),
+        CreateNewsCommand(news=news2),
     )
 
     news_list, total = await mediator.handle_query(
@@ -165,12 +208,12 @@ async def test_get_news_list_query_with_sorting(
 @pytest.mark.asyncio
 async def test_get_news_list_query_count_only(
     mediator: Mediator,
-    valid_news_data_with_category,
+    valid_news_entity_with_category,
 ):
     for _ in range(3):
-        data = valid_news_data_with_category()
+        news = valid_news_entity_with_category()
         await mediator.handle_command(
-            CreateNewsCommand(**data),
+            CreateNewsCommand(news=news),
         )
 
     _, total = await mediator.handle_query(
@@ -188,18 +231,18 @@ async def test_get_news_list_query_count_only(
 @pytest.mark.asyncio
 async def test_get_news_list_query_count_with_category(
     mediator: Mediator,
-    valid_news_data_with_category,
+    valid_news_entity_with_category,
 ):
     for _ in range(3):
-        data = valid_news_data_with_category("События")
+        news = valid_news_entity_with_category("События")
         await mediator.handle_command(
-            CreateNewsCommand(**data),
+            CreateNewsCommand(news=news),
         )
 
     for _ in range(2):
-        data = valid_news_data_with_category("Полезное")
+        news = valid_news_entity_with_category("Полезное")
         await mediator.handle_command(
-            CreateNewsCommand(**data),
+            CreateNewsCommand(news=news),
         )
 
     _, total = await mediator.handle_query(
@@ -218,18 +261,38 @@ async def test_get_news_list_query_count_with_category(
 @pytest.mark.asyncio
 async def test_get_news_list_query_count_with_search(
     mediator: Mediator,
-    valid_news_data_with_category,
+    valid_news_entity_with_category,
 ):
-    data1 = valid_news_data_with_category()
-    data1["title"] = "Python tutorial"
+    news1 = valid_news_entity_with_category()
+    news1 = NewsEntity(
+        category=news1.category,
+        title=TitleValueObject(value="Python tutorial"),
+        slug=news1.slug,
+        content=news1.content,
+        short_content=news1.short_content,
+        image_url=news1.image_url,
+        alt=news1.alt,
+        reading_time=news1.reading_time,
+        date=news1.date,
+    )
     await mediator.handle_command(
-        CreateNewsCommand(**data1),
+        CreateNewsCommand(news=news1),
     )
 
-    data2 = valid_news_data_with_category()
-    data2["title"] = "JavaScript guide"
+    news2 = valid_news_entity_with_category()
+    news2 = NewsEntity(
+        category=news2.category,
+        title=TitleValueObject(value="JavaScript guide"),
+        slug=news2.slug,
+        content=news2.content,
+        short_content=news2.short_content,
+        image_url=news2.image_url,
+        alt=news2.alt,
+        reading_time=news2.reading_time,
+        date=news2.date,
+    )
     await mediator.handle_command(
-        CreateNewsCommand(**data2),
+        CreateNewsCommand(news=news2),
     )
 
     _, total = await mediator.handle_query(

@@ -17,15 +17,15 @@ class CertificateService:
     async def create(
         self,
         certificate: CertificateEntity,
-        item_id: UUID,
+        certificate_group_id: UUID,
     ) -> CertificateEntity:
         title = certificate.title.as_generic_type()
-        existing_certificate = await self.certificate_repository.get_by_title(title, item_id)
+        existing_certificate = await self.certificate_repository.get_by_title(title, certificate_group_id)
 
         if existing_certificate:
             raise CertificateAlreadyExistsException(title=title, category="")
 
-        await self.certificate_repository.add(certificate, item_id)
+        await self.certificate_repository.add(certificate, certificate_group_id)
 
         return certificate
 
@@ -55,9 +55,11 @@ class CertificateService:
         new_title = certificate.title.as_generic_type()
 
         if new_title != current_title:
-            item_id = await self.certificate_repository.get_item_id_by_certificate_id(certificate.oid)
-            if item_id:
-                existing_certificate = await self.certificate_repository.get_by_title(new_title, item_id)
+            certificate_group_id = await self.certificate_repository.get_certificate_group_id_by_certificate_id(
+                certificate.oid,
+            )
+            if certificate_group_id:
+                existing_certificate = await self.certificate_repository.get_by_title(new_title, certificate_group_id)
                 if existing_certificate and existing_certificate.oid != certificate.oid:
                     raise CertificateAlreadyExistsException(title=new_title, category="")
 
@@ -78,7 +80,7 @@ class CertificateService:
         sort_order: int,
         offset: int,
         limit: int,
-        item_id: Optional[UUID] = None,
+        certificate_group_id: Optional[UUID] = None,
         search: Optional[str] = None,
     ) -> list[CertificateEntity]:
         certificates_iterable = self.certificate_repository.find_many(
@@ -86,17 +88,17 @@ class CertificateService:
             sort_order=sort_order,
             offset=offset,
             limit=limit,
-            item_id=item_id,
+            certificate_group_id=certificate_group_id,
             search=search,
         )
         return [certificate async for certificate in certificates_iterable]
 
     async def count_many(
         self,
-        item_id: Optional[UUID] = None,
+        certificate_group_id: Optional[UUID] = None,
         search: Optional[str] = None,
     ) -> int:
         return await self.certificate_repository.count_many(
-            item_id=item_id,
+            certificate_group_id=certificate_group_id,
             search=search,
         )

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from domain.base.value_object import BaseValueObject
-from domain.certificates.exceptions.items import (
+from domain.certificates.exceptions.certificate_groups import (
     ContentEmptyException,
     SectionInvalidException,
     TitleEmptyException,

@@ -1,3 +1,12 @@
+from domain.certificates.exceptions.certificate_groups import (
+    CertificateGroupAlreadyExistsException,
+    CertificateGroupException,
+    CertificateGroupNotFoundException,
+    ContentEmptyException,
+    SectionInvalidException,
+    TitleEmptyException,
+    TitleTooLongException,
+)
 from domain.certificates.exceptions.certificates import (
     CertificateAlreadyExistsException,
     CertificateException,
@@ -5,27 +14,18 @@ from domain.certificates.exceptions.certificates import (
     CertificateNotFoundException,
     CertificateTitleEmptyException,
 )
-from domain.certificates.exceptions.items import (
-    ContentEmptyException,
-    ItemAlreadyExistsException,
-    ItemException,
-    ItemNotFoundException,
-    SectionInvalidException,
-    TitleEmptyException,
-    TitleTooLongException,
-)
 
 
 __all__ = [
     "CertificateAlreadyExistsException",
     "CertificateException",
+    "CertificateGroupAlreadyExistsException",
+    "CertificateGroupException",
+    "CertificateGroupNotFoundException",
     "CertificateLinkEmptyException",
     "CertificateNotFoundException",
     "CertificateTitleEmptyException",
     "ContentEmptyException",
-    "ItemAlreadyExistsException",
-    "ItemException",
-    "ItemNotFoundException",
     "SectionInvalidException",
     "TitleEmptyException",
     "TitleTooLongException",

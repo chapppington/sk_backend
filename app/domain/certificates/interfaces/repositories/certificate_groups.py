@@ -5,24 +5,24 @@ from abc import (
 from collections.abc import AsyncIterable
 from uuid import UUID
 
-from domain.certificates.entities.items import ItemEntity
+from domain.certificates.entities.certificate_groups import CertificateGroupEntity
 
 
-class BaseItemRepository(ABC):
+class BaseCertificateGroupRepository(ABC):
     @abstractmethod
-    async def add(self, item: ItemEntity) -> ItemEntity: ...
-
-    @abstractmethod
-    async def get_by_id(self, item_id: UUID) -> ItemEntity | None: ...
+    async def add(self, certificate_group: CertificateGroupEntity) -> CertificateGroupEntity: ...
 
     @abstractmethod
-    async def get_by_title(self, title: str, section: str) -> ItemEntity | None: ...
+    async def get_by_id(self, certificate_group_id: UUID) -> CertificateGroupEntity | None: ...
 
     @abstractmethod
-    async def update(self, item: ItemEntity) -> None: ...
+    async def get_by_title(self, title: str, section: str) -> CertificateGroupEntity | None: ...
 
     @abstractmethod
-    async def delete(self, item_id: UUID) -> None: ...
+    async def update(self, certificate_group: CertificateGroupEntity) -> None: ...
+
+    @abstractmethod
+    async def delete(self, certificate_group_id: UUID) -> None: ...
 
     @abstractmethod
     async def find_many(
@@ -34,7 +34,7 @@ class BaseItemRepository(ABC):
         search: str | None = None,
         section: str | None = None,
         is_active: bool | None = None,
-    ) -> AsyncIterable[ItemEntity]: ...
+    ) -> AsyncIterable[CertificateGroupEntity]: ...
 
     @abstractmethod
     async def count_many(

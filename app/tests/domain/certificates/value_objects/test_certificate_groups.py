@@ -1,12 +1,12 @@
 import pytest
 
-from domain.certificates.exceptions.items import (
+from domain.certificates.exceptions.certificate_groups import (
     ContentEmptyException,
     SectionInvalidException,
     TitleEmptyException,
     TitleTooLongException,
 )
-from domain.certificates.value_objects.items import (
+from domain.certificates.value_objects.certificate_groups import (
     ContentValueObject,
     SectionValueObject,
     TitleValueObject,

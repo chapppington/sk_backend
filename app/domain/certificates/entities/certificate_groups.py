@@ -5,7 +5,7 @@ from dataclasses import (
 
 from domain.base.entity import BaseEntity
 from domain.certificates.entities.certificates import CertificateEntity
-from domain.certificates.value_objects.items import (
+from domain.certificates.value_objects.certificate_groups import (
     ContentValueObject,
     SectionValueObject,
     TitleValueObject,
@@ -13,7 +13,7 @@ from domain.certificates.value_objects.items import (
 
 
 @dataclass(eq=False)
-class ItemEntity(BaseEntity):
+class CertificateGroupEntity(BaseEntity):
     section: SectionValueObject
     title: TitleValueObject
     content: ContentValueObject

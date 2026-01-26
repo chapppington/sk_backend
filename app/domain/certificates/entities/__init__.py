@@ -1,8 +1,8 @@
+from domain.certificates.entities.certificate_groups import CertificateGroupEntity
 from domain.certificates.entities.certificates import CertificateEntity
-from domain.certificates.entities.items import ItemEntity
 
 
 __all__ = [
     "CertificateEntity",
-    "ItemEntity",
+    "CertificateGroupEntity",
 ]

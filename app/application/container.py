@@ -3,6 +3,7 @@ from functools import lru_cache
 from infrastructure.database.gateways.mongo import MongoDatabase
 from infrastructure.database.repositories.news.mongo import MongoNewsRepository
 from infrastructure.database.repositories.portfolios.mongo import MongoPortfolioRepository
+from infrastructure.database.repositories.products.mongo import MongoProductRepository
 from infrastructure.database.repositories.users.mongo import MongoUserRepository
 from infrastructure.database.repositories.vacancies.mongo import MongoVacancyRepository
 from infrastructure.s3.base import BaseFileStorage
@@ -84,6 +85,8 @@ from domain.news.interfaces.repository import BaseNewsRepository
 from domain.news.services import NewsService
 from domain.portfolios.interfaces.repository import BasePortfolioRepository
 from domain.portfolios.services.portfolios import PortfolioService
+from domain.products.interfaces.repository import BaseProductRepository
+from domain.products.services import ProductService
 from domain.users.interfaces.repository import BaseUserRepository
 from domain.users.services import UserService
 from domain.vacancies.interfaces.repository import BaseVacancyRepository
@@ -113,6 +116,7 @@ def _init_container() -> Container:
     container.register(BaseNewsRepository, MongoNewsRepository)
     container.register(BaseVacancyRepository, MongoVacancyRepository)
     container.register(BasePortfolioRepository, MongoPortfolioRepository)
+    container.register(BaseProductRepository, MongoProductRepository)
 
     # Регистрируем S3
     def init_s3_client() -> S3Client:
@@ -130,6 +134,7 @@ def _init_container() -> Container:
     container.register(NewsService)
     container.register(VacancyService)
     container.register(PortfolioService)
+    container.register(ProductService)
 
     # Регистрируем command handlers
     # Media

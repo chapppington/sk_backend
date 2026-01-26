@@ -5,6 +5,30 @@ from punq import (
     Scope,
 )
 
+from application.certificates.commands import (
+    CreateCertificateCommand,
+    CreateCertificateCommandHandler,
+    CreateCertificateGroupCommand,
+    CreateCertificateGroupCommandHandler,
+    DeleteCertificateCommand,
+    DeleteCertificateCommandHandler,
+    DeleteCertificateGroupCommand,
+    DeleteCertificateGroupCommandHandler,
+    UpdateCertificateCommand,
+    UpdateCertificateCommandHandler,
+    UpdateCertificateGroupCommand,
+    UpdateCertificateGroupCommandHandler,
+)
+from application.certificates.queries import (
+    GetCertificateByIdQuery,
+    GetCertificateByIdQueryHandler,
+    GetCertificateGroupByIdQuery,
+    GetCertificateGroupByIdQueryHandler,
+    GetCertificateGroupsListQuery,
+    GetCertificateGroupsListQueryHandler,
+    GetCertificatesListQuery,
+    GetCertificatesListQueryHandler,
+)
 from application.media.commands import (
     UploadFileCommand,
     UploadFileCommandHandler,
@@ -98,6 +122,12 @@ from application.vacancies.queries import (
     GetVacancyListQuery,
     GetVacancyListQueryHandler,
 )
+from domain.certificates.interfaces.repositories.certificate_groups import BaseCertificateGroupRepository
+from domain.certificates.interfaces.repositories.certificates import BaseCertificateRepository
+from domain.certificates.services import (
+    CertificateGroupService,
+    CertificateService,
+)
 from domain.news.interfaces.repository import BaseNewsRepository
 from domain.news.services import NewsService
 from domain.portfolios.interfaces.repository import BasePortfolioRepository
@@ -111,6 +141,10 @@ from domain.users.services import UserService
 from domain.vacancies.interfaces.repository import BaseVacancyRepository
 from domain.vacancies.services import VacancyService
 from infrastructure.database.gateways.mongo import MongoDatabase
+from infrastructure.database.repositories.certificates import (
+    MongoCertificateGroupRepository,
+    MongoCertificateRepository,
+)
 from infrastructure.database.repositories.news.mongo import MongoNewsRepository
 from infrastructure.database.repositories.portfolios.mongo import MongoPortfolioRepository
 from infrastructure.database.repositories.products.mongo import MongoProductRepository
@@ -159,6 +193,8 @@ def _init_container() -> Container:
     container.register(BasePortfolioRepository, MongoPortfolioRepository)
     container.register(BaseProductRepository, MongoProductRepository)
     container.register(BaseSeoSettingsRepository, MongoSeoSettingsRepository)
+    container.register(BaseCertificateGroupRepository, MongoCertificateGroupRepository)
+    container.register(BaseCertificateRepository, MongoCertificateRepository)
 
     # Регистрируем доменные сервисы
     container.register(UserService)
@@ -167,6 +203,8 @@ def _init_container() -> Container:
     container.register(PortfolioService)
     container.register(ProductService)
     container.register(SeoSettingsService)
+    container.register(CertificateGroupService)
+    container.register(CertificateService)
 
     # Регистрируем command handlers
     # Media
@@ -193,6 +231,13 @@ def _init_container() -> Container:
     container.register(CreateSeoSettingsCommandHandler)
     container.register(UpdateSeoSettingsCommandHandler)
     container.register(DeleteSeoSettingsCommandHandler)
+    # Certificates
+    container.register(CreateCertificateGroupCommandHandler)
+    container.register(UpdateCertificateGroupCommandHandler)
+    container.register(DeleteCertificateGroupCommandHandler)
+    container.register(CreateCertificateCommandHandler)
+    container.register(UpdateCertificateCommandHandler)
+    container.register(DeleteCertificateCommandHandler)
 
     # Регистрируем query handlers
     # Users
@@ -217,6 +262,11 @@ def _init_container() -> Container:
     container.register(GetSeoSettingsByIdQueryHandler)
     container.register(GetSeoSettingsByPathQueryHandler)
     container.register(GetSeoSettingsListQueryHandler)
+    # Certificates
+    container.register(GetCertificateGroupByIdQueryHandler)
+    container.register(GetCertificateGroupsListQueryHandler)
+    container.register(GetCertificateByIdQueryHandler)
+    container.register(GetCertificatesListQueryHandler)
 
     # Инициализируем медиатор
     def init_mediator() -> Mediator:
@@ -298,6 +348,31 @@ def _init_container() -> Container:
             DeleteSeoSettingsCommand,
             [container.resolve(DeleteSeoSettingsCommandHandler)],
         )
+        # Certificates
+        mediator.register_command(
+            CreateCertificateGroupCommand,
+            [container.resolve(CreateCertificateGroupCommandHandler)],
+        )
+        mediator.register_command(
+            UpdateCertificateGroupCommand,
+            [container.resolve(UpdateCertificateGroupCommandHandler)],
+        )
+        mediator.register_command(
+            DeleteCertificateGroupCommand,
+            [container.resolve(DeleteCertificateGroupCommandHandler)],
+        )
+        mediator.register_command(
+            CreateCertificateCommand,
+            [container.resolve(CreateCertificateCommandHandler)],
+        )
+        mediator.register_command(
+            UpdateCertificateCommand,
+            [container.resolve(UpdateCertificateCommandHandler)],
+        )
+        mediator.register_command(
+            DeleteCertificateCommand,
+            [container.resolve(DeleteCertificateCommandHandler)],
+        )
 
         # Регистрируем queries
         # Users
@@ -369,6 +444,23 @@ def _init_container() -> Container:
         mediator.register_query(
             GetSeoSettingsListQuery,
             container.resolve(GetSeoSettingsListQueryHandler),
+        )
+        # Certificates
+        mediator.register_query(
+            GetCertificateGroupByIdQuery,
+            container.resolve(GetCertificateGroupByIdQueryHandler),
+        )
+        mediator.register_query(
+            GetCertificateGroupsListQuery,
+            container.resolve(GetCertificateGroupsListQueryHandler),
+        )
+        mediator.register_query(
+            GetCertificateByIdQuery,
+            container.resolve(GetCertificateByIdQueryHandler),
+        )
+        mediator.register_query(
+            GetCertificatesListQuery,
+            container.resolve(GetCertificatesListQueryHandler),
         )
 
         return mediator

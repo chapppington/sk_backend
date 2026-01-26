@@ -105,7 +105,6 @@ async def test_get_portfolio_list_query_with_year_filter(
 async def test_get_portfolio_list_query_with_search(
     mediator: Mediator,
     valid_portfolio_entity_with_year,
-    faker: Faker,
 ):
     portfolio1 = valid_portfolio_entity_with_year()
     portfolio1 = PortfolioEntity(

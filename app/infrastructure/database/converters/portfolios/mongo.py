@@ -78,23 +78,15 @@ def portfolio_document_to_entity(document: dict) -> PortfolioEntity:
         solution_subdescription=SolutionSubdescriptionValueObject(value=document["solution_subdescription"]),
         solution_image_left=SolutionImageUrlValueObject(value=document["solution_image_left"]),
         solution_image_right=SolutionImageUrlValueObject(value=document["solution_image_right"]),
-        preview_video_path=VideoUrlValueObject(value=document["preview_video_path"])
-        if document.get("preview_video_path")
-        else None,
-        full_video_path=VideoUrlValueObject(value=document["full_video_path"])
-        if document.get("full_video_path")
-        else None,
+        preview_video_path=VideoUrlValueObject(value=document.get("preview_video_path")),
+        full_video_path=VideoUrlValueObject(value=document.get("full_video_path")),
         description=DescriptionValueObject(value=document["description"]),
         has_review=document["has_review"],
-        review_title=ReviewTitleValueObject(value=document.get("review_title"))
-        if document.get("review_title")
-        else None,
-        review_text=ReviewTextValueObject(value=document.get("review_text")) if document.get("review_text") else None,
-        review_name=ReviewNameValueObject(value=document.get("review_name")) if document.get("review_name") else None,
-        review_image=ReviewImageUrlValueObject(value=document.get("review_image"))
-        if document.get("review_image")
-        else None,
-        review_role=ReviewRoleValueObject(value=document.get("review_role")) if document.get("review_role") else None,
+        review_title=ReviewTitleValueObject(value=document.get("review_title")),
+        review_text=ReviewTextValueObject(value=document.get("review_text")),
+        review_name=ReviewNameValueObject(value=document.get("review_name")),
+        review_image=ReviewImageUrlValueObject(value=document.get("review_image")),
+        review_role=ReviewRoleValueObject(value=document.get("review_role")),
         created_at=datetime.fromisoformat(document["created_at"]),
         updated_at=datetime.fromisoformat(document["updated_at"]),
     )

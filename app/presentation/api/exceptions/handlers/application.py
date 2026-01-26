@@ -4,14 +4,13 @@ from fastapi import (
 )
 from fastapi.responses import JSONResponse
 
-from presentation.api.exceptions.mappers import map_domain_exception_to_status_code
-from presentation.api.schemas import ApiResponse
-
 from application.base.exception import LogicException
 from domain.base.exceptions import (
     ApplicationException,
     DomainException,
 )
+from presentation.api.exceptions.mappers import map_domain_exception_to_status_code
+from presentation.api.schemas import ApiResponse
 
 
 def _map_application_exception_to_status_code(exc: ApplicationException) -> int:

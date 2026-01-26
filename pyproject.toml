@@ -56,7 +56,7 @@ skip_glob=[
     "**/migrations/**",
 ]
 known_fastapi=["fastapi","starlette"]
-known_first_party=["application","domain","infrastructure","settings","tests"]
+known_first_party=["application","domain","infrastructure","presentation","settings","tests"]
 sections=[
     "FUTURE",
     "STDLIB",

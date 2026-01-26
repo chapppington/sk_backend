@@ -5,14 +5,14 @@ from authx.exceptions import (
     JWTDecodeError,
     MissingTokenError,
 )
+
+from application.base.exception import ApplicationException
 from presentation.api.exceptions.handlers import (
     application_exception_handler,
     authx_exception_handler,
     general_exception_handler,
     validation_exception_handler,
 )
-
-from application.base.exception import ApplicationException
 
 
 def setup_exception_handlers(app: FastAPI) -> None:

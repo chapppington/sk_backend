@@ -7,6 +7,18 @@ from fastapi import (
     status,
 )
 
+from application.container import init_container
+from application.mediator import Mediator
+from application.portfolios.commands import (
+    CreatePortfolioCommand,
+    DeletePortfolioCommand,
+    UpdatePortfolioCommand,
+)
+from application.portfolios.queries import (
+    GetPortfolioByIdQuery,
+    GetPortfolioBySlugQuery,
+    GetPortfolioListQuery,
+)
 from presentation.api.dependencies import get_current_user_id
 from presentation.api.filters import (
     PaginationIn,
@@ -20,19 +32,6 @@ from presentation.api.schemas import (
 from presentation.api.v1.portfolios.schemas import (
     PortfolioRequestSchema,
     PortfolioResponseSchema,
-)
-
-from application.container import init_container
-from application.mediator import Mediator
-from application.portfolios.commands import (
-    CreatePortfolioCommand,
-    DeletePortfolioCommand,
-    UpdatePortfolioCommand,
-)
-from application.portfolios.queries import (
-    GetPortfolioByIdQuery,
-    GetPortfolioBySlugQuery,
-    GetPortfolioListQuery,
 )
 
 

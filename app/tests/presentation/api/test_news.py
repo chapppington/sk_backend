@@ -10,10 +10,10 @@ from fastapi.testclient import TestClient
 import pytest
 from faker import Faker
 from httpx import Response
-from presentation.api.v1.news.schemas import NewsRequestSchema
 
 from application.mediator import Mediator
 from application.news.commands import CreateNewsCommand
+from presentation.api.v1.news.schemas import NewsRequestSchema
 
 
 @pytest.mark.asyncio

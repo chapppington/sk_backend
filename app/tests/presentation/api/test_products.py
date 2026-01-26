@@ -9,10 +9,10 @@ from fastapi.testclient import TestClient
 import pytest
 from faker import Faker
 from httpx import Response
-from presentation.api.v1.products.schemas import ProductRequestSchema
 
 from application.mediator import Mediator
 from application.products.commands import CreateProductCommand
+from presentation.api.v1.products.schemas import ProductRequestSchema
 
 
 @pytest.mark.asyncio

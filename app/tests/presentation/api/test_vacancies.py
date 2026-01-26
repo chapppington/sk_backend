@@ -9,10 +9,10 @@ from fastapi.testclient import TestClient
 import pytest
 from faker import Faker
 from httpx import Response
-from presentation.api.v1.vacancies.schemas import VacancyRequestSchema
 
 from application.mediator import Mediator
 from application.vacancies.commands import CreateVacancyCommand
+from presentation.api.v1.vacancies.schemas import VacancyRequestSchema
 
 
 @pytest.mark.asyncio

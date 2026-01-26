@@ -7,6 +7,18 @@ from fastapi import (
     status,
 )
 
+from application.container import init_container
+from application.mediator import Mediator
+from application.products.commands import (
+    CreateProductCommand,
+    DeleteProductCommand,
+    UpdateProductCommand,
+)
+from application.products.queries import (
+    GetProductByIdQuery,
+    GetProductBySlugQuery,
+    GetProductListQuery,
+)
 from presentation.api.dependencies import get_current_user_id
 from presentation.api.filters import (
     PaginationIn,
@@ -20,19 +32,6 @@ from presentation.api.schemas import (
 from presentation.api.v1.products.schemas import (
     ProductRequestSchema,
     ProductResponseSchema,
-)
-
-from application.container import init_container
-from application.mediator import Mediator
-from application.products.commands import (
-    CreateProductCommand,
-    DeleteProductCommand,
-    UpdateProductCommand,
-)
-from application.products.queries import (
-    GetProductByIdQuery,
-    GetProductBySlugQuery,
-    GetProductListQuery,
 )
 
 

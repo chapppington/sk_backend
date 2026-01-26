@@ -7,6 +7,17 @@ from fastapi import (
     status,
 )
 
+from application.container import init_container
+from application.mediator import Mediator
+from application.vacancies.commands import (
+    CreateVacancyCommand,
+    DeleteVacancyCommand,
+    UpdateVacancyCommand,
+)
+from application.vacancies.queries import (
+    GetVacancyByIdQuery,
+    GetVacancyListQuery,
+)
 from presentation.api.dependencies import get_current_user_id
 from presentation.api.filters import (
     PaginationIn,
@@ -20,18 +31,6 @@ from presentation.api.schemas import (
 from presentation.api.v1.vacancies.schemas import (
     VacancyRequestSchema,
     VacancyResponseSchema,
-)
-
-from application.container import init_container
-from application.mediator import Mediator
-from application.vacancies.commands import (
-    CreateVacancyCommand,
-    DeleteVacancyCommand,
-    UpdateVacancyCommand,
-)
-from application.vacancies.queries import (
-    GetVacancyByIdQuery,
-    GetVacancyListQuery,
 )
 
 

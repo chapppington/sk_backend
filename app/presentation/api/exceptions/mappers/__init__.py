@@ -1,17 +1,16 @@
 from fastapi import status
 
-from presentation.api.exceptions.mappers.news import map_news_exception_to_status_code
-from presentation.api.exceptions.mappers.portfolios import map_portfolio_exception_to_status_code
-from presentation.api.exceptions.mappers.products import map_product_exception_to_status_code
-from presentation.api.exceptions.mappers.users import map_user_exception_to_status_code
-from presentation.api.exceptions.mappers.vacancies import map_vacancy_exception_to_status_code
-
 from domain.base.exceptions import DomainException
 from domain.news.exceptions.news import NewsException
 from domain.portfolios.exceptions.portfolios import PortfolioException
 from domain.products.exceptions.products import ProductException
 from domain.users.exceptions import UserException
 from domain.vacancies.exceptions.vacancies import VacancyException
+from presentation.api.exceptions.mappers.news import map_news_exception_to_status_code
+from presentation.api.exceptions.mappers.portfolios import map_portfolio_exception_to_status_code
+from presentation.api.exceptions.mappers.products import map_product_exception_to_status_code
+from presentation.api.exceptions.mappers.users import map_user_exception_to_status_code
+from presentation.api.exceptions.mappers.vacancies import map_vacancy_exception_to_status_code
 
 
 def map_domain_exception_to_status_code(exc: DomainException) -> int:

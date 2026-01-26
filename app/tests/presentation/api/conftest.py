@@ -4,14 +4,14 @@ from fastapi.testclient import TestClient
 import pytest
 import pytest_asyncio
 from faker import Faker
-from presentation.api.auth import auth_service
-from presentation.api.main import create_app
 from punq import Container
 
 from application.container import init_container
 from application.mediator import Mediator
 from application.users.commands import CreateUserCommand
 from domain.users.entities import UserEntity
+from presentation.api.auth import auth_service
+from presentation.api.main import create_app
 from tests.fixtures import init_dummy_container
 
 

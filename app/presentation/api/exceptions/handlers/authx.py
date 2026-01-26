@@ -8,6 +8,7 @@ from authx.exceptions import (
     JWTDecodeError,
     MissingTokenError,
 )
+
 from presentation.api.schemas import ApiResponse
 
 

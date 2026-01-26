@@ -9,10 +9,10 @@ from fastapi.testclient import TestClient
 import pytest
 from faker import Faker
 from httpx import Response
-from presentation.api.v1.portfolios.schemas import PortfolioRequestSchema
 
 from application.mediator import Mediator
 from application.portfolios.commands import CreatePortfolioCommand
+from presentation.api.v1.portfolios.schemas import PortfolioRequestSchema
 
 
 @pytest.mark.asyncio

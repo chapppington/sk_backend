@@ -9,17 +9,16 @@ from fastapi import (
     UploadFile,
 )
 
+from application.container import init_container
+from application.media.commands import UploadFileCommand
+from application.mediator import Mediator
+from infrastructure.s3.base import BaseFileStorage
 from presentation.api.dependencies import get_current_user_id
 from presentation.api.schemas import (
     ApiResponse,
     ErrorResponseSchema,
 )
 from presentation.api.v1.media.schemas import UploadFileResponseSchema
-
-from application.container import init_container
-from application.media.commands import UploadFileCommand
-from application.mediator import Mediator
-from infrastructure.s3.base import BaseFileStorage
 
 
 router = APIRouter(prefix="/media", tags=["media"])

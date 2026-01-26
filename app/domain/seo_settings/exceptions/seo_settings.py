@@ -24,7 +24,7 @@ class PagePathInvalidException(SeoSettingsException):
 
     @property
     def message(self) -> str:
-        return f"Недопустимый путь страницы: {self.page_path}. Путь должен начинаться с '/'"
+        return f"Недопустимый путь страницы: {self.page_path}. Путь должен начинаться с '/' и не должен заканчиваться на '/' (кроме корневого пути '/')"
 
 
 @dataclass(eq=False)

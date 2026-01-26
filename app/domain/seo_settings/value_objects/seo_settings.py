@@ -21,6 +21,8 @@ class PagePathValueObject(BaseValueObject):
             raise PagePathEmptyException()
         if not self.value.startswith("/"):
             raise PagePathInvalidException(page_path=self.value)
+        if self.value != "/" and self.value.endswith("/"):
+            raise PagePathInvalidException(page_path=self.value)
 
     def as_generic_type(self) -> str:
         return str(self.value)

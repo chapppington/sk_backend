@@ -27,41 +27,45 @@ router = APIRouter(prefix="/media", tags=["media"])
 @router.post(
     "/upload",
     status_code=status.HTTP_201_CREATED,
-    response_model=ApiResponse[UploadFileResponseSchema],
+    response_model=ApiResponse[list[UploadFileResponseSchema]],
     responses={
-        status.HTTP_201_CREATED: {"model": ApiResponse[UploadFileResponseSchema]},
+        status.HTTP_201_CREATED: {"model": ApiResponse[list[UploadFileResponseSchema]]},
         status.HTTP_400_BAD_REQUEST: {"model": ErrorResponseSchema},
         status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponseSchema},
         status.HTTP_422_UNPROCESSABLE_CONTENT: {"model": ErrorResponseSchema},
     },
 )
 async def upload_file(
-    file: UploadFile = File(...),
+    files: list[UploadFile] = File(...),
     bucket_name: str = Form(...),
     _=Depends(get_current_user_id),
     container=Depends(get_container),
-) -> ApiResponse[UploadFileResponseSchema]:
-    """Загрузка файла в указанный бакет."""
+) -> ApiResponse[list[UploadFileResponseSchema]]:
+    """Загрузка файлов в указанный бакет."""
     mediator: Mediator = container.resolve(Mediator)
     file_storage: BaseFileStorage = container.resolve(BaseFileStorage)
 
-    file_content = await file.read()
-    file_obj = BytesIO(file_content)
+    results = []
+    for file in files:
+        file_content = await file.read()
+        file_obj = BytesIO(file_content)
 
-    command = UploadFileCommand(
-        file_obj=file_obj,
-        original_filename=file.filename or "file",
-        bucket_name=bucket_name,
-    )
-
-    file_path, *_ = await mediator.handle_command(command)
-
-    file_url = await file_storage.get_file_url(file_path, bucket_name)
-
-    return ApiResponse[UploadFileResponseSchema](
-        data=UploadFileResponseSchema(
-            file_path=file_path,
+        command = UploadFileCommand(
+            file_obj=file_obj,
+            original_filename=file.filename or "file",
             bucket_name=bucket_name,
-            file_url=file_url,
-        ),
-    )
+        )
+
+        file_path, *_ = await mediator.handle_command(command)
+
+        file_url = await file_storage.get_file_url(file_path, bucket_name)
+
+        results.append(
+            UploadFileResponseSchema(
+                file_path=file_path,
+                bucket_name=bucket_name,
+                file_url=file_url,
+            ),
+        )
+
+    return ApiResponse[list[UploadFileResponseSchema]](data=results)

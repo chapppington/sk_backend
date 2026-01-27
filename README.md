@@ -40,6 +40,19 @@ Backend-сервис для корпоративного сайта на FastAPI
 - **SEO Settings** — настройки SEO
 - **Media** — загрузка и управление файлами
 
+## Интеграция с Битрикс
+
+- **События заявок** — из RabbitMQ очередь `submission_created` прилетают события по схемам `SubmissionCreatedEventSchema`
+- **Конвертация в лиды** — `convert_event_to_lead_data` превращает событие заявки в `BitrixLeadData` (лид по типу формы, разбор ФИО на части, сбор комментариев, ответов опросного листа и списков файлов в единый `COMMENTS`)
+- **Создание лида** — `BitrixClient.create_lead` дергает Bitrix24 webhook `crm.lead.add` c заполнением полей `TITLE`, `ASSIGNED_BY_ID`, `NAME`, `LAST_NAME`, `SECOND_NAME`, `EMAIL`, `PHONE`, `COMMENTS` и др.
+- **Конфигурации** — URL вебхука и ID ответственного берутся из настроек `BitrixConfig` (`BITRIX_WEBHOOK_URL`, `BITRIX_ASSIGNED_BY_ID`)
+
+## Интеграция с email
+
+- **Формирование шаблонов** — `EmailTemplatesService` рендерит Jinja2-шаблон `email_submission.html` на основе `SubmissionCreatedEventSchema`
+- **Отправка писем** — `EmailClient.send_email` собирает `MIMEMultipart` с HTML-телом и отправляет его через `aiosmtplib` по SMTP
+- **Конфигурации** — SMTP-хост, порт, логин/пароль, имя и адрес отправителя берутся из `EmailConfig` (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_USE_TLS`, `SMTP_FROM_EMAIL`, `SMTP_FROM_NAME`)
+
 ## Добавление нового модуля
 
 Последовательность разработки нового модуля:

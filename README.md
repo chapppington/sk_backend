@@ -25,7 +25,7 @@ Backend-сервис для корпоративного сайта на FastAPI
 - **Infrastructure** (`app/infrastructure/`) — MongoDB репозитории, конвертеры, S3 клиент, email клиент, интеграции
 - **Presentation** (`app/presentation/`) — FastAPI роуты, схемы запросов/ответов, consumer для обработки событий
 
-**Dependency Injection** реализован через контейнер `punq`. Все зависимости регистрируются в контейнере и автоматически инжектируются в handlers через конструкторы.
+**Dependency Injection** реализован через контейнер `punq`. (`app/presentation/container.py`) Все зависимости регистрируются в контейнере и автоматически инжектируются в handlers через конструкторы.
 
 ## Модули
 

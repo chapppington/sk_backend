@@ -7,6 +7,7 @@ from domain.news.exceptions.news import NewsException
 from domain.portfolios.exceptions.portfolios import PortfolioException
 from domain.products.exceptions.products import ProductException
 from domain.seo_settings.exceptions.seo_settings import SeoSettingsException
+from domain.submissions.exceptions.submissions import SubmissionException
 from domain.users.exceptions import UserException
 from domain.vacancies.exceptions.vacancies import VacancyException
 from presentation.api.exceptions.mappers.certificates import (
@@ -17,6 +18,7 @@ from presentation.api.exceptions.mappers.news import map_news_exception_to_statu
 from presentation.api.exceptions.mappers.portfolios import map_portfolio_exception_to_status_code
 from presentation.api.exceptions.mappers.products import map_product_exception_to_status_code
 from presentation.api.exceptions.mappers.seo_settings import map_seo_settings_exception_to_status_code
+from presentation.api.exceptions.mappers.submissions import map_submission_exception_to_status_code
 from presentation.api.exceptions.mappers.users import map_user_exception_to_status_code
 from presentation.api.exceptions.mappers.vacancies import map_vacancy_exception_to_status_code
 
@@ -38,4 +40,6 @@ def map_domain_exception_to_status_code(exc: DomainException) -> int:
         return map_certificate_group_exception_to_status_code(exc)
     if isinstance(exc, CertificateException):
         return map_certificate_exception_to_status_code(exc)
+    if isinstance(exc, SubmissionException):
+        return map_submission_exception_to_status_code(exc)
     return status.HTTP_400_BAD_REQUEST

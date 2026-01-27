@@ -5,11 +5,13 @@ from fastapi import (
 from fastapi.responses import JSONResponse
 
 from application.base.exception import LogicException
+from application.media.exceptions import MediaException
 from domain.base.exceptions import (
     ApplicationException,
     DomainException,
 )
 from presentation.api.exceptions.mappers import map_domain_exception_to_status_code
+from presentation.api.exceptions.mappers.media import map_media_exception_to_status_code
 from presentation.api.schemas import ApiResponse
 
 
@@ -18,6 +20,8 @@ def _map_application_exception_to_status_code(exc: ApplicationException) -> int:
         return status.HTTP_500_INTERNAL_SERVER_ERROR
     if isinstance(exc, DomainException):
         return map_domain_exception_to_status_code(exc)
+    if isinstance(exc, MediaException):
+        return map_media_exception_to_status_code(exc)
     return status.HTTP_500_INTERNAL_SERVER_ERROR
 
 

@@ -53,11 +53,11 @@ async def upload_file(
         command = UploadFileCommand(
             file_obj=file_obj,
             original_filename=file.filename or "file",
+            content_type=file.content_type,
             bucket_name=bucket_name,
         )
 
         file_path, *_ = await mediator.handle_command(command)
-
         file_url = await file_storage.get_file_url(file_path, bucket_name)
 
         results.append(

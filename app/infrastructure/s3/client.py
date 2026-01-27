@@ -18,7 +18,6 @@ class S3Client:
             endpoint_url=self.config.s3_endpoint_url,
             aws_access_key_id=self.config.s3_access_key_id,
             aws_secret_access_key=self.config.s3_secret_access_key,
-            region_name=self.config.s3_region,
             use_ssl=self.config.s3_use_ssl,
         ) as client:
             yield client

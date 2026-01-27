@@ -33,7 +33,6 @@ def test_submission_entity_creation():
     assert submission.comments.as_generic_type() == "Тестовый комментарий"
     assert submission.questionnaire_type.as_generic_type() == "КТП"
     assert submission.files == []
-    assert submission.questionnaire_html is None
     assert submission.questionnaire_answers is None
     assert submission.oid is not None
     assert submission.created_at is not None
@@ -77,18 +76,15 @@ def test_submission_entity_creation_with_files():
 def test_submission_entity_creation_with_questionnaire_data():
     form_type = FormTypeValueObject("Опросный лист")
     name = NameValueObject("Алексей Смирнов")
-    questionnaire_html = "<form>...</form>"
-    questionnaire_answers = {"question1": "answer1", "question2": "answer2"}
+    questionnaire_answers = "Ответы на вопросы опросного листа"
     questionnaire_type = QuestionnaireTypeValueObject("ПАРН")
 
     submission = SubmissionEntity(
         form_type=form_type,
         name=name,
-        questionnaire_html=questionnaire_html,
         questionnaire_answers=questionnaire_answers,
         questionnaire_type=questionnaire_type,
     )
 
-    assert submission.questionnaire_html == questionnaire_html
     assert submission.questionnaire_answers == questionnaire_answers
     assert submission.questionnaire_type.as_generic_type() == "ПАРН"

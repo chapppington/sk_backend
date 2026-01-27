@@ -10,6 +10,7 @@ from domain.news.interfaces.repository import BaseNewsRepository
 from domain.portfolios.interfaces.repository import BasePortfolioRepository
 from domain.products.interfaces.repository import BaseProductRepository
 from domain.seo_settings.interfaces.repository import BaseSeoSettingsRepository
+from domain.submissions.interfaces.repository import BaseSubmissionRepository
 from domain.users.interfaces.repository import BaseUserRepository
 from domain.vacancies.interfaces.repository import BaseVacancyRepository
 from infrastructure.database.repositories.dummy.certificates import (
@@ -20,6 +21,7 @@ from infrastructure.database.repositories.dummy.news.news import DummyInMemoryNe
 from infrastructure.database.repositories.dummy.portfolios.portfolios import DummyInMemoryPortfolioRepository
 from infrastructure.database.repositories.dummy.products.products import DummyInMemoryProductRepository
 from infrastructure.database.repositories.dummy.seo_settings.seo_settings import DummyInMemorySeoSettingsRepository
+from infrastructure.database.repositories.dummy.submissions.submissions import DummyInMemorySubmissionRepository
 from infrastructure.database.repositories.dummy.users.users import DummyInMemoryUserRepository
 from infrastructure.database.repositories.dummy.vacancies.vacancies import DummyInMemoryVacancyRepository
 
@@ -66,6 +68,11 @@ def init_dummy_container() -> Container:
     container.register(
         BaseCertificateRepository,
         DummyInMemoryCertificateRepository,
+        scope=Scope.singleton,
+    )
+    container.register(
+        BaseSubmissionRepository,
+        DummyInMemorySubmissionRepository,
         scope=Scope.singleton,
     )
 

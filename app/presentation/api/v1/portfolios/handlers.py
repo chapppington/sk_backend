@@ -7,7 +7,7 @@ from fastapi import (
     status,
 )
 
-from application.container import init_container
+from application.container import get_container
 from application.mediator import Mediator
 from application.portfolios.commands import (
     CreatePortfolioCommand,
@@ -53,7 +53,7 @@ async def get_portfolios_list(
     search: str | None = Query(None, description="Поиск по тексту"),
     sort_field: str = Query("created_at", description="Поле для сортировки"),
     sort_order: int = Query(-1, description="Порядок сортировки: 1 - по возрастанию, -1 - по убыванию"),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[ListPaginatedResponse[PortfolioResponseSchema]]:
     """Получение списка портфолио с фильтрацией и пагинацией."""
     mediator: Mediator = container.resolve(Mediator)
@@ -93,7 +93,7 @@ async def get_portfolios_list(
 )
 async def get_portfolio_by_id(
     portfolio_id: UUID,
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[PortfolioResponseSchema]:
     """Получение портфолио по ID."""
     mediator: Mediator = container.resolve(Mediator)
@@ -118,7 +118,7 @@ async def get_portfolio_by_id(
 )
 async def get_portfolio_by_slug(
     slug: str,
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[PortfolioResponseSchema]:
     """Получение портфолио по slug."""
     mediator: Mediator = container.resolve(Mediator)
@@ -146,7 +146,7 @@ async def get_portfolio_by_slug(
 async def create_portfolio(
     request: PortfolioRequestSchema,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[PortfolioResponseSchema]:
     """Создание нового портфолио."""
     mediator: Mediator = container.resolve(Mediator)
@@ -178,7 +178,7 @@ async def update_portfolio(
     portfolio_id: UUID,
     request: PortfolioRequestSchema,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[PortfolioResponseSchema]:
     """Обновление портфолио."""
     mediator: Mediator = container.resolve(Mediator)
@@ -206,7 +206,7 @@ async def update_portfolio(
 async def delete_portfolio(
     portfolio_id: UUID,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> None:
     """Удаление портфолио."""
     mediator: Mediator = container.resolve(Mediator)

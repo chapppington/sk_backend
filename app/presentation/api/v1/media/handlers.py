@@ -9,7 +9,7 @@ from fastapi import (
     UploadFile,
 )
 
-from application.container import init_container
+from application.container import get_container
 from application.media.commands import UploadFileCommand
 from application.mediator import Mediator
 from infrastructure.s3.base import BaseFileStorage
@@ -39,7 +39,7 @@ async def upload_file(
     file: UploadFile = File(...),
     bucket_name: str = Form(...),
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[UploadFileResponseSchema]:
     """Загрузка файла в указанный бакет."""
     mediator: Mediator = container.resolve(Mediator)

@@ -173,7 +173,7 @@ from settings.config import Config
 
 
 @lru_cache(1)
-def init_container():
+def get_container():
     return _init_container()
 
 

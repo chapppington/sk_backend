@@ -7,10 +7,13 @@ Backend-сервис для корпоративного сайта на FastAPI
 - Python 3.13, FastAPI (async)
 - MongoDB, Motor (async драйвер)
 - MinIO/S3 для хранения файлов
+- RabbitMQ для асинхронных событий
+- MailDev для разработки и тестирования email
 - JWT аутентификация (access/refresh токены)
 - Docker, docker-compose
 - Makefile для управления командами
 - Pydantic Settings для конфигурации
+- Jinja2 для шаблонов email
 
 
 ## Архитектура
@@ -19,10 +22,10 @@ Backend-сервис для корпоративного сайта на FastAPI
 
 - **Domain** (`app/domain/`) — бизнес-логика, сущности, доменные сервисы
 - **Application** (`app/application/`) — use cases через CQRS (Commands/Queries) и Mediator
-- **Infrastructure** (`app/infrastructure/`) — MongoDB репозитории, конвертеры, S3 клиент
-- **Presentation** (`app/presentation/`) — FastAPI роуты, схемы запросов/ответов
+- **Infrastructure** (`app/infrastructure/`) — MongoDB репозитории, конвертеры, S3 клиент, email клиент, интеграции
+- **Presentation** (`app/presentation/`) — FastAPI роуты, схемы запросов/ответов, consumer для обработки событий
 
-**Dependency Injection** реализован через контейнер `punq`. Все зависимости регистрируются в контейнере и автоматически инжектируются в handlers через конструкторы.
+**Dependency Injection** реализован через контейнер `punq`. (`app/presentation/container.py`) Все зависимости регистрируются в контейнере и автоматически инжектируются в handlers через конструкторы.
 
 ## Модули
 
@@ -30,6 +33,7 @@ Backend-сервис для корпоративного сайта на FastAPI
 - **Users** — управление пользователями
 - **News** — новости компании
 - **Vacancies** — вакансии
+- **Submissions** — заявки и опросные листы
 - **Portfolios** — портфолио проектов
 - **Products** — продукция
 - **Certificates** — сертификаты и группы сертификатов
@@ -58,11 +62,15 @@ Backend-сервис для корпоративного сайта на FastAPI
 # Копирование файла с переменными окружения
 cp .env.example .env
 
-# Запуск всех сервисов (приложение + MongoDB + MinIO)
+# Запуск всех сервисов (приложение + MongoDB + MinIO + RabbitMQ + MailDev)
 make all
 ```
 
 API документация: http://localhost:8000/api/docs
+
+MailDev веб-интерфейс: http://localhost:1080
+
+RabbitMQ Management: http://localhost:15672
 
 ## Основные команды Makefile
 
@@ -70,12 +78,18 @@ API документация: http://localhost:8000/api/docs
 
 | Команда | Описание |
 |---------|----------|
-| `make all` | Запуск приложения + MongoDB + MinIO |
+| `make all` | Запуск приложения + MongoDB + MinIO + RabbitMQ + MailDev |
 | `make all-down` | Остановка всех сервисов |
 | `make app-up` | Запуск только приложения |
 | `make app-down` | Остановка приложения |
 | `make storages` | Запуск только MongoDB и MinIO |
 | `make storages-down` | Остановка MongoDB и MinIO |
+| `make messaging` | Запуск только RabbitMQ |
+| `make messaging-down` | Остановка RabbitMQ |
+| `make messaging-logs` | Просмотр логов RabbitMQ |
+| `make mail` | Запуск только MailDev |
+| `make mail-down` | Остановка MailDev |
+| `make mail-logs` | Просмотр логов MailDev |
 
 ### Разработка
 

@@ -7,7 +7,7 @@ from fastapi import (
     status,
 )
 
-from application.container import init_container
+from application.container import get_container
 from application.mediator import Mediator
 from application.vacancies.commands import (
     CreateVacancyCommand,
@@ -52,7 +52,7 @@ async def get_vacancies_list(
     search: str | None = Query(None, description="Поиск по тексту"),
     sort_field: str = Query("created_at", description="Поле для сортировки"),
     sort_order: int = Query(-1, description="Порядок сортировки: 1 - по возрастанию, -1 - по убыванию"),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[ListPaginatedResponse[VacancyResponseSchema]]:
     """Получение списка вакансий с фильтрацией и пагинацией."""
     mediator: Mediator = container.resolve(Mediator)
@@ -92,7 +92,7 @@ async def get_vacancies_list(
 )
 async def get_vacancy_by_id(
     vacancy_id: UUID,
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[VacancyResponseSchema]:
     """Получение вакансии по ID."""
     mediator: Mediator = container.resolve(Mediator)
@@ -119,7 +119,7 @@ async def get_vacancy_by_id(
 async def create_vacancy(
     request: VacancyRequestSchema,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[VacancyResponseSchema]:
     """Создание новой вакансии."""
     mediator: Mediator = container.resolve(Mediator)
@@ -150,7 +150,7 @@ async def update_vacancy(
     vacancy_id: UUID,
     request: VacancyRequestSchema,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[VacancyResponseSchema]:
     """Обновление вакансии."""
     mediator: Mediator = container.resolve(Mediator)
@@ -178,7 +178,7 @@ async def update_vacancy(
 async def delete_vacancy(
     vacancy_id: UUID,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> None:
     """Удаление вакансии."""
     mediator: Mediator = container.resolve(Mediator)

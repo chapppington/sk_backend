@@ -5,11 +5,11 @@ from authx import (
     AuthXConfig,
 )
 
-from application.container import init_container
+from application.container import get_container
 from settings.config import Config
 
 
-container = init_container()
+container = get_container()
 config = container.resolve(Config)
 
 auth_config = AuthXConfig(

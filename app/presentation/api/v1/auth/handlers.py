@@ -5,7 +5,7 @@ from fastapi import (
     status,
 )
 
-from application.container import init_container
+from application.container import get_container
 from application.mediator import Mediator
 from application.users.commands import CreateUserCommand
 from application.users.queries import AuthenticateUserQuery
@@ -43,7 +43,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 )
 async def register(
     request: RegisterRequestSchema,
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[UserResponseSchema]:
     """Регистрация нового пользователя."""
     mediator: Mediator = container.resolve(Mediator)
@@ -74,7 +74,7 @@ async def register(
 async def login(
     request: LoginRequestSchema,
     response: Response,
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[TokenResponseSchema]:
     """Аутентификация пользователя и получение токенов."""
     mediator: Mediator = container.resolve(Mediator)

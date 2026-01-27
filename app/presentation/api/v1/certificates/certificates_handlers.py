@@ -16,7 +16,7 @@ from application.certificates.queries import (
     GetCertificateByIdQuery,
     GetCertificatesListQuery,
 )
-from application.container import init_container
+from application.container import get_container
 from application.mediator import Mediator
 from presentation.api.dependencies import get_current_user_id
 from presentation.api.filters import (
@@ -52,7 +52,7 @@ async def get_certificates_list(
     search: str | None = Query(None, description="Поиск по тексту"),
     sort_field: str = Query("created_at", description="Поле для сортировки"),
     sort_order: int = Query(-1, description="Порядок сортировки: 1 - по возрастанию, -1 - по убыванию"),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[ListPaginatedResponse[CertificateResponseSchema]]:
     """Получение списка сертификатов с фильтрацией и пагинацией."""
     mediator: Mediator = container.resolve(Mediator)
@@ -92,7 +92,7 @@ async def get_certificates_list(
 )
 async def get_certificate_by_id(
     certificate_id: UUID,
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[CertificateResponseSchema]:
     """Получение сертификата по ID."""
     mediator: Mediator = container.resolve(Mediator)
@@ -121,7 +121,7 @@ async def create_certificate(
     request: CertificateRequestSchema,
     certificate_group_id: UUID = Query(..., description="ID группы сертификатов"),
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[CertificateResponseSchema]:
     """Создание нового сертификата."""
     mediator: Mediator = container.resolve(Mediator)
@@ -156,7 +156,7 @@ async def update_certificate(
     certificate_id: UUID,
     request: CertificateRequestSchema,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[CertificateResponseSchema]:
     """Обновление сертификата."""
     mediator: Mediator = container.resolve(Mediator)
@@ -184,7 +184,7 @@ async def update_certificate(
 async def delete_certificate(
     certificate_id: UUID,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> None:
     """Удаление сертификата."""
     mediator: Mediator = container.resolve(Mediator)

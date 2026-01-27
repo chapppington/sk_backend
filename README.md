@@ -139,7 +139,7 @@ RabbitMQ Management: http://localhost:15672
 - `VPS_SSH_PRIVATE_KEY` - приватный SSH ключ для доступа к VPS
 - `VPS_HOST` - IP адрес или домен VPS сервера
 - `VPS_USER` - имя пользователя для SSH подключения (обычно `root` или `ubuntu`)
-- `VPS_APP_DIR` - путь к директории проекта на сервере (например, `/opt/url_shortener`)
+- `VPS_APP_DIR` - путь к директории проекта на сервере (например, `/opt/sk_backend`)
 - `VPS_APP_URL` - (опционально) URL приложения для health check (например, `http://your-domain.com`)
 
 **Подробные инструкции по настройке SSH ключа и добавлению секретов см. ниже в разделе "Подготовка VPS сервера" (шаги 2 и 5).**
@@ -183,41 +183,19 @@ RabbitMQ Management: http://localhost:15672
    # или
    ssh user@your-vps-ip
    ```
-   
-   **Шаг 3: Скопируйте приватный ключ для GitHub Secrets**
-   ```bash
-   # Если создали новый ключ
-   cat ~/.ssh/github_actions_deploy
-   
-   # Или если используете существующий ключ (обычно ~/.ssh/id_ed25519 или ~/.ssh/id_rsa)
-   cat ~/.ssh/id_ed25519
-   # или
-   cat ~/.ssh/id_rsa
-   ```
-   
-   **Важно:** Скопируйте весь вывод команды (включая строки `-----BEGIN OPENSSH PRIVATE KEY-----` и `-----END OPENSSH PRIVATE KEY-----`)
 
 3. **Клонируйте репозиторий на сервер:**
    ```bash
    cd /opt
-   sudo git clone https://github.com/your-username/url_shortener.git
-   sudo chown -R $USER:$USER url_shortener
-   cd url_shortener
+   sudo git clone https://github.com/your-username/sk_backend.git
+   cd sk_backend
    ```
 
 4. **Создайте файл `.env` на сервере:**
    ```bash
    # Скопируйте пример .env и отредактируйте под продакшн
-   cp .env.example .env
+   cp .env.prod .env
    nano .env
-   ```
-   
-   Обновите переменные для продакшн окружения:
-   ```env
-   API_PORT=8000
-   POSTGRES_HOST=postgres
-   POSTGRES_PORT=5432
-   # ... остальные переменные
    ```
 
 5. **Добавьте SSH ключ в GitHub Secrets:**
@@ -232,7 +210,21 @@ RabbitMQ Management: http://localhost:15672
    Нажмите **New repository secret** и добавьте каждый секрет:
    
    - **Name:** `VPS_SSH_PRIVATE_KEY`
-     **Value:** Вставьте весь приватный ключ (который вы скопировали на шаге 2.3)
+
+     **Скопируйте приватный ключ для GitHub Secrets**
+     ```bash
+     # Если создали новый ключ
+     cat ~/.ssh/github_actions_deploy
+    
+     # Или если используете существующий ключ (обычно ~/.ssh/id_ed25519 или ~/.ssh/id_rsa)
+     cat ~/.ssh/id_ed25519
+     # или
+     cat ~/.ssh/id_rsa
+     ```
+    
+    **Важно:** Скопируйте весь вывод команды (включая строки `-----BEGIN OPENSSH PRIVATE KEY-----` и `-----END OPENSSH PRIVATE KEY-----`)
+
+     **Value:** Вставьте весь приватный ключ 
      - Должен начинаться с `-----BEGIN OPENSSH PRIVATE KEY-----`
      - И заканчиваться на `-----END OPENSSH PRIVATE KEY-----`
      - Включая все строки между ними
@@ -244,17 +236,14 @@ RabbitMQ Management: http://localhost:15672
      **Value:** Имя пользователя для SSH (обычно `root`, `ubuntu`, или `debian`)
    
    - **Name:** `VPS_APP_DIR`
-     **Value:** Путь к директории проекта на сервере (например, `/opt/url_shortener`)
-   
-   - **Name:** `VPS_APP_URL` (опционально)
-     **Value:** URL вашего приложения для health check (например, `http://your-domain.com` или `https://api.example.com`)
+     **Value:** Путь к директории проекта на сервере (например, `/opt/sk_backend`)
    
    **Важно:** После добавления секретов они будут зашифрованы и их нельзя будет просмотреть. Убедитесь, что сохранили значения где-то безопасно.
 
 ### Автоматический деплой
 
 После настройки, деплой будет автоматически запускаться при:
-- Push в ветку `master` или `main`
+- Push в ветку `main`
 - Ручном запуске через GitHub Actions (Actions → Deploy to VPS → Run workflow)
 
 **Важно:** Перед деплоем автоматически выполняются проверки:
@@ -262,13 +251,3 @@ RabbitMQ Management: http://localhost:15672
 2. **Тесты** - запуск всех тестов через `pytest`
 
 Деплой на VPS произойдет **только если** все проверки пройдут успешно. Это гарантирует, что на продакшн попадает только проверенный код.
-
-### Ручной деплой
-
-Для ручного деплоя можно использовать скрипт `deploy.sh`:
-
-```bash
-# На сервере
-cd /opt/url_shortener
-./deploy.sh master
-```

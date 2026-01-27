@@ -1,26 +1,52 @@
 DC = docker compose
 STORAGES_FILE = docker_compose/storages.yaml
-STORAGES_CONTAINER = postgres
+STORAGES_CONTAINER = mongodb
 MESSAGING_FILE = docker_compose/messaging.yaml
 MESSAGING_CONTAINER = rabbitmq
 MAIL_FILE = docker_compose/mail.yaml
 MAIL_CONTAINER = maildev
+S3_FILE = docker_compose/s3.yaml
+S3_CONTAINER = minio
 LOGS = docker logs
 ENV = --env-file .env
 EXEC = docker exec -it
 EXEC_NO_TTY = docker exec
 APP_FILE = docker_compose/app.yaml
 APP_CONTAINER = main-app
+PROD_FILES = -f ${STORAGES_FILE} -f ${MESSAGING_FILE} -f ${APP_FILE}
+
+# Prod =====================================================================
+
+.PHONY: prod-up
+prod-up:
+	${DC} ${PROD_FILES} ${ENV} up --build -d
+
+.PHONY: prod-down
+prod-down:
+	${DC} ${PROD_FILES} ${ENV} down
+
+.PHONY: check-env
+check-env:
+	@if [ ! -f .env ]; then \
+		echo "❌ .env file not found!"; \
+		echo "Please create .env file before deployment."; \
+		exit 1; \
+	fi
+	@echo "✅ .env file found"
+
+.PHONY: clear-old-images
+clear-old-images:
+	docker image prune -f
 
 # Application ==============================================================
 
 .PHONY: all
 all:
-	${DC} -f ${STORAGES_FILE} -f ${MESSAGING_FILE} -f ${MAIL_FILE} -f ${APP_FILE} ${ENV} up --build -d
+	${DC} -f ${STORAGES_FILE} -f ${MESSAGING_FILE} -f ${MAIL_FILE} -f ${S3_FILE} -f ${APP_FILE} ${ENV} up --build -d
 
 .PHONY: all-down
 all-down:
-	${DC} -f ${STORAGES_FILE} -f ${MESSAGING_FILE} -f ${MAIL_FILE} -f ${APP_FILE} ${ENV} down
+	${DC} -f ${STORAGES_FILE} -f ${MESSAGING_FILE} -f ${MAIL_FILE} -f ${S3_FILE} -f ${APP_FILE} ${ENV} down
 
 .PHONY: app-logs
 app-logs:
@@ -36,7 +62,7 @@ app-down:
 
 .PHONY: app-up
 app-up:
-	${DC} -f ${STORAGES_FILE} -f ${APP_FILE} ${ENV} up --build -d main-app
+	${DC} -f ${STORAGES_FILE} -f ${S3_FILE} -f ${APP_FILE} ${ENV} up --build -d main-app
 
 # Storages ================================================================
 
@@ -79,6 +105,20 @@ mail-down:
 .PHONY: mail-logs
 mail-logs:
 	${LOGS} ${MAIL_CONTAINER} -f
+
+# S3 ======================================================================
+
+.PHONY: s3
+s3:
+	${DC} -f ${S3_FILE} ${ENV} up --build -d
+
+.PHONY: s3-down
+s3-down:
+	${DC} -f ${S3_FILE} ${ENV} down
+
+.PHONY: s3-logs
+s3-logs:
+	${LOGS} ${S3_CONTAINER} -f
 
 # Precommit ===============================================================
 

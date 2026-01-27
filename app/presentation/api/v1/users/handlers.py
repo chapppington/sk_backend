@@ -6,7 +6,7 @@ from fastapi import (
     status,
 )
 
-from application.container import init_container
+from application.container import get_container
 from application.mediator import Mediator
 from application.users.queries import GetUserByIdQuery
 from presentation.api.dependencies import get_current_user_id
@@ -31,7 +31,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 )
 async def get_current_user(
     user_id: UUID = Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[UserResponseSchema]:
     """Получение информации о текущем пользователе."""
     mediator: Mediator = container.resolve(Mediator)

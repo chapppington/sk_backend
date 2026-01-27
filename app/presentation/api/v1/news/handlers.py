@@ -7,7 +7,7 @@ from fastapi import (
     status,
 )
 
-from application.container import init_container
+from application.container import get_container
 from application.mediator import Mediator
 from application.news.commands import (
     CreateNewsCommand,
@@ -53,7 +53,7 @@ async def get_news_list(
     search: str | None = Query(None, description="Поиск по тексту"),
     sort_field: str = Query("created_at", description="Поле для сортировки"),
     sort_order: int = Query(-1, description="Порядок сортировки: 1 - по возрастанию, -1 - по убыванию"),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[ListPaginatedResponse[NewsResponseSchema]]:
     """Получение списка новостей с фильтрацией и пагинацией."""
     mediator: Mediator = container.resolve(Mediator)
@@ -93,7 +93,7 @@ async def get_news_list(
 )
 async def get_news_by_id(
     news_id: UUID,
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[NewsResponseSchema]:
     """Получение новости по ID."""
     mediator: Mediator = container.resolve(Mediator)
@@ -118,7 +118,7 @@ async def get_news_by_id(
 )
 async def get_news_by_slug(
     slug: str,
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[NewsResponseSchema]:
     """Получение новости по slug."""
     mediator: Mediator = container.resolve(Mediator)
@@ -146,7 +146,7 @@ async def get_news_by_slug(
 async def create_news(
     request: NewsRequestSchema,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[NewsResponseSchema]:
     """Создание новой новости."""
     mediator: Mediator = container.resolve(Mediator)
@@ -178,7 +178,7 @@ async def update_news(
     news_id: UUID,
     request: NewsRequestSchema,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[NewsResponseSchema]:
     """Обновление новости."""
     mediator: Mediator = container.resolve(Mediator)
@@ -206,7 +206,7 @@ async def update_news(
 async def delete_news(
     news_id: UUID,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> None:
     """Удаление новости."""
     mediator: Mediator = container.resolve(Mediator)

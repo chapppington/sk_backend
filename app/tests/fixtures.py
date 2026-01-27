@@ -26,7 +26,7 @@ from infrastructure.database.repositories.dummy.users.users import DummyInMemory
 from infrastructure.database.repositories.dummy.vacancies.vacancies import DummyInMemoryVacancyRepository
 
 
-def init_dummy_container() -> Container:
+def get_dummy_container() -> Container:
     container = _init_container()
 
     # Регистрируем dummy репозитории как синглтоны

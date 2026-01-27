@@ -7,7 +7,7 @@ from fastapi import (
     status,
 )
 
-from application.container import init_container
+from application.container import get_container
 from application.mediator import Mediator
 from application.products.commands import (
     CreateProductCommand,
@@ -54,7 +54,7 @@ async def get_products_list(
     is_shown: bool | None = Query(None, description="Фильтр по видимости"),
     sort_field: str = Query("created_at", description="Поле для сортировки"),
     sort_order: int = Query(-1, description="Порядок сортировки: 1 - по возрастанию, -1 - по убыванию"),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[ListPaginatedResponse[ProductResponseSchema]]:
     """Получение списка продуктов с фильтрацией и пагинацией."""
     mediator: Mediator = container.resolve(Mediator)
@@ -95,7 +95,7 @@ async def get_products_list(
 )
 async def get_product_by_id(
     product_id: UUID,
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[ProductResponseSchema]:
     """Получение продукта по ID."""
     mediator: Mediator = container.resolve(Mediator)
@@ -120,7 +120,7 @@ async def get_product_by_id(
 )
 async def get_product_by_slug(
     slug: str,
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[ProductResponseSchema]:
     """Получение продукта по slug."""
     mediator: Mediator = container.resolve(Mediator)
@@ -148,7 +148,7 @@ async def get_product_by_slug(
 async def create_product(
     request: ProductRequestSchema,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[ProductResponseSchema]:
     """Создание нового продукта."""
     mediator: Mediator = container.resolve(Mediator)
@@ -180,7 +180,7 @@ async def update_product(
     product_id: UUID,
     request: ProductRequestSchema,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[ProductResponseSchema]:
     """Обновление продукта."""
     mediator: Mediator = container.resolve(Mediator)
@@ -208,7 +208,7 @@ async def update_product(
 async def delete_product(
     product_id: UUID,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> None:
     """Удаление продукта."""
     mediator: Mediator = container.resolve(Mediator)

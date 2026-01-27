@@ -3,13 +3,15 @@ import asyncio
 from faststream import FastStream
 from faststream.rabbit import RabbitBroker
 
+from application.container import get_container
 from infrastructure.integrations.email.client import EmailClient
 from infrastructure.integrations.email.templates_service import EmailTemplatesService
 from presentation.api.v1.submissions.schemas import SubmissionCreatedEventSchema
 from settings.config import Config
 
 
-config = Config()
+container = get_container()
+config = container.resolve(Config)
 broker = RabbitBroker(config.rabbitmq_url)
 email_client = EmailClient(config=config)
 email_templates_service = EmailTemplatesService()

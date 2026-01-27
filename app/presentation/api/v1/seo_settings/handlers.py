@@ -7,7 +7,7 @@ from fastapi import (
     status,
 )
 
-from application.container import init_container
+from application.container import get_container
 from application.mediator import Mediator
 from application.seo_settings.commands import (
     CreateSeoSettingsCommand,
@@ -53,7 +53,7 @@ async def get_seo_settings_list(
     is_active: bool | None = Query(None, description="Фильтр по активности"),
     sort_field: str = Query("created_at", description="Поле для сортировки"),
     sort_order: int = Query(-1, description="Порядок сортировки: 1 - по возрастанию, -1 - по убыванию"),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[ListPaginatedResponse[SeoSettingsResponseSchema]]:
     """Получение списка SEO настроек с фильтрацией и пагинацией."""
     mediator: Mediator = container.resolve(Mediator)
@@ -93,7 +93,7 @@ async def get_seo_settings_list(
 )
 async def get_seo_settings_by_id(
     seo_settings_id: UUID,
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[SeoSettingsResponseSchema]:
     """Получение SEO настроек по ID."""
     mediator: Mediator = container.resolve(Mediator)
@@ -118,7 +118,7 @@ async def get_seo_settings_by_id(
 )
 async def get_seo_settings_by_path(
     page_path: str,
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[SeoSettingsResponseSchema]:
     """Получение SEO настроек по пути страницы."""
     mediator: Mediator = container.resolve(Mediator)
@@ -146,7 +146,7 @@ async def get_seo_settings_by_path(
 async def create_seo_settings(
     request: SeoSettingsRequestSchema,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[SeoSettingsResponseSchema]:
     """Создание новых SEO настроек."""
     mediator: Mediator = container.resolve(Mediator)
@@ -178,7 +178,7 @@ async def update_seo_settings(
     seo_settings_id: UUID,
     request: SeoSettingsRequestSchema,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[SeoSettingsResponseSchema]:
     """Обновление SEO настроек."""
     mediator: Mediator = container.resolve(Mediator)
@@ -206,7 +206,7 @@ async def update_seo_settings(
 async def delete_seo_settings(
     seo_settings_id: UUID,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> None:
     """Удаление SEO настроек."""
     mediator: Mediator = container.resolve(Mediator)

@@ -8,7 +8,7 @@ from fastapi import (
 
 from faststream.rabbit.fastapi import RabbitRouter
 
-from application.container import init_container
+from application.container import get_container
 from application.mediator import Mediator
 from application.submissions.commands import (
     CreateSubmissionCommand,
@@ -61,7 +61,7 @@ async def get_submissions_list(
     form_type: str | None = Query(None, description="Фильтр по типу формы"),
     sort_field: str = Query("created_at", description="Поле для сортировки"),
     sort_order: int = Query(-1, description="Порядок сортировки: 1 - по возрастанию, -1 - по убыванию"),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[ListPaginatedResponse[SubmissionResponseSchema]]:
     """Получение списка заявок с фильтрацией и пагинацией."""
     mediator: Mediator = container.resolve(Mediator)
@@ -100,7 +100,7 @@ async def get_submissions_list(
 )
 async def get_submission_by_id(
     submission_id: UUID,
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[SubmissionResponseSchema]:
     """Получение заявки по ID."""
     mediator: Mediator = container.resolve(Mediator)
@@ -125,7 +125,7 @@ async def get_submission_by_id(
 )
 async def create_submission(
     request: SubmissionRequestSchema,
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> ApiResponse[SubmissionResponseSchema]:
     """Создание новой заявки."""
     mediator: Mediator = container.resolve(Mediator)
@@ -160,7 +160,7 @@ async def create_submission(
 async def delete_submission(
     submission_id: UUID,
     _=Depends(get_current_user_id),
-    container=Depends(init_container),
+    container=Depends(get_container),
 ) -> None:
     """Удаление заявки."""
     mediator: Mediator = container.resolve(Mediator)

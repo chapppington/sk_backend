@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новая заявка</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f3f4f6;">
+    <table role="presentation" style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 40px 20px;">
+                <table role="presentation" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    <tr>
+                        <td style="padding: 40px 40px 32px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px 12px 0 0;">
+                            <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; text-align: center;">
+                                Новая заявка получена
+                            </h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 32px 40px;">
+                            <div style="margin-bottom: 24px;">
+                                <h2 style="margin: 0 0 8px 0; color: #111827; font-size: 20px; font-weight: 600;">
+                                    Информация о заявке
+                                </h2>
+                                <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                                    ID заявки: <strong style="color: #111827;">{{ event.submission_id }}</strong>
+                                </p>
+                            </div>
+
+                            <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #667eea;">
+                                <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                    <tr>
+                                        <td style="padding: 8px 0; color: #6b7280; font-size: 14px; width: 140px;">
+                                            Тип формы:
+                                        </td>
+                                        <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 600;">
+                                            {{ event.form_type }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">
+                                            Имя:
+                                        </td>
+                                        <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 600;">
+                                            {{ event.name }}
+                                        </td>
+                                    </tr>
+                                    {% if event.email %}
+                                    <tr>
+                                        <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">
+                                            Email:
+                                        </td>
+                                        <td style="padding: 8px 0;">
+                                            <a href="mailto:{{ event.email }}" style="color: #2563eb; text-decoration: none; font-size: 14px;">
+                                                {{ event.email }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if event.phone %}
+                                    <tr>
+                                        <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">
+                                            Телефон:
+                                        </td>
+                                        <td style="padding: 8px 0;">
+                                            <a href="tel:{{ event.phone }}" style="color: #2563eb; text-decoration: none; font-size: 14px;">
+                                                {{ event.phone }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    <tr>
+                                        <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">
+                                            Дата создания:
+                                        </td>
+                                        <td style="padding: 8px 0; color: #111827; font-size: 14px;">
+                                            {{ event.timestamp }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            {% if event.comments %}
+                            <div style="margin-bottom: 20px;">
+                                <h3 style="margin: 0 0 12px 0; color: #111827; font-size: 16px; font-weight: 600;">
+                                    Комментарий
+                                </h3>
+                                <div style="background: #f9fafb; padding: 16px; border-radius: 8px; border-left: 4px solid #10b981;">
+                                    <p style="margin: 0; color: #374151; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">
+                                        {{ event.comments }}
+                                    </p>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div style="margin-bottom: 20px;">
+                                <h3 style="margin: 0 0 12px 0; color: #111827; font-size: 16px; font-weight: 600;">
+                                    Прикрепленные файлы
+                                </h3>
+                                <div style="background: #f9fafb; padding: 16px; border-radius: 8px;">
+                                    {% if event.files %}
+                                    <ul style="margin: 0; padding-left: 20px;">
+                                        {% for file in event.files %}
+                                        <li style="margin-bottom: 8px;">
+                                            <a href="{{ file }}" style="color: #2563eb; text-decoration: none; font-size: 14px;">
+                                                {{ file }}
+                                            </a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% else %}
+                                    <p style="margin: 0; color: #6b7280; font-size: 14px;">Файлы не прикреплены</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {% if event.questionnaire_type %}
+                            <div style="background: #f9fafb; padding: 16px; border-radius: 8px; margin-top: 16px; margin-bottom: 20px;">
+                                <h3 style="margin: 0 0 12px 0; color: #111827; font-size: 16px; font-weight: 600;">
+                                    Тип опросного листа
+                                </h3>
+                                <p style="margin: 0; color: #374151; font-size: 14px;">{{ event.questionnaire_type }}</p>
+                            </div>
+                            {% endif %}
+
+                            {% if event.questionnaire_html %}
+                            <div style="margin-top: 20px; margin-bottom: 20px;">
+                                <h3 style="margin: 0 0 16px 0; color: #111827; font-size: 18px; font-weight: 600; border-bottom: 2px solid #667eea; padding-bottom: 10px;">
+                                    Опросный лист
+                                </h3>
+                                <div style="background: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #e5e7eb;">
+                                    {{ event.questionnaire_html | safe }}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e5e7eb;">
+                                <p style="margin: 0; color: #6b7280; font-size: 12px; text-align: center;">
+                                    Это автоматическое уведомление. Пожалуйста, не отвечайте на это письмо.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

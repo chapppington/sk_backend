@@ -98,6 +98,18 @@ from application.seo_settings.queries import (
     GetSeoSettingsListQuery,
     GetSeoSettingsListQueryHandler,
 )
+from application.submissions.commands import (
+    CreateSubmissionCommand,
+    CreateSubmissionCommandHandler,
+    DeleteSubmissionCommand,
+    DeleteSubmissionCommandHandler,
+)
+from application.submissions.queries import (
+    GetSubmissionByIdQuery,
+    GetSubmissionByIdQueryHandler,
+    GetSubmissionListQuery,
+    GetSubmissionListQueryHandler,
+)
 from application.users.commands import (
     CreateUserCommand,
     CreateUserCommandHandler,
@@ -136,6 +148,8 @@ from domain.products.interfaces.repository import BaseProductRepository
 from domain.products.services import ProductService
 from domain.seo_settings.interfaces.repository import BaseSeoSettingsRepository
 from domain.seo_settings.services import SeoSettingsService
+from domain.submissions.interfaces.repository import BaseSubmissionRepository
+from domain.submissions.services import SubmissionService
 from domain.users.interfaces.repository import BaseUserRepository
 from domain.users.services import UserService
 from domain.vacancies.interfaces.repository import BaseVacancyRepository
@@ -149,6 +163,7 @@ from infrastructure.database.repositories.news.mongo import MongoNewsRepository
 from infrastructure.database.repositories.portfolios.mongo import MongoPortfolioRepository
 from infrastructure.database.repositories.products.mongo import MongoProductRepository
 from infrastructure.database.repositories.seo_settings.mongo import MongoSeoSettingsRepository
+from infrastructure.database.repositories.submissions.mongo import MongoSubmissionRepository
 from infrastructure.database.repositories.users.mongo import MongoUserRepository
 from infrastructure.database.repositories.vacancies.mongo import MongoVacancyRepository
 from infrastructure.s3.base import BaseFileStorage
@@ -195,6 +210,7 @@ def _init_container() -> Container:
     container.register(BaseSeoSettingsRepository, MongoSeoSettingsRepository)
     container.register(BaseCertificateGroupRepository, MongoCertificateGroupRepository)
     container.register(BaseCertificateRepository, MongoCertificateRepository)
+    container.register(BaseSubmissionRepository, MongoSubmissionRepository)
 
     # Регистрируем доменные сервисы
     container.register(UserService)
@@ -205,6 +221,7 @@ def _init_container() -> Container:
     container.register(SeoSettingsService)
     container.register(CertificateGroupService)
     container.register(CertificateService)
+    container.register(SubmissionService)
 
     # Регистрируем command handlers
     # Media
@@ -219,6 +236,9 @@ def _init_container() -> Container:
     container.register(CreateVacancyCommandHandler)
     container.register(UpdateVacancyCommandHandler)
     container.register(DeleteVacancyCommandHandler)
+    # Submissions
+    container.register(CreateSubmissionCommandHandler)
+    container.register(DeleteSubmissionCommandHandler)
     # Portfolios
     container.register(CreatePortfolioCommandHandler)
     container.register(UpdatePortfolioCommandHandler)
@@ -250,6 +270,9 @@ def _init_container() -> Container:
     # Vacancies
     container.register(GetVacancyByIdQueryHandler)
     container.register(GetVacancyListQueryHandler)
+    # Submissions
+    container.register(GetSubmissionByIdQueryHandler)
+    container.register(GetSubmissionListQueryHandler)
     # Portfolios
     container.register(GetPortfolioByIdQueryHandler)
     container.register(GetPortfolioBySlugQueryHandler)
@@ -308,6 +331,15 @@ def _init_container() -> Container:
         mediator.register_command(
             DeleteVacancyCommand,
             [container.resolve(DeleteVacancyCommandHandler)],
+        )
+        # Submissions
+        mediator.register_command(
+            CreateSubmissionCommand,
+            [container.resolve(CreateSubmissionCommandHandler)],
+        )
+        mediator.register_command(
+            DeleteSubmissionCommand,
+            [container.resolve(DeleteSubmissionCommandHandler)],
         )
         # Portfolios
         mediator.register_command(
@@ -405,6 +437,15 @@ def _init_container() -> Container:
         mediator.register_query(
             GetVacancyListQuery,
             container.resolve(GetVacancyListQueryHandler),
+        )
+        # Submissions
+        mediator.register_query(
+            GetSubmissionByIdQuery,
+            container.resolve(GetSubmissionByIdQueryHandler),
+        )
+        mediator.register_query(
+            GetSubmissionListQuery,
+            container.resolve(GetSubmissionListQueryHandler),
         )
         # Portfolios
         mediator.register_query(

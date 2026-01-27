@@ -1,6 +1,8 @@
 DC = docker compose
 STORAGES_FILE = docker_compose/storages.yaml
 STORAGES_CONTAINER = postgres
+MESSAGING_FILE = docker_compose/messaging.yaml
+MESSAGING_CONTAINER = rabbitmq
 LOGS = docker logs
 ENV = --env-file .env
 EXEC = docker exec -it
@@ -12,11 +14,11 @@ APP_CONTAINER = main-app
 
 .PHONY: all
 all:
-	${DC} -f ${STORAGES_FILE} -f ${APP_FILE} ${ENV} up --build -d
+	${DC} -f ${STORAGES_FILE} -f ${MESSAGING_FILE} -f ${APP_FILE} ${ENV} up --build -d
 
 .PHONY: all-down
 all-down:
-	${DC} -f ${STORAGES_FILE} -f ${APP_FILE} ${ENV} down
+	${DC} -f ${STORAGES_FILE} -f ${MESSAGING_FILE} -f ${APP_FILE} ${ENV} down
 
 .PHONY: app-logs
 app-logs:
@@ -47,6 +49,20 @@ storages-down:
 .PHONY: storages-logs
 storages-logs:
 	${LOGS} ${STORAGES_CONTAINER} -f
+
+# Messaging ================================================================
+
+.PHONY: messaging
+messaging:
+	${DC} -f ${MESSAGING_FILE} ${ENV} up --build -d
+
+.PHONY: messaging-down
+messaging-down:
+	${DC} -f ${MESSAGING_FILE} ${ENV} down
+
+.PHONY: messaging-logs
+messaging-logs:
+	${LOGS} ${MESSAGING_CONTAINER} -f
 
 # Precommit ===============================================================
 

@@ -23,7 +23,8 @@ dependencies = [
     "motor (>=3.7.1,<4.0.0)",
     "alembic (>=1.18.1,<2.0.0)",
     "aioboto3 (>=15.5.0,<16.0.0)",
-    "python-multipart (>=0.0.21,<0.0.22)"
+    "python-multipart (>=0.0.21,<0.0.22)",
+    "faststream[rabbit] (>=0.6.5,<0.7.0)"
 ]
 
 

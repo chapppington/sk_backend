@@ -13,6 +13,11 @@ class Config(S3Config, MongoConfig):
         default="secret-key",
     )
 
+    rabbitmq_url: str = Field(
+        alias="RABBITMQ_URL",
+        default="amqp://guest:guest@localhost:5672/",
+    )
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

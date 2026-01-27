@@ -23,6 +23,5 @@ class SubmissionEntity(BaseEntity):
     phone: PhoneValueObject | None = None
     comments: CommentsValueObject | None = None
     files: list[str] = field(default_factory=list)
-    questionnaire_html: Any = None
     questionnaire_answers: Any = None
     questionnaire_type: QuestionnaireTypeValueObject | None = None

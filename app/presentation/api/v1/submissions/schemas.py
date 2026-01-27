@@ -23,7 +23,6 @@ class SubmissionResponseSchema(BaseModel):
     phone: str | None
     comments: str | None
     files: list[str]
-    questionnaire_html: Any | None
     questionnaire_answers: Any | None
     questionnaire_type: str | None
     created_at: datetime
@@ -39,7 +38,6 @@ class SubmissionResponseSchema(BaseModel):
             phone=entity.phone.as_generic_type() if entity.phone else None,
             comments=entity.comments.as_generic_type() if entity.comments else None,
             files=entity.files,
-            questionnaire_html=entity.questionnaire_html,
             questionnaire_answers=entity.questionnaire_answers,
             questionnaire_type=entity.questionnaire_type.as_generic_type() if entity.questionnaire_type else None,
             created_at=entity.created_at,
@@ -54,7 +52,6 @@ class SubmissionRequestSchema(BaseModel):
     phone: str | None = None
     comments: str | None = None
     files: list[str] = []
-    questionnaire_html: str | None = None
     questionnaire_answers: Any | None = None
     questionnaire_type: str | None = None
 
@@ -66,7 +63,6 @@ class SubmissionRequestSchema(BaseModel):
             phone=PhoneValueObject(value=self.phone) if self.phone else None,
             comments=CommentsValueObject(value=self.comments) if self.comments else None,
             files=self.files,
-            questionnaire_html=self.questionnaire_html,
             questionnaire_answers=self.questionnaire_answers,
             questionnaire_type=QuestionnaireTypeValueObject(value=self.questionnaire_type)
             if self.questionnaire_type
@@ -82,7 +78,6 @@ class SubmissionCreatedEventSchema(BaseModel):
     phone: str | None
     comments: str | None
     files: list[str]
-    questionnaire_html: Any | None
     questionnaire_answers: Any | None
     questionnaire_type: str | None
     timestamp: str
@@ -97,7 +92,6 @@ class SubmissionCreatedEventSchema(BaseModel):
             phone=entity.phone.as_generic_type() if entity.phone else None,
             comments=entity.comments.as_generic_type() if entity.comments else None,
             files=entity.files,
-            questionnaire_html=entity.questionnaire_html,
             questionnaire_answers=entity.questionnaire_answers,
             questionnaire_type=entity.questionnaire_type.as_generic_type() if entity.questionnaire_type else None,
             timestamp=datetime.now().isoformat(),

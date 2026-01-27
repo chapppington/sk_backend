@@ -12,9 +12,12 @@ def convert_event_to_lead_data(event: SubmissionCreatedEventSchema) -> BitrixLea
 
     lead_comments = event.comments or ""
 
-    if event.questionnaire_html:
+    if event.questionnaire_answers:
         lead_comments += "\n\n=== Данные опросного листа ===\n"
-        lead_comments += event.questionnaire_html
+        if isinstance(event.questionnaire_answers, str):
+            lead_comments += event.questionnaire_answers
+        else:
+            lead_comments += str(event.questionnaire_answers)
 
     if event.files:
         lead_comments += "\n\n=== Прикрепленные файлы ===\n"

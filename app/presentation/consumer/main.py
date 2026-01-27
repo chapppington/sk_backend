@@ -27,7 +27,6 @@ async def submission_created_consumer(message: dict) -> None:
     await email_client.send_email(
         to_email=event.email,
         subject=f"Новая заявка: {event.form_type}",
-        body="",
         body_html=html_content,
     )
 

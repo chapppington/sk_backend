@@ -14,8 +14,7 @@ class EmailClient:
         self,
         to_email: str,
         subject: str,
-        body: str,
-        body_html: str | None = None,
+        body_html: str,
         from_email: str | None = None,
         from_name: str | None = None,
     ) -> None:
@@ -27,10 +26,7 @@ class EmailClient:
         )
         message["To"] = to_email
 
-        message.attach(MIMEText(body, "plain"))
-
-        if body_html:
-            message.attach(MIMEText(body_html, "html"))
+        message.attach(MIMEText(body_html, "html"))
 
         await self._send(message)
 

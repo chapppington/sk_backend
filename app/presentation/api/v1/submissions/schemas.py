@@ -54,7 +54,7 @@ class SubmissionRequestSchema(BaseModel):
     phone: str | None = None
     comments: str | None = None
     files: list[str] = []
-    questionnaire_html: Any | None = None
+    questionnaire_html: str | None = None
     questionnaire_answers: Any | None = None
     questionnaire_type: str | None = None
 

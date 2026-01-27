@@ -1,12 +1,13 @@
 from pydantic import Field
 from pydantic_settings import SettingsConfigDict
 
+from settings.email import EmailConfig
 from settings.mongo import MongoConfig
 from settings.rabbitmq import RabbitMQConfig
 from settings.s3 import S3Config
 
 
-class Config(S3Config, MongoConfig, RabbitMQConfig):
+class Config(S3Config, MongoConfig, RabbitMQConfig, EmailConfig):
     """Main application configuration."""
 
     jwt_secret_key: str = Field(

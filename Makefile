@@ -3,6 +3,8 @@ STORAGES_FILE = docker_compose/storages.yaml
 STORAGES_CONTAINER = postgres
 MESSAGING_FILE = docker_compose/messaging.yaml
 MESSAGING_CONTAINER = rabbitmq
+MAIL_FILE = docker_compose/mail.yaml
+MAIL_CONTAINER = maildev
 LOGS = docker logs
 ENV = --env-file .env
 EXEC = docker exec -it
@@ -14,11 +16,11 @@ APP_CONTAINER = main-app
 
 .PHONY: all
 all:
-	${DC} -f ${STORAGES_FILE} -f ${MESSAGING_FILE} -f ${APP_FILE} ${ENV} up --build -d
+	${DC} -f ${STORAGES_FILE} -f ${MESSAGING_FILE} -f ${MAIL_FILE} -f ${APP_FILE} ${ENV} up --build -d
 
 .PHONY: all-down
 all-down:
-	${DC} -f ${STORAGES_FILE} -f ${MESSAGING_FILE} -f ${APP_FILE} ${ENV} down
+	${DC} -f ${STORAGES_FILE} -f ${MESSAGING_FILE} -f ${MAIL_FILE} -f ${APP_FILE} ${ENV} down
 
 .PHONY: app-logs
 app-logs:
@@ -63,6 +65,20 @@ messaging-down:
 .PHONY: messaging-logs
 messaging-logs:
 	${LOGS} ${MESSAGING_CONTAINER} -f
+
+# Mail ====================================================================
+
+.PHONY: mail
+mail:
+	${DC} -f ${MAIL_FILE} ${ENV} up --build -d
+
+.PHONY: mail-down
+mail-down:
+	${DC} -f ${MAIL_FILE} ${ENV} down
+
+.PHONY: mail-logs
+mail-logs:
+	${LOGS} ${MAIL_CONTAINER} -f
 
 # Precommit ===============================================================
 

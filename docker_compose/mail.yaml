@@ -1,0 +1,31 @@
+services:
+  maildev:
+    image: maildev/maildev:latest
+    container_name: maildev
+    ports:
+      - "${MAILDEV_SMTP_PORT:-1025}:1025"
+      - "${MAILDEV_WEB_PORT:-1080}:1080"
+    environment:
+      - MAILDEV_IP=${MAILDEV_IP:-0.0.0.0}
+      - MAILDEV_OUTGOING_HOST=${MAILDEV_OUTGOING_HOST:-}
+      - MAILDEV_OUTGOING_PORT=${MAILDEV_OUTGOING_PORT:-}
+      - MAILDEV_OUTGOING_USER=${MAILDEV_OUTGOING_USER:-}
+      - MAILDEV_OUTGOING_PASS=${MAILDEV_OUTGOING_PASS:-}
+      - MAILDEV_OUTGOING_SECURE=${MAILDEV_OUTGOING_SECURE:-false}
+      - MAILDEV_AUTO_RELAY=${MAILDEV_AUTO_RELAY:-false}
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:1080"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  maildev_data:
+
+networks:
+  backend:
+    driver: bridge

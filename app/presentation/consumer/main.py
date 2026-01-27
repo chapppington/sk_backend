@@ -5,10 +5,10 @@ from faststream.rabbit import RabbitBroker
 
 from application.container import get_container
 from infrastructure.integrations.bitrix.client import BitrixClient
-from infrastructure.integrations.bitrix.converter import convert_event_to_lead_data
 from infrastructure.integrations.email.client import EmailClient
 from infrastructure.integrations.email.templates_service import EmailTemplatesService
 from presentation.api.v1.submissions.schemas import SubmissionCreatedEventSchema
+from presentation.consumer.converter import convert_event_to_lead_data
 from settings.config import Config
 
 
@@ -38,8 +38,8 @@ async def submission_created_consumer(message: dict) -> None:
     try:
         lead_data = convert_event_to_lead_data(event)
         await bitrix_client.create_lead(lead_data)
-    except Exception:
-        pass
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":

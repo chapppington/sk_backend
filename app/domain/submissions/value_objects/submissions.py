@@ -6,13 +6,10 @@ from domain.submissions.exceptions import (
     EmailInvalidException,
     FormTypeInvalidException,
     NameEmptyException,
-    QuestionnaireTypeInvalidException,
 )
 
 
 VALID_FORM_TYPES = {"Опросный лист", "Отклик на вакансию", "Обращение"}
-
-VALID_QUESTIONNAIRE_TYPES = {"КТП", "ПАРН", "КРУН", "КСО", "КРУ"}
 
 
 @dataclass(frozen=True)
@@ -25,18 +22,6 @@ class FormTypeValueObject(BaseValueObject):
 
     def as_generic_type(self) -> str:
         return str(self.value)
-
-
-@dataclass(frozen=True)
-class QuestionnaireTypeValueObject(BaseValueObject):
-    value: str | None
-
-    def validate(self):
-        if self.value is not None and self.value not in VALID_QUESTIONNAIRE_TYPES:
-            raise QuestionnaireTypeInvalidException(questionnaire_type=self.value)
-
-    def as_generic_type(self) -> str | None:
-        return self.value if self.value else None
 
 
 @dataclass(frozen=True)

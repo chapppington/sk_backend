@@ -8,7 +8,6 @@ from domain.submissions.value_objects.submissions import (
     FormTypeValueObject,
     NameValueObject,
     PhoneValueObject,
-    QuestionnaireTypeValueObject,
 )
 
 
@@ -20,7 +19,6 @@ def valid_submission_entity(faker: Faker) -> SubmissionEntity:
         email=EmailValueObject(value=faker.email()),
         phone=PhoneValueObject(value=faker.phone_number()),
         comments=CommentsValueObject(value=faker.text(max_nb_chars=200)),
-        questionnaire_type=QuestionnaireTypeValueObject(value="КТП"),
     )
 
 

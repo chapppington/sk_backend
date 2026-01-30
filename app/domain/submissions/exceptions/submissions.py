@@ -21,15 +21,6 @@ class FormTypeInvalidException(SubmissionException):
 
 
 @dataclass(eq=False)
-class QuestionnaireTypeInvalidException(SubmissionException):
-    questionnaire_type: str
-
-    @property
-    def message(self) -> str:
-        return f"Недопустимый тип опросного листа: {self.questionnaire_type}"
-
-
-@dataclass(eq=False)
 class NameEmptyException(SubmissionException):
     @property
     def message(self) -> str:

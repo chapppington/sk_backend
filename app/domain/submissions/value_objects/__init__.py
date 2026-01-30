@@ -4,7 +4,6 @@ from domain.submissions.value_objects.submissions import (
     FormTypeValueObject,
     NameValueObject,
     PhoneValueObject,
-    QuestionnaireTypeValueObject,
 )
 
 
@@ -14,5 +13,4 @@ __all__ = [
     "EmailValueObject",
     "PhoneValueObject",
     "CommentsValueObject",
-    "QuestionnaireTypeValueObject",
 ]

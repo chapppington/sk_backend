@@ -26,9 +26,6 @@ async def test_create_submission_command_success(
     assert submission.email.as_generic_type() == valid_submission_entity.email.as_generic_type()
     assert submission.phone.as_generic_type() == valid_submission_entity.phone.as_generic_type()
     assert submission.comments.as_generic_type() == valid_submission_entity.comments.as_generic_type()
-    assert (
-        submission.questionnaire_type.as_generic_type() == valid_submission_entity.questionnaire_type.as_generic_type()
-    )
     assert submission.oid is not None
 
     retrieved_submission = await mediator.handle_query(
@@ -59,4 +56,3 @@ async def test_create_submission_command_minimal(
     assert submission.email is None
     assert submission.phone is None
     assert submission.comments is None
-    assert submission.questionnaire_type is None

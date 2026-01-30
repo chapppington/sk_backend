@@ -27,8 +27,8 @@ def submission_entity_to_document(entity: SubmissionEntity) -> dict:
         document["phone"] = entity.phone.as_generic_type()
     if entity.comments:
         document["comments"] = entity.comments.as_generic_type()
-    if entity.questionnaire_answers is not None:
-        document["questionnaire_answers"] = entity.questionnaire_answers
+    if entity.answers_file_url is not None:
+        document["answers_file_url"] = entity.answers_file_url
 
     return document
 
@@ -42,7 +42,7 @@ def submission_document_to_entity(document: dict) -> SubmissionEntity:
         phone=PhoneValueObject(value=document.get("phone")),
         comments=CommentsValueObject(value=document.get("comments")),
         files=document.get("files", []),
-        questionnaire_answers=document.get("questionnaire_answers"),
+        answers_file_url=document.get("answers_file_url"),
         created_at=datetime.fromisoformat(document["created_at"]),
         updated_at=datetime.fromisoformat(document["updated_at"]),
     )

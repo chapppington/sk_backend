@@ -39,7 +39,7 @@ async def test_create_submission_success(client: TestClient, faker: Faker):
             "phone": faker.phone_number(),
             "comments": faker.text(max_nb_chars=200),
             "files": [],
-            "questionnaire_type": "КТП",
+            "answers_file_url": "https://storage.example.com/answers/file123.pdf",
         }
 
         response: Response = client.post(url=url, json=data)
@@ -54,7 +54,7 @@ async def test_create_submission_success(client: TestClient, faker: Faker):
         assert json_response["data"]["name"] == data["name"]
         assert json_response["data"]["email"] == data["email"]
         assert json_response["data"]["phone"] == data["phone"]
-        assert json_response["data"]["questionnaire_type"] == data["questionnaire_type"]
+        assert json_response["data"]["answers_file_url"] == data["answers_file_url"]
         assert "oid" in json_response["data"]
 
 
@@ -149,7 +149,7 @@ async def test_get_submission_by_id_success(
         "form_type": "Опросный лист",
         "name": faker.name(),
         "email": faker.email(),
-        "questionnaire_type": "КТП",
+        "answers_file_url": "https://storage.example.com/answers/file.pdf",
     }
 
     request_schema = SubmissionRequestSchema(**data)

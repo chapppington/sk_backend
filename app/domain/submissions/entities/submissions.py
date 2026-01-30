@@ -2,7 +2,6 @@ from dataclasses import (
     dataclass,
     field,
 )
-from typing import Any
 
 from domain.base.entity import BaseEntity
 from domain.submissions.value_objects import (
@@ -11,7 +10,6 @@ from domain.submissions.value_objects import (
     FormTypeValueObject,
     NameValueObject,
     PhoneValueObject,
-    QuestionnaireTypeValueObject,
 )
 
 
@@ -23,5 +21,4 @@ class SubmissionEntity(BaseEntity):
     phone: PhoneValueObject | None = None
     comments: CommentsValueObject | None = None
     files: list[str] = field(default_factory=list)
-    questionnaire_answers: Any = None
-    questionnaire_type: QuestionnaireTypeValueObject | None = None
+    answers_file_url: str | None = None

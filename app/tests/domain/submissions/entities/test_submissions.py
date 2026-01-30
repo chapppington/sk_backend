@@ -5,7 +5,6 @@ from domain.submissions.value_objects.submissions import (
     FormTypeValueObject,
     NameValueObject,
     PhoneValueObject,
-    QuestionnaireTypeValueObject,
 )
 
 
@@ -15,7 +14,6 @@ def test_submission_entity_creation():
     email = EmailValueObject("ivan@example.com")
     phone = PhoneValueObject("+7 (999) 123-45-67")
     comments = CommentsValueObject("Тестовый комментарий")
-    questionnaire_type = QuestionnaireTypeValueObject("КТП")
 
     submission = SubmissionEntity(
         form_type=form_type,
@@ -23,7 +21,6 @@ def test_submission_entity_creation():
         email=email,
         phone=phone,
         comments=comments,
-        questionnaire_type=questionnaire_type,
     )
 
     assert submission.form_type.as_generic_type() == "Опросный лист"
@@ -31,9 +28,8 @@ def test_submission_entity_creation():
     assert submission.email.as_generic_type() == "ivan@example.com"
     assert submission.phone.as_generic_type() == "+7 (999) 123-45-67"
     assert submission.comments.as_generic_type() == "Тестовый комментарий"
-    assert submission.questionnaire_type.as_generic_type() == "КТП"
     assert submission.files == []
-    assert submission.questionnaire_answers is None
+    assert submission.answers_file_url is None
     assert submission.oid is not None
     assert submission.created_at is not None
     assert submission.updated_at is not None
@@ -53,8 +49,8 @@ def test_submission_entity_creation_minimal():
     assert submission.email is None
     assert submission.phone is None
     assert submission.comments is None
-    assert submission.questionnaire_type is None
     assert submission.files == []
+    assert submission.answers_file_url is None
     assert submission.oid is not None
 
 
@@ -73,18 +69,15 @@ def test_submission_entity_creation_with_files():
     assert len(submission.files) == 3
 
 
-def test_submission_entity_creation_with_questionnaire_data():
+def test_submission_entity_creation_with_answers_file_url():
     form_type = FormTypeValueObject("Опросный лист")
     name = NameValueObject("Алексей Смирнов")
-    questionnaire_answers = "Ответы на вопросы опросного листа"
-    questionnaire_type = QuestionnaireTypeValueObject("ПАРН")
+    answers_file_url = "https://storage.example.com/answers/file123.pdf"
 
     submission = SubmissionEntity(
         form_type=form_type,
         name=name,
-        questionnaire_answers=questionnaire_answers,
-        questionnaire_type=questionnaire_type,
+        answers_file_url=answers_file_url,
     )
 
-    assert submission.questionnaire_answers == questionnaire_answers
-    assert submission.questionnaire_type.as_generic_type() == "ПАРН"
+    assert submission.answers_file_url == answers_file_url

@@ -4,7 +4,6 @@ from domain.submissions.exceptions import (
     EmailInvalidException,
     FormTypeInvalidException,
     NameEmptyException,
-    QuestionnaireTypeInvalidException,
 )
 from domain.submissions.value_objects.submissions import (
     CommentsValueObject,
@@ -12,7 +11,6 @@ from domain.submissions.value_objects.submissions import (
     FormTypeValueObject,
     NameValueObject,
     PhoneValueObject,
-    QuestionnaireTypeValueObject,
 )
 
 
@@ -41,36 +39,6 @@ def test_form_type_valid(form_type_value, expected):
 def test_form_type_invalid(form_type_value, exception):
     with pytest.raises(exception):
         FormTypeValueObject(form_type_value)
-
-
-@pytest.mark.parametrize(
-    "questionnaire_type_value,expected",
-    [
-        ("КТП", "КТП"),
-        ("ПАРН", "ПАРН"),
-        ("КРУН", "КРУН"),
-        ("КСО", "КСО"),
-        ("КРУ", "КРУ"),
-        (None, None),
-    ],
-)
-def test_questionnaire_type_valid(questionnaire_type_value, expected):
-    questionnaire_type = QuestionnaireTypeValueObject(questionnaire_type_value)
-    assert questionnaire_type.as_generic_type() == expected
-
-
-@pytest.mark.parametrize(
-    "questionnaire_type_value,exception",
-    [
-        ("", QuestionnaireTypeInvalidException),
-        ("invalid", QuestionnaireTypeInvalidException),
-        ("ктп", QuestionnaireTypeInvalidException),
-        ("КТП ", QuestionnaireTypeInvalidException),
-    ],
-)
-def test_questionnaire_type_invalid(questionnaire_type_value, exception):
-    with pytest.raises(exception):
-        QuestionnaireTypeValueObject(questionnaire_type_value)
 
 
 @pytest.mark.parametrize(

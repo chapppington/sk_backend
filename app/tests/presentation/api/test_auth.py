@@ -166,10 +166,6 @@ async def test_login_success(
     assert len(json_response["data"]["access_token"]) > 0
     assert len(json_response["data"]["refresh_token"]) > 0
 
-    cookies = response.cookies
-    assert "access_token" in cookies
-    assert "refresh_token" in cookies
-
 
 @pytest.mark.asyncio
 async def test_login_invalid_email(app: FastAPI, client: TestClient):
@@ -245,8 +241,12 @@ async def test_refresh_token_success(
     )
 
     assert login_response.is_success
+    refresh_token = login_response.json()["data"]["refresh_token"]
 
-    refresh_response: Response = client.post(url=refresh_url)
+    refresh_response: Response = client.post(
+        url=refresh_url,
+        headers={"Authorization": f"Bearer {refresh_token}"},
+    )
 
     assert refresh_response.is_success
 
@@ -255,9 +255,6 @@ async def test_refresh_token_success(
     assert "data" in json_response
     assert "access_token" in json_response["data"]
     assert len(json_response["data"]["access_token"]) > 0
-
-    cookies = refresh_response.cookies
-    assert "access_token" in cookies
 
 
 @pytest.mark.asyncio

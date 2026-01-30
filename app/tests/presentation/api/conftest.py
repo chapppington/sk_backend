@@ -58,9 +58,6 @@ async def authenticated_client(
 ) -> TestClient:
     user_id = str(authenticated_user.oid)
     access_token = auth_service.create_access_token(uid=user_id)
-    refresh_token = auth_service.create_refresh_token(uid=user_id)
 
-    client.cookies.set("access_token", access_token)
-    client.cookies.set("refresh_token", refresh_token)
-
+    client.headers["Authorization"] = f"Bearer {access_token}"
     return client

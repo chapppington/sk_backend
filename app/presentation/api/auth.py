@@ -1,5 +1,3 @@
-from fastapi import Response
-
 from authx import (
     AuthX,
     AuthXConfig,
@@ -28,11 +26,11 @@ auth_config = AuthXConfig(
 auth_service = AuthX(config=auth_config)
 
 
-def create_and_set_access_token(user_id: str, response: Response) -> str:
+def create_access_token(user_id: str) -> str:
     access_token = auth_service.create_access_token(uid=user_id)
     return access_token
 
 
-def create_and_set_refresh_token(user_id: str, response: Response) -> str:
+def create_refresh_token(user_id: str) -> str:
     refresh_token = auth_service.create_refresh_token(uid=user_id)
     return refresh_token

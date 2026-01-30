@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from presentation.api.exceptions import setup_exception_handlers
 from presentation.api.healthcheck import healthcheck_router
@@ -14,6 +15,15 @@ def create_app() -> FastAPI:
     )
 
     setup_exception_handlers(app)
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:3000"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["*"],
+    )
 
     app.include_router(healthcheck_router)
     app.include_router(v1_router, prefix="/api/v1")

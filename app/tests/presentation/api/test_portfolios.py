@@ -39,8 +39,6 @@ async def test_get_portfolios_list_success(
             "solution_subdescription": faker.text(max_nb_chars=300),
             "solution_image_left": faker.image_url(),
             "solution_image_right": faker.image_url(),
-            "preview_video_path": faker.url(),
-            "full_video_path": faker.url(),
             "description": faker.text(max_nb_chars=1000),
             "has_review": False,
         }
@@ -85,8 +83,6 @@ async def test_get_portfolios_list_with_pagination(
             "solution_subdescription": faker.text(max_nb_chars=300),
             "solution_image_left": faker.image_url(),
             "solution_image_right": faker.image_url(),
-            "preview_video_path": faker.url(),
-            "full_video_path": faker.url(),
             "description": faker.text(max_nb_chars=1000),
             "has_review": False,
         }
@@ -126,8 +122,6 @@ async def test_get_portfolios_list_with_year_filter(
             "solution_subdescription": faker.text(max_nb_chars=300),
             "solution_image_left": faker.image_url(),
             "solution_image_right": faker.image_url(),
-            "preview_video_path": faker.url(),
-            "full_video_path": faker.url(),
             "description": faker.text(max_nb_chars=1000),
             "has_review": False,
         }
@@ -148,8 +142,6 @@ async def test_get_portfolios_list_with_year_filter(
             "solution_subdescription": faker.text(max_nb_chars=300),
             "solution_image_left": faker.image_url(),
             "solution_image_right": faker.image_url(),
-            "preview_video_path": faker.url(),
-            "full_video_path": faker.url(),
             "description": faker.text(max_nb_chars=1000),
             "has_review": False,
         }
@@ -187,8 +179,6 @@ async def test_get_portfolios_list_with_search(
         "solution_subdescription": faker.text(max_nb_chars=300),
         "solution_image_left": faker.image_url(),
         "solution_image_right": faker.image_url(),
-        "preview_video_path": faker.url(),
-        "full_video_path": faker.url(),
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
@@ -208,8 +198,6 @@ async def test_get_portfolios_list_with_search(
         "solution_subdescription": faker.text(max_nb_chars=300),
         "solution_image_left": faker.image_url(),
         "solution_image_right": faker.image_url(),
-        "preview_video_path": faker.url(),
-        "full_video_path": faker.url(),
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
@@ -247,8 +235,6 @@ async def test_get_portfolios_list_with_sorting(
         "solution_subdescription": faker.text(max_nb_chars=300),
         "solution_image_left": faker.image_url(),
         "solution_image_right": faker.image_url(),
-        "preview_video_path": faker.url(),
-        "full_video_path": faker.url(),
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
@@ -268,8 +254,6 @@ async def test_get_portfolios_list_with_sorting(
         "solution_subdescription": faker.text(max_nb_chars=300),
         "solution_image_left": faker.image_url(),
         "solution_image_right": faker.image_url(),
-        "preview_video_path": faker.url(),
-        "full_video_path": faker.url(),
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
@@ -305,8 +289,6 @@ async def test_get_portfolio_by_id_success(
         "solution_subdescription": faker.text(max_nb_chars=300),
         "solution_image_left": faker.image_url(),
         "solution_image_right": faker.image_url(),
-        "preview_video_path": faker.url(),
-        "full_video_path": faker.url(),
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
@@ -368,8 +350,6 @@ async def test_get_portfolio_by_slug_success(
         "solution_subdescription": faker.text(max_nb_chars=300),
         "solution_image_left": faker.image_url(),
         "solution_image_right": faker.image_url(),
-        "preview_video_path": faker.url(),
-        "full_video_path": faker.url(),
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
@@ -431,8 +411,6 @@ async def test_create_portfolio_success(
         "solution_subdescription": faker.text(max_nb_chars=300),
         "solution_image_left": faker.image_url(),
         "solution_image_right": faker.image_url(),
-        "preview_video_path": faker.url(),
-        "full_video_path": faker.url(),
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
@@ -474,8 +452,6 @@ async def test_create_portfolio_with_review_success(
         "solution_subdescription": faker.text(max_nb_chars=300),
         "solution_image_left": faker.image_url(),
         "solution_image_right": faker.image_url(),
-        "preview_video_path": faker.url(),
-        "full_video_path": faker.url(),
         "description": faker.text(max_nb_chars=1000),
         "has_review": True,
         "review_title": faker.sentence(nb_words=3),
@@ -521,8 +497,6 @@ async def test_create_portfolio_unauthorized(
         "solution_subdescription": faker.text(max_nb_chars=300),
         "solution_image_left": faker.image_url(),
         "solution_image_right": faker.image_url(),
-        "preview_video_path": faker.url(),
-        "full_video_path": faker.url(),
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
@@ -556,8 +530,6 @@ async def test_update_portfolio_success(
         "solution_subdescription": faker.text(max_nb_chars=300),
         "solution_image_left": faker.image_url(),
         "solution_image_right": faker.image_url(),
-        "preview_video_path": faker.url(),
-        "full_video_path": faker.url(),
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
@@ -606,8 +578,6 @@ async def test_update_portfolio_unauthorized(
         "solution_subdescription": faker.text(max_nb_chars=300),
         "solution_image_left": faker.image_url(),
         "solution_image_right": faker.image_url(),
-        "preview_video_path": faker.url(),
-        "full_video_path": faker.url(),
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
@@ -649,8 +619,6 @@ async def test_update_portfolio_not_found(
         "solution_subdescription": faker.text(max_nb_chars=300),
         "solution_image_left": faker.image_url(),
         "solution_image_right": faker.image_url(),
-        "preview_video_path": faker.url(),
-        "full_video_path": faker.url(),
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
@@ -684,8 +652,6 @@ async def test_delete_portfolio_success(
         "solution_subdescription": faker.text(max_nb_chars=300),
         "solution_image_left": faker.image_url(),
         "solution_image_right": faker.image_url(),
-        "preview_video_path": faker.url(),
-        "full_video_path": faker.url(),
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }
@@ -727,8 +693,6 @@ async def test_delete_portfolio_unauthorized(
         "solution_subdescription": faker.text(max_nb_chars=300),
         "solution_image_left": faker.image_url(),
         "solution_image_right": faker.image_url(),
-        "preview_video_path": faker.url(),
-        "full_video_path": faker.url(),
         "description": faker.text(max_nb_chars=1000),
         "has_review": False,
     }

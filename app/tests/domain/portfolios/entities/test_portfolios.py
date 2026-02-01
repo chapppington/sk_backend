@@ -16,7 +16,6 @@ from domain.portfolios.value_objects import (
     SolutionTitleValueObject,
     TaskDescriptionValueObject,
     TaskTitleValueObject,
-    VideoUrlValueObject,
     YearValueObject,
 )
 
@@ -34,8 +33,6 @@ def test_portfolio_entity_creation():
     solution_subdescription = SolutionSubdescriptionValueObject("Сокращение времени обработки заказов на 40%")
     solution_image_left = SolutionImageUrlValueObject("https://sibkomplekt.ru/images/portfolio/solution-left.jpg")
     solution_image_right = SolutionImageUrlValueObject("https://sibkomplekt.ru/images/portfolio/solution-right.jpg")
-    preview_video_path = VideoUrlValueObject("https://sibkomplekt.ru/videos/portfolio/preview-warehouse.mp4")
-    full_video_path = VideoUrlValueObject("https://sibkomplekt.ru/videos/portfolio/full-warehouse.mp4")
     description = DescriptionValueObject("Полное описание проекта портфолио с деталями реализации")
 
     portfolio = PortfolioEntity(
@@ -51,8 +48,6 @@ def test_portfolio_entity_creation():
         solution_subdescription=solution_subdescription,
         solution_image_left=solution_image_left,
         solution_image_right=solution_image_right,
-        preview_video_path=preview_video_path,
-        full_video_path=full_video_path,
         has_review=False,
         description=description,
     )
@@ -73,11 +68,6 @@ def test_portfolio_entity_creation():
     assert (
         portfolio.solution_image_right.as_generic_type() == "https://sibkomplekt.ru/images/portfolio/solution-right.jpg"
     )
-    assert (
-        portfolio.preview_video_path.as_generic_type()
-        == "https://sibkomplekt.ru/videos/portfolio/preview-warehouse.mp4"
-    )
-    assert portfolio.full_video_path.as_generic_type() == "https://sibkomplekt.ru/videos/portfolio/full-warehouse.mp4"
     assert portfolio.has_review is False
     assert portfolio.description.as_generic_type() == "Полное описание проекта портфолио с деталями реализации"
     assert portfolio.oid is not None
@@ -98,8 +88,6 @@ def test_portfolio_entity_creation_with_review():
     solution_subdescription = SolutionSubdescriptionValueObject("Сокращение времени обработки заказов на 40%")
     solution_image_left = SolutionImageUrlValueObject("https://sibkomplekt.ru/images/portfolio/solution-left.jpg")
     solution_image_right = SolutionImageUrlValueObject("https://sibkomplekt.ru/images/portfolio/solution-right.jpg")
-    preview_video_path = VideoUrlValueObject("https://sibkomplekt.ru/videos/portfolio/preview-warehouse.mp4")
-    full_video_path = VideoUrlValueObject("https://sibkomplekt.ru/videos/portfolio/full-warehouse.mp4")
     description = DescriptionValueObject("Полное описание проекта портфолио с деталями реализации")
     review_title = ReviewTitleValueObject("Отличная работа!")
     review_text = ReviewTextValueObject("Команда выполнила проект в срок и с высоким качеством")
@@ -120,8 +108,6 @@ def test_portfolio_entity_creation_with_review():
         solution_subdescription=solution_subdescription,
         solution_image_left=solution_image_left,
         solution_image_right=solution_image_right,
-        preview_video_path=preview_video_path,
-        full_video_path=full_video_path,
         has_review=True,
         review_title=review_title,
         review_text=review_text,
@@ -152,8 +138,6 @@ def test_portfolio_entity_creation_with_optional_review_fields_none():
     solution_subdescription = SolutionSubdescriptionValueObject("Сокращение времени обработки заказов на 40%")
     solution_image_left = SolutionImageUrlValueObject("https://sibkomplekt.ru/images/portfolio/solution-left.jpg")
     solution_image_right = SolutionImageUrlValueObject("https://sibkomplekt.ru/images/portfolio/solution-right.jpg")
-    preview_video_path = VideoUrlValueObject("https://sibkomplekt.ru/videos/portfolio/preview-warehouse.mp4")
-    full_video_path = VideoUrlValueObject("https://sibkomplekt.ru/videos/portfolio/full-warehouse.mp4")
     description = DescriptionValueObject("Полное описание проекта портфолио с деталями реализации")
 
     portfolio = PortfolioEntity(
@@ -169,8 +153,6 @@ def test_portfolio_entity_creation_with_optional_review_fields_none():
         solution_subdescription=solution_subdescription,
         solution_image_left=solution_image_left,
         solution_image_right=solution_image_right,
-        preview_video_path=preview_video_path,
-        full_video_path=full_video_path,
         has_review=True,
         review_title=None,
         review_text=None,

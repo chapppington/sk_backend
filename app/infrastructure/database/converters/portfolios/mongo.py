@@ -19,7 +19,6 @@ from domain.portfolios.value_objects.portfolios import (
     SolutionTitleValueObject,
     TaskDescriptionValueObject,
     TaskTitleValueObject,
-    VideoUrlValueObject,
     YearValueObject,
 )
 
@@ -45,10 +44,6 @@ def portfolio_entity_to_document(entity: PortfolioEntity) -> dict:
         "updated_at": entity.updated_at.isoformat(),
     }
 
-    if entity.preview_video_path:
-        document["preview_video_path"] = entity.preview_video_path.as_generic_type()
-    if entity.full_video_path:
-        document["full_video_path"] = entity.full_video_path.as_generic_type()
     if entity.review_title:
         document["review_title"] = entity.review_title.as_generic_type()
     if entity.review_text:
@@ -78,8 +73,6 @@ def portfolio_document_to_entity(document: dict) -> PortfolioEntity:
         solution_subdescription=SolutionSubdescriptionValueObject(value=document["solution_subdescription"]),
         solution_image_left=SolutionImageUrlValueObject(value=document["solution_image_left"]),
         solution_image_right=SolutionImageUrlValueObject(value=document["solution_image_right"]),
-        preview_video_path=VideoUrlValueObject(value=document.get("preview_video_path")),
-        full_video_path=VideoUrlValueObject(value=document.get("full_video_path")),
         description=DescriptionValueObject(value=document["description"]),
         has_review=document["has_review"],
         review_title=ReviewTitleValueObject(value=document.get("review_title")),

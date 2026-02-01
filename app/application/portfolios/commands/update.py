@@ -39,8 +39,6 @@ class UpdatePortfolioCommandHandler(
             solution_subdescription=command.portfolio.solution_subdescription,
             solution_image_left=command.portfolio.solution_image_left,
             solution_image_right=command.portfolio.solution_image_right,
-            preview_video_path=command.portfolio.preview_video_path,
-            full_video_path=command.portfolio.full_video_path,
             description=command.portfolio.description,
             has_review=command.portfolio.has_review,
             review_title=command.portfolio.review_title,

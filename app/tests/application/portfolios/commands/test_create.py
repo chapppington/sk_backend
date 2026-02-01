@@ -75,8 +75,6 @@ async def test_create_portfolio_command_duplicate_slug(
         solution_subdescription=valid_portfolio_entity.solution_subdescription,
         solution_image_left=valid_portfolio_entity.solution_image_left,
         solution_image_right=valid_portfolio_entity.solution_image_right,
-        preview_video_path=valid_portfolio_entity.preview_video_path,
-        full_video_path=valid_portfolio_entity.full_video_path,
         description=valid_portfolio_entity.description,
         has_review=valid_portfolio_entity.has_review,
         review_title=valid_portfolio_entity.review_title,

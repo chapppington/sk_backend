@@ -18,7 +18,6 @@ from domain.portfolios.value_objects import (
     SolutionTitleValueObject,
     TaskDescriptionValueObject,
     TaskTitleValueObject,
-    VideoUrlValueObject,
     YearValueObject,
 )
 
@@ -39,8 +38,6 @@ class PortfolioEntity(BaseEntity):
     solution_image_right: SolutionImageUrlValueObject
     description: DescriptionValueObject
     has_review: bool
-    preview_video_path: VideoUrlValueObject | None = None
-    full_video_path: VideoUrlValueObject | None = None
     review_title: ReviewTitleValueObject | None = None
     review_text: ReviewTextValueObject | None = None
     review_name: ReviewNameValueObject | None = None

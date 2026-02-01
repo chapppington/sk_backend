@@ -22,7 +22,6 @@ from domain.portfolios.value_objects.portfolios import (
     SolutionTitleValueObject,
     TaskDescriptionValueObject,
     TaskTitleValueObject,
-    VideoUrlValueObject,
     YearValueObject,
 )
 
@@ -41,8 +40,6 @@ class PortfolioResponseSchema(BaseModel):
     solution_subdescription: str
     solution_image_left: str
     solution_image_right: str
-    preview_video_path: Optional[str] = None
-    full_video_path: Optional[str] = None
     description: str
     has_review: bool
     review_title: Optional[str] = None
@@ -69,8 +66,6 @@ class PortfolioResponseSchema(BaseModel):
             solution_subdescription=entity.solution_subdescription.as_generic_type(),
             solution_image_left=entity.solution_image_left.as_generic_type(),
             solution_image_right=entity.solution_image_right.as_generic_type(),
-            preview_video_path=entity.preview_video_path.as_generic_type() if entity.preview_video_path else None,
-            full_video_path=entity.full_video_path.as_generic_type() if entity.full_video_path else None,
             description=entity.description.as_generic_type(),
             has_review=entity.has_review,
             review_title=entity.review_title.as_generic_type() if entity.review_title else None,
@@ -96,8 +91,6 @@ class PortfolioRequestSchema(BaseModel):
     solution_subdescription: str
     solution_image_left: str
     solution_image_right: str
-    preview_video_path: Optional[str] = None
-    full_video_path: Optional[str] = None
     description: str
     has_review: bool
     review_title: Optional[str] = None
@@ -120,8 +113,6 @@ class PortfolioRequestSchema(BaseModel):
             solution_subdescription=SolutionSubdescriptionValueObject(value=self.solution_subdescription),
             solution_image_left=SolutionImageUrlValueObject(value=self.solution_image_left),
             solution_image_right=SolutionImageUrlValueObject(value=self.solution_image_right),
-            preview_video_path=VideoUrlValueObject(value=self.preview_video_path) if self.preview_video_path else None,
-            full_video_path=VideoUrlValueObject(value=self.full_video_path) if self.full_video_path else None,
             description=DescriptionValueObject(value=self.description),
             has_review=self.has_review,
             review_title=ReviewTitleValueObject(value=self.review_title) if self.review_title else None,

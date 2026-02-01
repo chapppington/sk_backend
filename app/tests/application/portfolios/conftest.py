@@ -19,7 +19,6 @@ from domain.portfolios.value_objects.portfolios import (
     SolutionTitleValueObject,
     TaskDescriptionValueObject,
     TaskTitleValueObject,
-    VideoUrlValueObject,
     YearValueObject,
 )
 
@@ -39,8 +38,6 @@ def valid_portfolio_entity(faker: Faker) -> PortfolioEntity:
         solution_subdescription=SolutionSubdescriptionValueObject(value=faker.text(max_nb_chars=300)),
         solution_image_left=SolutionImageUrlValueObject(value=faker.image_url()),
         solution_image_right=SolutionImageUrlValueObject(value=faker.image_url()),
-        preview_video_path=VideoUrlValueObject(value=faker.url()),
-        full_video_path=VideoUrlValueObject(value=faker.url()),
         description=DescriptionValueObject(value=faker.text(max_nb_chars=1000)),
         has_review=False,
     )
@@ -61,8 +58,6 @@ def valid_portfolio_entity_with_review(faker: Faker) -> PortfolioEntity:
         solution_subdescription=SolutionSubdescriptionValueObject(value=faker.text(max_nb_chars=300)),
         solution_image_left=SolutionImageUrlValueObject(value=faker.image_url()),
         solution_image_right=SolutionImageUrlValueObject(value=faker.image_url()),
-        preview_video_path=VideoUrlValueObject(value=faker.url()),
-        full_video_path=VideoUrlValueObject(value=faker.url()),
         description=DescriptionValueObject(value=faker.text(max_nb_chars=1000)),
         has_review=True,
         review_title=ReviewTitleValueObject(value=faker.sentence(nb_words=3)),
@@ -89,8 +84,6 @@ def valid_portfolio_entity_with_year(faker: Faker):
             solution_subdescription=SolutionSubdescriptionValueObject(value=faker.text(max_nb_chars=300)),
             solution_image_left=SolutionImageUrlValueObject(value=faker.image_url()),
             solution_image_right=SolutionImageUrlValueObject(value=faker.image_url()),
-            preview_video_path=VideoUrlValueObject(value=faker.url()),
-            full_video_path=VideoUrlValueObject(value=faker.url()),
             description=DescriptionValueObject(value=faker.text(max_nb_chars=1000)),
             has_review=False,
         )

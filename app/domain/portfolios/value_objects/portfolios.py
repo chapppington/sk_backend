@@ -81,6 +81,17 @@ class PosterUrlValueObject(BaseValueObject):
 
 
 @dataclass(frozen=True)
+class ImageAltValueObject(BaseValueObject):
+    value: str
+
+    def validate(self):
+        pass
+
+    def as_generic_type(self) -> str:
+        return str(self.value)
+
+
+@dataclass(frozen=True)
 class YearValueObject(BaseValueObject):
     value: int
 

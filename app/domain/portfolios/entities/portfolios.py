@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from domain.base.entity import BaseEntity
 from domain.portfolios.value_objects import (
     DescriptionValueObject,
+    ImageAltValueObject,
     NameValueObject,
     PosterUrlValueObject,
     ReviewImageUrlValueObject,
@@ -27,7 +28,9 @@ class PortfolioEntity(BaseEntity):
     name: NameValueObject
     slug: SlugValueObject
     poster: PosterUrlValueObject
+    poster_alt: ImageAltValueObject
     year: YearValueObject
+    description: DescriptionValueObject
     task_title: TaskTitleValueObject
     task_description: TaskDescriptionValueObject
     solution_title: SolutionTitleValueObject
@@ -35,8 +38,9 @@ class PortfolioEntity(BaseEntity):
     solution_subtitle: SolutionSubtitleValueObject
     solution_subdescription: SolutionSubdescriptionValueObject
     solution_image_left: SolutionImageUrlValueObject
+    solution_image_left_alt: ImageAltValueObject
     solution_image_right: SolutionImageUrlValueObject
-    description: DescriptionValueObject
+    solution_image_right_alt: ImageAltValueObject
     has_review: bool
     review_title: ReviewTitleValueObject | None = None
     review_text: ReviewTextValueObject | None = None

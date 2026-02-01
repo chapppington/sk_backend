@@ -1,5 +1,6 @@
 from domain.portfolios.value_objects.portfolios import (
     DescriptionValueObject,
+    ImageAltValueObject,
     NameValueObject,
     PosterUrlValueObject,
     ReviewImageUrlValueObject,
@@ -24,6 +25,7 @@ __all__ = [
     "NameValueObject",
     "SlugValueObject",
     "PosterUrlValueObject",
+    "ImageAltValueObject",
     "YearValueObject",
     "TaskTitleValueObject",
     "TaskDescriptionValueObject",

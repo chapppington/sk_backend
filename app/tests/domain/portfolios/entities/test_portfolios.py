@@ -1,6 +1,7 @@
 from domain.portfolios.entities import PortfolioEntity
 from domain.portfolios.value_objects import (
     DescriptionValueObject,
+    ImageAltValueObject,
     NameValueObject,
     PosterUrlValueObject,
     ReviewImageUrlValueObject,
@@ -24,7 +25,9 @@ def test_portfolio_entity_creation():
     name = NameValueObject("Проект автоматизации склада")
     slug = SlugValueObject("proekt-avtomatizacii-sklada")
     poster = PosterUrlValueObject("https://sibkomplekt.ru/images/portfolio/warehouse-poster.jpg")
+    poster_alt = ImageAltValueObject("Постер проекта автоматизации склада")
     year = YearValueObject(2025)
+    description = DescriptionValueObject("Полное описание проекта портфолио с деталями реализации")
     task_title = TaskTitleValueObject("Задача проекта")
     task_description = TaskDescriptionValueObject("Автоматизировать процессы управления складом")
     solution_title = SolutionTitleValueObject("Решение")
@@ -32,14 +35,17 @@ def test_portfolio_entity_creation():
     solution_subtitle = SolutionSubtitleValueObject("Результаты")
     solution_subdescription = SolutionSubdescriptionValueObject("Сокращение времени обработки заказов на 40%")
     solution_image_left = SolutionImageUrlValueObject("https://sibkomplekt.ru/images/portfolio/solution-left.jpg")
+    solution_image_left_alt = ImageAltValueObject("Схема решения слева")
     solution_image_right = SolutionImageUrlValueObject("https://sibkomplekt.ru/images/portfolio/solution-right.jpg")
-    description = DescriptionValueObject("Полное описание проекта портфолио с деталями реализации")
+    solution_image_right_alt = ImageAltValueObject("Схема решения справа")
 
     portfolio = PortfolioEntity(
         name=name,
         slug=slug,
         poster=poster,
+        poster_alt=poster_alt,
         year=year,
+        description=description,
         task_title=task_title,
         task_description=task_description,
         solution_title=solution_title,
@@ -47,9 +53,10 @@ def test_portfolio_entity_creation():
         solution_subtitle=solution_subtitle,
         solution_subdescription=solution_subdescription,
         solution_image_left=solution_image_left,
+        solution_image_left_alt=solution_image_left_alt,
         solution_image_right=solution_image_right,
+        solution_image_right_alt=solution_image_right_alt,
         has_review=False,
-        description=description,
     )
 
     assert portfolio.name.as_generic_type() == "Проект автоматизации склада"
@@ -79,6 +86,7 @@ def test_portfolio_entity_creation_with_review():
     name = NameValueObject("Проект автоматизации склада")
     slug = SlugValueObject("proekt-avtomatizacii-sklada")
     poster = PosterUrlValueObject("https://sibkomplekt.ru/images/portfolio/warehouse-poster.jpg")
+    poster_alt = ImageAltValueObject("Постер проекта автоматизации склада")
     year = YearValueObject(2025)
     task_title = TaskTitleValueObject("Задача проекта")
     task_description = TaskDescriptionValueObject("Автоматизировать процессы управления складом")
@@ -87,7 +95,9 @@ def test_portfolio_entity_creation_with_review():
     solution_subtitle = SolutionSubtitleValueObject("Результаты")
     solution_subdescription = SolutionSubdescriptionValueObject("Сокращение времени обработки заказов на 40%")
     solution_image_left = SolutionImageUrlValueObject("https://sibkomplekt.ru/images/portfolio/solution-left.jpg")
+    solution_image_left_alt = ImageAltValueObject("Схема решения слева")
     solution_image_right = SolutionImageUrlValueObject("https://sibkomplekt.ru/images/portfolio/solution-right.jpg")
+    solution_image_right_alt = ImageAltValueObject("Схема решения справа")
     description = DescriptionValueObject("Полное описание проекта портфолио с деталями реализации")
     review_title = ReviewTitleValueObject("Отличная работа!")
     review_text = ReviewTextValueObject("Команда выполнила проект в срок и с высоким качеством")
@@ -99,7 +109,9 @@ def test_portfolio_entity_creation_with_review():
         name=name,
         slug=slug,
         poster=poster,
+        poster_alt=poster_alt,
         year=year,
+        description=description,
         task_title=task_title,
         task_description=task_description,
         solution_title=solution_title,
@@ -107,14 +119,15 @@ def test_portfolio_entity_creation_with_review():
         solution_subtitle=solution_subtitle,
         solution_subdescription=solution_subdescription,
         solution_image_left=solution_image_left,
+        solution_image_left_alt=solution_image_left_alt,
         solution_image_right=solution_image_right,
+        solution_image_right_alt=solution_image_right_alt,
         has_review=True,
         review_title=review_title,
         review_text=review_text,
         review_name=review_name,
         review_image=review_image,
         review_role=review_role,
-        description=description,
     )
 
     assert portfolio.has_review is True
@@ -129,7 +142,9 @@ def test_portfolio_entity_creation_with_optional_review_fields_none():
     name = NameValueObject("Проект автоматизации склада")
     slug = SlugValueObject("proekt-avtomatizacii-sklada")
     poster = PosterUrlValueObject("https://sibkomplekt.ru/images/portfolio/warehouse-poster.jpg")
+    poster_alt = ImageAltValueObject("Постер проекта")
     year = YearValueObject(2025)
+    description = DescriptionValueObject("Полное описание проекта портфолио с деталями реализации")
     task_title = TaskTitleValueObject("Задача проекта")
     task_description = TaskDescriptionValueObject("Автоматизировать процессы управления складом")
     solution_title = SolutionTitleValueObject("Решение")
@@ -137,14 +152,17 @@ def test_portfolio_entity_creation_with_optional_review_fields_none():
     solution_subtitle = SolutionSubtitleValueObject("Результаты")
     solution_subdescription = SolutionSubdescriptionValueObject("Сокращение времени обработки заказов на 40%")
     solution_image_left = SolutionImageUrlValueObject("https://sibkomplekt.ru/images/portfolio/solution-left.jpg")
+    solution_image_left_alt = ImageAltValueObject("Схема слева")
     solution_image_right = SolutionImageUrlValueObject("https://sibkomplekt.ru/images/portfolio/solution-right.jpg")
-    description = DescriptionValueObject("Полное описание проекта портфолио с деталями реализации")
+    solution_image_right_alt = ImageAltValueObject("Схема справа")
 
     portfolio = PortfolioEntity(
         name=name,
         slug=slug,
         poster=poster,
+        poster_alt=poster_alt,
         year=year,
+        description=description,
         task_title=task_title,
         task_description=task_description,
         solution_title=solution_title,
@@ -152,14 +170,15 @@ def test_portfolio_entity_creation_with_optional_review_fields_none():
         solution_subtitle=solution_subtitle,
         solution_subdescription=solution_subdescription,
         solution_image_left=solution_image_left,
+        solution_image_left_alt=solution_image_left_alt,
         solution_image_right=solution_image_right,
+        solution_image_right_alt=solution_image_right_alt,
         has_review=True,
         review_title=None,
         review_text=None,
         review_name=None,
         review_image=None,
         review_role=None,
-        description=description,
     )
 
     assert portfolio.has_review is True

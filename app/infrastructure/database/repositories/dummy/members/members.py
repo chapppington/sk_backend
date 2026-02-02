@@ -2,7 +2,9 @@ from collections.abc import AsyncIterable
 from dataclasses import (
     dataclass,
     field,
+    replace,
 )
+from datetime import datetime
 from uuid import UUID
 
 from domain.members.entities import MemberEntity
@@ -29,6 +31,17 @@ class DummyInMemoryMemberRepository(BaseMemberRepository):
                 self._saved_members[i] = member
                 return
         raise ValueError(f"Member with id {member.oid} not found")
+
+    async def update_order(self, member_id: UUID, order: int) -> None:
+        for i, saved_member in enumerate(self._saved_members):
+            if saved_member.oid == member_id:
+                self._saved_members[i] = replace(
+                    saved_member,
+                    order=order,
+                    updated_at=datetime.now(),
+                )
+                return
+        raise ValueError(f"Member with id {member_id} not found")
 
     async def delete(self, member_id: UUID) -> None:
         self._saved_members = [member for member in self._saved_members if member.oid != member_id]

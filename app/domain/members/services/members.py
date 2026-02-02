@@ -25,6 +25,13 @@ class MemberService:
         await self.member_repository.update(member)
         return member
 
+    async def update_order(self, member_id: UUID, order: int) -> MemberEntity:
+        await self.get_by_id(member_id)
+        await self.member_repository.update_order(member_id, order)
+        updated = await self.member_repository.get_by_id(member_id)
+        assert updated is not None
+        return updated
+
     async def delete(self, member_id: UUID) -> None:
         await self.get_by_id(member_id)
         await self.member_repository.delete(member_id)

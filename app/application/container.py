@@ -38,6 +38,22 @@ from application.media.commands import (
     UploadFileCommandHandler,
 )
 from application.mediator import Mediator
+from application.members.commands import (
+    CreateMemberCommand,
+    CreateMemberCommandHandler,
+    DeleteMemberCommand,
+    DeleteMemberCommandHandler,
+    PatchMemberOrderCommand,
+    PatchMemberOrderCommandHandler,
+    UpdateMemberCommand,
+    UpdateMemberCommandHandler,
+)
+from application.members.queries import (
+    GetMemberByIdQuery,
+    GetMemberByIdQueryHandler,
+    GetMemberListQuery,
+    GetMemberListQueryHandler,
+)
 from application.news.commands import (
     CreateNewsCommand,
     CreateNewsCommandHandler,
@@ -272,6 +288,11 @@ def _init_container() -> Container:
     container.register(UpdateCertificateCommandHandler)
     container.register(PatchCertificateOrderCommandHandler)
     container.register(DeleteCertificateCommandHandler)
+    # Members
+    container.register(CreateMemberCommandHandler)
+    container.register(UpdateMemberCommandHandler)
+    container.register(PatchMemberOrderCommandHandler)
+    container.register(DeleteMemberCommandHandler)
 
     # Регистрируем query handlers
     # Users
@@ -284,6 +305,9 @@ def _init_container() -> Container:
     # Vacancies
     container.register(GetVacancyByIdQueryHandler)
     container.register(GetVacancyListQueryHandler)
+    # Members
+    container.register(GetMemberByIdQueryHandler)
+    container.register(GetMemberListQueryHandler)
     # Submissions
     container.register(GetSubmissionByIdQueryHandler)
     container.register(GetSubmissionListQueryHandler)
@@ -431,6 +455,23 @@ def _init_container() -> Container:
             DeleteCertificateCommand,
             [container.resolve(DeleteCertificateCommandHandler)],
         )
+        # Members
+        mediator.register_command(
+            CreateMemberCommand,
+            [container.resolve(CreateMemberCommandHandler)],
+        )
+        mediator.register_command(
+            UpdateMemberCommand,
+            [container.resolve(UpdateMemberCommandHandler)],
+        )
+        mediator.register_command(
+            PatchMemberOrderCommand,
+            [container.resolve(PatchMemberOrderCommandHandler)],
+        )
+        mediator.register_command(
+            DeleteMemberCommand,
+            [container.resolve(DeleteMemberCommandHandler)],
+        )
 
         # Регистрируем queries
         # Users
@@ -463,6 +504,15 @@ def _init_container() -> Container:
         mediator.register_query(
             GetVacancyListQuery,
             container.resolve(GetVacancyListQueryHandler),
+        )
+        # Members
+        mediator.register_query(
+            GetMemberByIdQuery,
+            container.resolve(GetMemberByIdQueryHandler),
+        )
+        mediator.register_query(
+            GetMemberListQuery,
+            container.resolve(GetMemberListQueryHandler),
         )
         # Submissions
         mediator.register_query(

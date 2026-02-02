@@ -19,6 +19,9 @@ class BaseMemberRepository(ABC):
     async def update(self, member: MemberEntity) -> None: ...
 
     @abstractmethod
+    async def update_order(self, member_id: UUID, order: int) -> None: ...
+
+    @abstractmethod
     async def delete(self, member_id: UUID) -> None: ...
 
     @abstractmethod

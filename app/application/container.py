@@ -170,6 +170,8 @@ from domain.portfolios.interfaces.repository import BasePortfolioRepository
 from domain.portfolios.services.portfolios import PortfolioService
 from domain.products.interfaces.repository import BaseProductRepository
 from domain.products.services import ProductService
+from domain.reviews.interfaces.repository import BaseReviewRepository
+from domain.reviews.services import ReviewService
 from domain.seo_settings.interfaces.repository import BaseSeoSettingsRepository
 from domain.seo_settings.services import SeoSettingsService
 from domain.submissions.interfaces.repository import BaseSubmissionRepository
@@ -187,6 +189,7 @@ from infrastructure.database.repositories.members.mongo import MongoMemberReposi
 from infrastructure.database.repositories.news.mongo import MongoNewsRepository
 from infrastructure.database.repositories.portfolios.mongo import MongoPortfolioRepository
 from infrastructure.database.repositories.products.mongo import MongoProductRepository
+from infrastructure.database.repositories.reviews.mongo import MongoReviewRepository
 from infrastructure.database.repositories.seo_settings.mongo import MongoSeoSettingsRepository
 from infrastructure.database.repositories.submissions.mongo import MongoSubmissionRepository
 from infrastructure.database.repositories.users.mongo import MongoUserRepository
@@ -236,6 +239,7 @@ def _init_container() -> Container:
     container.register(BaseCertificateGroupRepository, MongoCertificateGroupRepository)
     container.register(BaseCertificateRepository, MongoCertificateRepository)
     container.register(BaseMemberRepository, MongoMemberRepository)
+    container.register(BaseReviewRepository, MongoReviewRepository)
     container.register(BaseSubmissionRepository, MongoSubmissionRepository)
 
     # Регистрируем доменные сервисы
@@ -248,6 +252,7 @@ def _init_container() -> Container:
     container.register(CertificateGroupService)
     container.register(CertificateService)
     container.register(MemberService)
+    container.register(ReviewService)
     container.register(SubmissionService)
 
     # Регистрируем command handlers

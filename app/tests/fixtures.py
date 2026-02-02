@@ -10,6 +10,7 @@ from domain.members.interfaces.repository import BaseMemberRepository
 from domain.news.interfaces.repository import BaseNewsRepository
 from domain.portfolios.interfaces.repository import BasePortfolioRepository
 from domain.products.interfaces.repository import BaseProductRepository
+from domain.reviews.interfaces.repository import BaseReviewRepository
 from domain.seo_settings.interfaces.repository import BaseSeoSettingsRepository
 from domain.submissions.interfaces.repository import BaseSubmissionRepository
 from domain.users.interfaces.repository import BaseUserRepository
@@ -22,6 +23,7 @@ from infrastructure.database.repositories.dummy.members.members import DummyInMe
 from infrastructure.database.repositories.dummy.news.news import DummyInMemoryNewsRepository
 from infrastructure.database.repositories.dummy.portfolios.portfolios import DummyInMemoryPortfolioRepository
 from infrastructure.database.repositories.dummy.products.products import DummyInMemoryProductRepository
+from infrastructure.database.repositories.dummy.reviews.reviews import DummyInMemoryReviewRepository
 from infrastructure.database.repositories.dummy.seo_settings.seo_settings import DummyInMemorySeoSettingsRepository
 from infrastructure.database.repositories.dummy.submissions.submissions import DummyInMemorySubmissionRepository
 from infrastructure.database.repositories.dummy.users.users import DummyInMemoryUserRepository
@@ -75,6 +77,11 @@ def get_dummy_container() -> Container:
     container.register(
         BaseMemberRepository,
         DummyInMemoryMemberRepository,
+        scope=Scope.singleton,
+    )
+    container.register(
+        BaseReviewRepository,
+        DummyInMemoryReviewRepository,
         scope=Scope.singleton,
     )
     container.register(

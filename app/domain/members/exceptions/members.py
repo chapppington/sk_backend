@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from domain.base.exceptions import DomainException
 
@@ -29,3 +30,12 @@ class MemberImageEmptyException(MemberException):
     @property
     def message(self) -> str:
         return "Изображение члена команды не может быть пустым"
+
+
+@dataclass(eq=False)
+class MemberNotFoundException(MemberException):
+    member_id: UUID
+
+    @property
+    def message(self) -> str:
+        return f"Член команды с id {self.member_id} не найден"

@@ -10,9 +10,15 @@ import pytest
 from faker import Faker
 from httpx import Response
 
-from application.certificates.commands import CreateCertificateGroupCommand
+from application.certificates.commands import (
+    CreateCertificateCommand,
+    CreateCertificateGroupCommand,
+)
 from application.mediator import Mediator
-from presentation.api.v1.certificates.schemas import CertificateGroupRequestSchema
+from presentation.api.v1.certificates.schemas import (
+    CertificateGroupRequestSchema,
+    CertificateRequestSchema,
+)
 
 
 @pytest.mark.asyncio
@@ -519,6 +525,53 @@ async def test_delete_certificate_group_success(
     get_response: Response = authenticated_client.get(url=get_url)
 
     assert get_response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.asyncio
+async def test_delete_certificate_group_deletes_its_certificates(
+    app: FastAPI,
+    authenticated_client: TestClient,
+    mediator: Mediator,
+    faker: Faker,
+):
+    """Тест: при удалении группы сертификатов удаляются и все её
+    сертификаты."""
+    group_data = {
+        "section": "Сертификаты",
+        "title": faker.sentence(nb_words=5),
+        "content": faker.text(max_nb_chars=500),
+    }
+    group_schema = CertificateGroupRequestSchema(**group_data)
+    group_result, *_ = await mediator.handle_command(
+        CreateCertificateGroupCommand(certificate_group=group_schema.to_entity()),
+    )
+    certificate_group_id = group_result.oid
+
+    cert_ids = []
+    for _ in range(2):
+        cert_data = {
+            "title": faker.sentence(nb_words=3),
+            "link": faker.url(),
+            "order": 0,
+        }
+        cert_schema = CertificateRequestSchema(**cert_data)
+        cert_result, *_ = await mediator.handle_command(
+            CreateCertificateCommand(
+                certificate=cert_schema.to_entity(),
+                certificate_group_id=certificate_group_id,
+            ),
+        )
+        cert_ids.append(cert_result.oid)
+
+    url = app.url_path_for("delete_certificate_group", certificate_group_id=certificate_group_id)
+    response: Response = authenticated_client.delete(url=url)
+
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    for certificate_id in cert_ids:
+        get_cert_url = app.url_path_for("get_certificate_by_id", certificate_id=certificate_id)
+        get_response: Response = authenticated_client.get(url=get_cert_url)
+        assert get_response.status_code == status.HTTP_404_NOT_FOUND
 
 
 @pytest.mark.asyncio

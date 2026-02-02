@@ -60,6 +60,9 @@ class MongoCertificateRepository(BaseMongoRepository, BaseCertificateRepository)
     async def delete(self, certificate_id: UUID) -> None:
         await self.collection.delete_one({"oid": str(certificate_id)})
 
+    async def delete_all_by_certificate_group_id(self, certificate_group_id: UUID) -> None:
+        await self.collection.delete_many({"certificate_group_id": str(certificate_group_id)})
+
     def _build_find_query(
         self,
         certificate_group_id: UUID | None = None,

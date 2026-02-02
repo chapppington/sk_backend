@@ -31,6 +31,9 @@ class BaseCertificateRepository(ABC):
     async def delete(self, certificate_id: UUID) -> None: ...
 
     @abstractmethod
+    async def delete_all_by_certificate_group_id(self, certificate_group_id: UUID) -> None: ...
+
+    @abstractmethod
     async def find_many(
         self,
         sort_field: str,

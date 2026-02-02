@@ -85,6 +85,12 @@ class CertificateService:
         await self.check_exists(certificate_id)
         await self.certificate_repository.delete(certificate_id)
 
+    async def delete_all_by_certificate_group_id(
+        self,
+        certificate_group_id: UUID,
+    ) -> None:
+        await self.certificate_repository.delete_all_by_certificate_group_id(certificate_group_id)
+
     async def find_many(
         self,
         sort_field: str,

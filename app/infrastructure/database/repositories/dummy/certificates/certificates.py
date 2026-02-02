@@ -69,6 +69,11 @@ class DummyInMemoryCertificateRepository(BaseCertificateRepository):
             if cert.oid != certificate_id
         ]
 
+    async def delete_all_by_certificate_group_id(self, certificate_group_id: UUID) -> None:
+        self._saved_certificates = [
+            (cert, group_id) for cert, group_id in self._saved_certificates if group_id != certificate_group_id
+        ]
+
     def _build_find_query(
         self,
         certificate_group_id: UUID | None = None,

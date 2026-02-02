@@ -71,6 +71,8 @@ from application.products.commands import (
     CreateProductCommandHandler,
     DeleteProductCommand,
     DeleteProductCommandHandler,
+    PatchProductOrderCommand,
+    PatchProductOrderCommandHandler,
     UpdateProductCommand,
     UpdateProductCommandHandler,
 )
@@ -246,6 +248,7 @@ def _init_container() -> Container:
     # Products
     container.register(CreateProductCommandHandler)
     container.register(UpdateProductCommandHandler)
+    container.register(PatchProductOrderCommandHandler)
     container.register(DeleteProductCommandHandler)
     # SEO Settings
     container.register(CreateSeoSettingsCommandHandler)
@@ -362,6 +365,10 @@ def _init_container() -> Container:
         mediator.register_command(
             UpdateProductCommand,
             [container.resolve(UpdateProductCommandHandler)],
+        )
+        mediator.register_command(
+            PatchProductOrderCommand,
+            [container.resolve(PatchProductOrderCommandHandler)],
         )
         mediator.register_command(
             DeleteProductCommand,

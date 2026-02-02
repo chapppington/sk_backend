@@ -123,6 +123,10 @@ class ProductResponseSchema(BaseModel):
         )
 
 
+class ProductOrderPatchSchema(BaseModel):
+    order: int
+
+
 class ProductRequestSchema(BaseModel):
     category: str
     name: str

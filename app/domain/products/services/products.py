@@ -73,11 +73,22 @@ class ProductService:
 
         return product
 
+    async def update_order(
+        self,
+        product_id: UUID,
+        order: int,
+    ) -> ProductEntity:
+        await self.check_exists(product_id)
+        await self.product_repository.update_order(product_id, order)
+        updated = await self.product_repository.get_by_id(product_id)
+        assert updated is not None
+        return updated
+
     async def delete(
         self,
         product_id: UUID,
     ) -> None:
-        await self.get_by_id(product_id)
+        await self.check_exists(product_id)
         await self.product_repository.delete(product_id)
 
     async def find_many(
@@ -112,3 +123,9 @@ class ProductService:
             category=category,
             is_shown=is_shown,
         )
+
+    async def check_exists(
+        self,
+        product_id: UUID,
+    ) -> None:
+        await self.get_by_id(product_id)

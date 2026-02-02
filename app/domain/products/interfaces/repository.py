@@ -22,6 +22,9 @@ class BaseProductRepository(ABC):
     async def update(self, product: ProductEntity) -> None: ...
 
     @abstractmethod
+    async def update_order(self, product_id: UUID, order: int) -> None: ...
+
+    @abstractmethod
     async def delete(self, product_id: UUID) -> None: ...
 
     @abstractmethod

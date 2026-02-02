@@ -12,6 +12,7 @@ from application.mediator import Mediator
 from application.products.commands import (
     CreateProductCommand,
     DeleteProductCommand,
+    PatchProductOrderCommand,
     UpdateProductCommand,
 )
 from application.products.queries import (
@@ -30,6 +31,7 @@ from presentation.api.schemas import (
     ListPaginatedResponse,
 )
 from presentation.api.v1.products.schemas import (
+    ProductOrderPatchSchema,
     ProductRequestSchema,
     ProductResponseSchema,
 )
@@ -188,6 +190,34 @@ async def update_product(
     product = request.to_entity()
     command = UpdateProductCommand(product_id=product_id, product=product)
 
+    product, *_ = await mediator.handle_command(command)
+
+    return ApiResponse[ProductResponseSchema](
+        data=ProductResponseSchema.from_entity(product),
+    )
+
+
+@router.patch(
+    "/{product_id}/order",
+    status_code=status.HTTP_200_OK,
+    response_model=ApiResponse[ProductResponseSchema],
+    responses={
+        status.HTTP_200_OK: {"model": ApiResponse[ProductResponseSchema]},
+        status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponseSchema},
+        status.HTTP_404_NOT_FOUND: {"model": ErrorResponseSchema},
+        status.HTTP_422_UNPROCESSABLE_CONTENT: {"model": ErrorResponseSchema},
+    },
+)
+async def patch_product_order(
+    product_id: UUID,
+    request: ProductOrderPatchSchema,
+    _=Depends(get_current_user_id),
+    container=Depends(get_container),
+) -> ApiResponse[ProductResponseSchema]:
+    """Обновление порядка продукта."""
+    mediator: Mediator = container.resolve(Mediator)
+
+    command = PatchProductOrderCommand(product_id=product_id, order=request.order)
     product, *_ = await mediator.handle_command(command)
 
     return ApiResponse[ProductResponseSchema](

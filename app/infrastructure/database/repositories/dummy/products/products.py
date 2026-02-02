@@ -2,7 +2,9 @@ from collections.abc import AsyncIterable
 from dataclasses import (
     dataclass,
     field,
+    replace,
 )
+from datetime import datetime
 from uuid import UUID
 
 from domain.products.entities import ProductEntity
@@ -35,6 +37,17 @@ class DummyInMemoryProductRepository(BaseProductRepository):
                 self._saved_products[i] = product
                 return
         raise ValueError(f"Product with id {product.oid} not found")
+
+    async def update_order(self, product_id: UUID, order: int) -> None:
+        for i, saved_product in enumerate(self._saved_products):
+            if saved_product.oid == product_id:
+                self._saved_products[i] = replace(
+                    saved_product,
+                    order=order,
+                    updated_at=datetime.now(),
+                )
+                return
+        raise ValueError(f"Product with id {product_id} not found")
 
     async def delete(self, product_id: UUID) -> None:
         self._saved_products = [product for product in self._saved_products if product.oid != product_id]

@@ -1,5 +1,6 @@
 from collections.abc import AsyncIterable
 from dataclasses import dataclass
+from datetime import datetime
 from uuid import UUID
 
 from domain.products.entities import ProductEntity
@@ -37,6 +38,12 @@ class MongoProductRepository(BaseMongoRepository, BaseProductRepository):
         await self.collection.update_one(
             {"oid": str(product.oid)},
             {"$set": document},
+        )
+
+    async def update_order(self, product_id: UUID, order: int) -> None:
+        await self.collection.update_one(
+            {"oid": str(product_id)},
+            {"$set": {"order": order, "updated_at": datetime.now().isoformat()}},
         )
 
     async def delete(self, product_id: UUID) -> None:

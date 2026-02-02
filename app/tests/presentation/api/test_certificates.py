@@ -544,6 +544,114 @@ async def test_update_certificate_not_found(
 
 
 @pytest.mark.asyncio
+async def test_patch_certificate_order_success(
+    app: FastAPI,
+    authenticated_client: TestClient,
+    mediator: Mediator,
+    faker: Faker,
+):
+    """Тест успешного обновления порядка сертификата."""
+    group_data = {
+        "section": "Сертификаты",
+        "title": faker.sentence(nb_words=5),
+        "content": faker.text(max_nb_chars=500),
+    }
+    group_schema = CertificateGroupRequestSchema(**group_data)
+    group_result, *_ = await mediator.handle_command(
+        CreateCertificateGroupCommand(certificate_group=group_schema.to_entity()),
+    )
+    group_id = group_result.oid
+
+    data = {
+        "title": faker.sentence(nb_words=3),
+        "link": faker.url(),
+        "order": 1,
+    }
+
+    request_schema = CertificateRequestSchema(**data)
+    result, *_ = await mediator.handle_command(
+        CreateCertificateCommand(
+            certificate=request_schema.to_entity(),
+            certificate_group_id=group_id,
+        ),
+    )
+    certificate_id = result.oid
+
+    url = app.url_path_for("patch_certificate_order", certificate_id=certificate_id)
+
+    response: Response = authenticated_client.patch(url=url, json={"order": 10})
+
+    assert response.is_success
+    assert response.status_code == status.HTTP_200_OK
+
+    json_response = response.json()
+    assert "data" in json_response
+    assert json_response["data"]["oid"] == str(certificate_id)
+    assert json_response["data"]["order"] == 10
+
+
+@pytest.mark.asyncio
+async def test_patch_certificate_order_unauthorized(
+    app: FastAPI,
+    client: TestClient,
+    mediator: Mediator,
+    faker: Faker,
+):
+    """Тест обновления порядка сертификата без аутентификации."""
+    group_data = {
+        "section": "Сертификаты",
+        "title": faker.sentence(nb_words=5),
+        "content": faker.text(max_nb_chars=500),
+    }
+    group_schema = CertificateGroupRequestSchema(**group_data)
+    group_result, *_ = await mediator.handle_command(
+        CreateCertificateGroupCommand(certificate_group=group_schema.to_entity()),
+    )
+    group_id = group_result.oid
+
+    data = {
+        "title": faker.sentence(nb_words=3),
+        "link": faker.url(),
+        "order": 1,
+    }
+
+    request_schema = CertificateRequestSchema(**data)
+    result, *_ = await mediator.handle_command(
+        CreateCertificateCommand(
+            certificate=request_schema.to_entity(),
+            certificate_group_id=group_id,
+        ),
+    )
+    certificate_id = result.oid
+
+    url = app.url_path_for("patch_certificate_order", certificate_id=certificate_id)
+
+    response: Response = client.patch(url=url, json={"order": 5})
+
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    json_response = response.json()
+    assert "errors" in json_response
+    assert len(json_response["errors"]) > 0
+
+
+@pytest.mark.asyncio
+async def test_patch_certificate_order_not_found(
+    app: FastAPI,
+    authenticated_client: TestClient,
+):
+    """Тест обновления порядка несуществующего сертификата."""
+    non_existent_id = uuid4()
+    url = app.url_path_for("patch_certificate_order", certificate_id=non_existent_id)
+
+    response: Response = authenticated_client.patch(url=url, json={"order": 1})
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    json_response = response.json()
+    assert "errors" in json_response
+    assert len(json_response["errors"]) > 0
+
+
+@pytest.mark.asyncio
 async def test_delete_certificate_success(
     app: FastAPI,
     authenticated_client: TestClient,

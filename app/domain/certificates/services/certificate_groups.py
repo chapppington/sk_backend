@@ -65,6 +65,17 @@ class CertificateGroupService:
 
         return certificate_group
 
+    async def update_order(
+        self,
+        certificate_group_id: UUID,
+        order: int,
+    ) -> CertificateGroupEntity:
+        await self.get_by_id(certificate_group_id)
+        await self.certificate_group_repository.update_order(certificate_group_id, order)
+        updated = await self.certificate_group_repository.get_by_id(certificate_group_id)
+        assert updated is not None
+        return updated
+
     async def delete(
         self,
         certificate_group_id: UUID,

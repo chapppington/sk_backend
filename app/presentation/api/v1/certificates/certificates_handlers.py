@@ -10,6 +10,7 @@ from fastapi import (
 from application.certificates.commands import (
     CreateCertificateCommand,
     DeleteCertificateCommand,
+    PatchCertificateOrderCommand,
     UpdateCertificateCommand,
 )
 from application.certificates.queries import (
@@ -29,6 +30,7 @@ from presentation.api.schemas import (
     ListPaginatedResponse,
 )
 from presentation.api.v1.certificates.schemas import (
+    CertificateOrderPatchSchema,
     CertificateRequestSchema,
     CertificateResponseSchema,
 )
@@ -164,6 +166,37 @@ async def update_certificate(
     certificate = request.to_entity()
     command = UpdateCertificateCommand(certificate_id=certificate_id, certificate=certificate)
 
+    certificate, *_ = await mediator.handle_command(command)
+
+    return ApiResponse[CertificateResponseSchema](
+        data=CertificateResponseSchema.from_entity(certificate),
+    )
+
+
+@router.patch(
+    "/{certificate_id}/order",
+    status_code=status.HTTP_200_OK,
+    response_model=ApiResponse[CertificateResponseSchema],
+    responses={
+        status.HTTP_200_OK: {"model": ApiResponse[CertificateResponseSchema]},
+        status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponseSchema},
+        status.HTTP_404_NOT_FOUND: {"model": ErrorResponseSchema},
+        status.HTTP_422_UNPROCESSABLE_CONTENT: {"model": ErrorResponseSchema},
+    },
+)
+async def patch_certificate_order(
+    certificate_id: UUID,
+    request: CertificateOrderPatchSchema,
+    _=Depends(get_current_user_id),
+    container=Depends(get_container),
+) -> ApiResponse[CertificateResponseSchema]:
+    """Обновление порядка сертификата."""
+    mediator: Mediator = container.resolve(Mediator)
+
+    command = PatchCertificateOrderCommand(
+        certificate_id=certificate_id,
+        order=request.order,
+    )
     certificate, *_ = await mediator.handle_command(command)
 
     return ApiResponse[CertificateResponseSchema](

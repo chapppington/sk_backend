@@ -14,6 +14,10 @@ from application.certificates.commands import (
     DeleteCertificateCommandHandler,
     DeleteCertificateGroupCommand,
     DeleteCertificateGroupCommandHandler,
+    PatchCertificateGroupOrderCommand,
+    PatchCertificateGroupOrderCommandHandler,
+    PatchCertificateOrderCommand,
+    PatchCertificateOrderCommandHandler,
     UpdateCertificateCommand,
     UpdateCertificateCommandHandler,
     UpdateCertificateGroupCommand,
@@ -257,9 +261,11 @@ def _init_container() -> Container:
     # Certificates
     container.register(CreateCertificateGroupCommandHandler)
     container.register(UpdateCertificateGroupCommandHandler)
+    container.register(PatchCertificateGroupOrderCommandHandler)
     container.register(DeleteCertificateGroupCommandHandler)
     container.register(CreateCertificateCommandHandler)
     container.register(UpdateCertificateCommandHandler)
+    container.register(PatchCertificateOrderCommandHandler)
     container.register(DeleteCertificateCommandHandler)
 
     # Регистрируем query handlers
@@ -397,6 +403,10 @@ def _init_container() -> Container:
             [container.resolve(UpdateCertificateGroupCommandHandler)],
         )
         mediator.register_command(
+            PatchCertificateGroupOrderCommand,
+            [container.resolve(PatchCertificateGroupOrderCommandHandler)],
+        )
+        mediator.register_command(
             DeleteCertificateGroupCommand,
             [container.resolve(DeleteCertificateGroupCommandHandler)],
         )
@@ -407,6 +417,10 @@ def _init_container() -> Container:
         mediator.register_command(
             UpdateCertificateCommand,
             [container.resolve(UpdateCertificateCommandHandler)],
+        )
+        mediator.register_command(
+            PatchCertificateOrderCommand,
+            [container.resolve(PatchCertificateOrderCommandHandler)],
         )
         mediator.register_command(
             DeleteCertificateCommand,

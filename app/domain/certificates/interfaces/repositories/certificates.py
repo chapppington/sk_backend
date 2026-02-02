@@ -25,6 +25,9 @@ class BaseCertificateRepository(ABC):
     async def update(self, certificate: CertificateEntity) -> None: ...
 
     @abstractmethod
+    async def update_order(self, certificate_id: UUID, order: int) -> None: ...
+
+    @abstractmethod
     async def delete(self, certificate_id: UUID) -> None: ...
 
     @abstractmethod

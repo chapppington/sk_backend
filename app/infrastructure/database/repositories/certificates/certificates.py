@@ -1,5 +1,6 @@
 from collections.abc import AsyncIterable
 from dataclasses import dataclass
+from datetime import datetime
 from uuid import UUID
 
 from domain.certificates.entities.certificates import CertificateEntity
@@ -48,6 +49,12 @@ class MongoCertificateRepository(BaseMongoRepository, BaseCertificateRepository)
         await self.collection.update_one(
             {"oid": str(certificate.oid)},
             {"$set": document},
+        )
+
+    async def update_order(self, certificate_id: UUID, order: int) -> None:
+        await self.collection.update_one(
+            {"oid": str(certificate_id)},
+            {"$set": {"order": order, "updated_at": datetime.now().isoformat()}},
         )
 
     async def delete(self, certificate_id: UUID) -> None:

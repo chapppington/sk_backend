@@ -36,6 +36,10 @@ class CertificateResponseSchema(BaseModel):
         )
 
 
+class CertificateOrderPatchSchema(BaseModel):
+    order: int
+
+
 class CertificateRequestSchema(BaseModel):
     title: str
     link: str
@@ -71,6 +75,10 @@ class CertificateGroupResponseSchema(BaseModel):
             created_at=entity.created_at,
             updated_at=entity.updated_at,
         )
+
+
+class CertificateGroupOrderPatchSchema(BaseModel):
+    order: int
 
 
 class CertificateGroupRequestSchema(BaseModel):

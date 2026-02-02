@@ -2,7 +2,9 @@ from collections.abc import AsyncIterable
 from dataclasses import (
     dataclass,
     field,
+    replace,
 )
+from datetime import datetime
 from uuid import UUID
 
 from domain.certificates.entities.certificate_groups import CertificateGroupEntity
@@ -44,6 +46,17 @@ class DummyInMemoryCertificateGroupRepository(BaseCertificateGroupRepository):
                 self._saved_certificate_groups[i] = certificate_group
                 return
         raise ValueError(f"CertificateGroup with id {certificate_group.oid} not found")
+
+    async def update_order(self, certificate_group_id: UUID, order: int) -> None:
+        for i, saved_certificate_group in enumerate(self._saved_certificate_groups):
+            if saved_certificate_group.oid == certificate_group_id:
+                self._saved_certificate_groups[i] = replace(
+                    saved_certificate_group,
+                    order=order,
+                    updated_at=datetime.now(),
+                )
+                return
+        raise ValueError(f"CertificateGroup with id {certificate_group_id} not found")
 
     async def delete(self, certificate_group_id: UUID) -> None:
         self._saved_certificate_groups = [

@@ -104,6 +104,20 @@ from application.products.queries import (
     GetProductListQuery,
     GetProductListQueryHandler,
 )
+from application.reviews.commands import (
+    CreateReviewCommand,
+    CreateReviewCommandHandler,
+    DeleteReviewCommand,
+    DeleteReviewCommandHandler,
+    UpdateReviewCommand,
+    UpdateReviewCommandHandler,
+)
+from application.reviews.queries import (
+    GetReviewByIdQuery,
+    GetReviewByIdQueryHandler,
+    GetReviewsListQuery,
+    GetReviewsListQueryHandler,
+)
 from application.seo_settings.commands import (
     CreateSeoSettingsCommand,
     CreateSeoSettingsCommandHandler,
@@ -298,6 +312,10 @@ def _init_container() -> Container:
     container.register(UpdateMemberCommandHandler)
     container.register(PatchMemberOrderCommandHandler)
     container.register(DeleteMemberCommandHandler)
+    # Reviews
+    container.register(CreateReviewCommandHandler)
+    container.register(UpdateReviewCommandHandler)
+    container.register(DeleteReviewCommandHandler)
 
     # Регистрируем query handlers
     # Users
@@ -313,6 +331,9 @@ def _init_container() -> Container:
     # Members
     container.register(GetMemberByIdQueryHandler)
     container.register(GetMemberListQueryHandler)
+    # Reviews
+    container.register(GetReviewByIdQueryHandler)
+    container.register(GetReviewsListQueryHandler)
     # Submissions
     container.register(GetSubmissionByIdQueryHandler)
     container.register(GetSubmissionListQueryHandler)
@@ -477,6 +498,19 @@ def _init_container() -> Container:
             DeleteMemberCommand,
             [container.resolve(DeleteMemberCommandHandler)],
         )
+        # Reviews
+        mediator.register_command(
+            CreateReviewCommand,
+            [container.resolve(CreateReviewCommandHandler)],
+        )
+        mediator.register_command(
+            UpdateReviewCommand,
+            [container.resolve(UpdateReviewCommandHandler)],
+        )
+        mediator.register_command(
+            DeleteReviewCommand,
+            [container.resolve(DeleteReviewCommandHandler)],
+        )
 
         # Регистрируем queries
         # Users
@@ -518,6 +552,15 @@ def _init_container() -> Container:
         mediator.register_query(
             GetMemberListQuery,
             container.resolve(GetMemberListQueryHandler),
+        )
+        # Reviews
+        mediator.register_query(
+            GetReviewByIdQuery,
+            container.resolve(GetReviewByIdQueryHandler),
+        )
+        mediator.register_query(
+            GetReviewsListQuery,
+            container.resolve(GetReviewsListQueryHandler),
         )
         # Submissions
         mediator.register_query(

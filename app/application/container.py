@@ -146,6 +146,8 @@ from domain.certificates.services import (
     CertificateGroupService,
     CertificateService,
 )
+from domain.members.interfaces.repository import BaseMemberRepository
+from domain.members.services import MemberService
 from domain.news.interfaces.repository import BaseNewsRepository
 from domain.news.services import NewsService
 from domain.portfolios.interfaces.repository import BasePortfolioRepository
@@ -165,6 +167,7 @@ from infrastructure.database.repositories.certificates import (
     MongoCertificateGroupRepository,
     MongoCertificateRepository,
 )
+from infrastructure.database.repositories.members.mongo import MongoMemberRepository
 from infrastructure.database.repositories.news.mongo import MongoNewsRepository
 from infrastructure.database.repositories.portfolios.mongo import MongoPortfolioRepository
 from infrastructure.database.repositories.products.mongo import MongoProductRepository
@@ -216,6 +219,7 @@ def _init_container() -> Container:
     container.register(BaseSeoSettingsRepository, MongoSeoSettingsRepository)
     container.register(BaseCertificateGroupRepository, MongoCertificateGroupRepository)
     container.register(BaseCertificateRepository, MongoCertificateRepository)
+    container.register(BaseMemberRepository, MongoMemberRepository)
     container.register(BaseSubmissionRepository, MongoSubmissionRepository)
 
     # Регистрируем доменные сервисы
@@ -227,6 +231,7 @@ def _init_container() -> Container:
     container.register(SeoSettingsService)
     container.register(CertificateGroupService)
     container.register(CertificateService)
+    container.register(MemberService)
     container.register(SubmissionService)
 
     # Регистрируем command handlers

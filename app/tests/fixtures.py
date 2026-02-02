@@ -6,6 +6,7 @@ from punq import (
 from application.container import _init_container
 from domain.certificates.interfaces.repositories.certificate_groups import BaseCertificateGroupRepository
 from domain.certificates.interfaces.repositories.certificates import BaseCertificateRepository
+from domain.members.interfaces.repository import BaseMemberRepository
 from domain.news.interfaces.repository import BaseNewsRepository
 from domain.portfolios.interfaces.repository import BasePortfolioRepository
 from domain.products.interfaces.repository import BaseProductRepository
@@ -17,6 +18,7 @@ from infrastructure.database.repositories.dummy.certificates import (
     DummyInMemoryCertificateGroupRepository,
     DummyInMemoryCertificateRepository,
 )
+from infrastructure.database.repositories.dummy.members.members import DummyInMemoryMemberRepository
 from infrastructure.database.repositories.dummy.news.news import DummyInMemoryNewsRepository
 from infrastructure.database.repositories.dummy.portfolios.portfolios import DummyInMemoryPortfolioRepository
 from infrastructure.database.repositories.dummy.products.products import DummyInMemoryProductRepository
@@ -68,6 +70,11 @@ def get_dummy_container() -> Container:
     container.register(
         BaseCertificateRepository,
         DummyInMemoryCertificateRepository,
+        scope=Scope.singleton,
+    )
+    container.register(
+        BaseMemberRepository,
+        DummyInMemoryMemberRepository,
         scope=Scope.singleton,
     )
     container.register(

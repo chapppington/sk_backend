@@ -13,7 +13,6 @@ from application.container import get_container
 from application.media.commands import UploadFileCommand
 from application.mediator import Mediator
 from infrastructure.s3.base import BaseFileStorage
-from presentation.api.dependencies import get_current_user_id
 from presentation.api.schemas import (
     ApiResponse,
     ErrorResponseSchema,
@@ -38,7 +37,6 @@ router = APIRouter(prefix="/media", tags=["media"])
 async def upload_file(
     files: list[UploadFile] = File(...),
     bucket_name: str = Form(...),
-    _=Depends(get_current_user_id),
     container=Depends(get_container),
 ) -> ApiResponse[list[UploadFileResponseSchema]]:
     """Загрузка файлов в указанный бакет."""

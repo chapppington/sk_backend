@@ -84,5 +84,5 @@ class SubmissionCreatedEventSchema(BaseModel):
             comments=entity.comments.as_generic_type() if entity.comments else None,
             files=entity.files,
             answers_file_url=entity.answers_file_url,
-            timestamp=datetime.now().isoformat(),
+            timestamp=entity.created_at.strftime("%d.%m.%Y %H:%M"),
         )

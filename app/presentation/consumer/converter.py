@@ -1,4 +1,4 @@
-from infrastructure.integrations.bitrix.client import BitrixLeadData
+from infrastructure.integrations.bitrix.schemas import BitrixLeadData
 from presentation.api.v1.submissions.schemas import SubmissionCreatedEventSchema
 
 

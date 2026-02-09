@@ -1,29 +1,13 @@
-from dataclasses import dataclass
-from typing import (
-    Any,
-    Optional,
-)
+from typing import Any
 
 import httpx
 
+from infrastructure.integrations.bitrix.base import BaseBitrixClient
+from infrastructure.integrations.bitrix.schemas import BitrixLeadData
 from settings.config import Config
 
 
-@dataclass
-class BitrixLeadData:
-    title: str
-    name: str
-    last_name: Optional[str] = None
-    second_name: Optional[str] = None
-    email: Optional[str] = None
-    phone: Optional[str] = None
-    comments: Optional[str] = None
-    company_title: Optional[str] = None
-    address_city: Optional[str] = None
-    web: Optional[str] = None
-
-
-class BitrixClient:
+class BitrixClient(BaseBitrixClient):
     def __init__(self, config: Config) -> None:
         self.config = config
         self.webhook_url = config.bitrix_webhook_url

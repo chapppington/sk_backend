@@ -208,6 +208,10 @@ from infrastructure.database.repositories.seo_settings.mongo import MongoSeoSett
 from infrastructure.database.repositories.submissions.mongo import MongoSubmissionRepository
 from infrastructure.database.repositories.users.mongo import MongoUserRepository
 from infrastructure.database.repositories.vacancies.mongo import MongoVacancyRepository
+from infrastructure.integrations.bitrix.base import BaseBitrixClient
+from infrastructure.integrations.bitrix.client import BitrixClient
+from infrastructure.integrations.email.base import BaseEmailClient
+from infrastructure.integrations.email.client import EmailClient
 from infrastructure.s3.base import BaseFileStorage
 from infrastructure.s3.client import S3Client
 from infrastructure.s3.storage import S3FileStorage
@@ -236,6 +240,17 @@ def _init_container() -> Container:
         return S3FileStorage(s3_client=container.resolve(S3Client))
 
     container.register(BaseFileStorage, factory=init_s3_file_storage, scope=Scope.singleton)
+
+    # Регистрируем интеграции
+    def init_email_client() -> EmailClient:
+        return EmailClient(config=config)
+
+    container.register(BaseEmailClient, factory=init_email_client, scope=Scope.singleton)
+
+    def init_bitrix_client() -> BitrixClient:
+        return BitrixClient(config=config)
+
+    container.register(BaseBitrixClient, factory=init_bitrix_client, scope=Scope.singleton)
 
     # Регистрируем Mongo Database
     def init_mongo_database() -> MongoDatabase:

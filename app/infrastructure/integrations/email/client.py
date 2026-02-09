@@ -3,10 +3,11 @@ from email.mime.text import MIMEText
 
 import aiosmtplib
 
+from infrastructure.integrations.email.base import BaseEmailClient
 from settings.email import EmailConfig
 
 
-class EmailClient:
+class EmailClient(BaseEmailClient):
     def __init__(self, config: EmailConfig) -> None:
         self.config = config
 

@@ -4,8 +4,8 @@ from faststream import FastStream
 from faststream.rabbit import RabbitBroker
 
 from application.container import get_container
-from infrastructure.integrations.bitrix.client import BitrixClient
-from infrastructure.integrations.email.client import EmailClient
+from infrastructure.integrations.bitrix.base import BaseBitrixClient
+from infrastructure.integrations.email.base import BaseEmailClient
 from infrastructure.integrations.email.templates_service import EmailTemplatesService
 from presentation.api.v1.submissions.schemas import SubmissionCreatedEventSchema
 from presentation.consumer.converter import convert_event_to_lead_data
@@ -17,9 +17,10 @@ config = container.resolve(Config)
 
 broker = RabbitBroker(config.rabbitmq_url)
 
-email_client = EmailClient(config=config)
+email_client = container.resolve(BaseEmailClient)
+bitrix_client = container.resolve(BaseBitrixClient)
+
 email_templates_service = EmailTemplatesService()
-bitrix_client = BitrixClient(config=config)
 
 
 @broker.subscriber("submission_created")

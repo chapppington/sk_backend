@@ -87,6 +87,20 @@ MailDev веб-интерфейс: http://localhost:1080
 
 RabbitMQ Management: http://localhost:15672
 
+## Миграция из PostgreSQL дампа
+
+Скрипт `scripts/migrate_pg_dump_to_mongo.py` переносит данные из дампа старого сайта (PostgreSQL) в MongoDB. **Пользователи (users) не переносятся.**
+
+```bash
+# Проверка без записи в БД
+PYTHONPATH=. poetry run python scripts/migrate_pg_dump_to_mongo.py dump.sql --dry-run
+
+# Реальная миграция (MongoDB должна быть запущена)
+PYTHONPATH=. poetry run python scripts/migrate_pg_dump_to_mongo.py dump.sql
+```
+
+Переносятся: products, submissions, news, portfolio, vacancies, seo_settings, members, reviews, certificate_groups, certificates.
+
 ## Основные команды Makefile
 
 ### Управление приложением

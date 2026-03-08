@@ -87,8 +87,12 @@
                                     Комментарий
                                 </h3>
                                 <div style="background: #f9fafb; padding: 16px; border-radius: 8px; border-left: 4px solid #10b981;">
-                                    <p style="margin: 0; color: #374151; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">
-                                        {{ event.comments }}
+                                    <p style="margin: 0; color: #374151; font-size: 14px; line-height: 1.6;">
+                                        {% if "Вакансия" in event.comments and "Сопроводительное письмо" in event.comments %}
+                                        {{ (event.comments | trim | replace("Сопроводительное письмо", "\nСопроводительное письмо") | replace("\n\n", "\n") | replace("\n", "<br>")) | safe }}
+                                        {% else %}
+                                        {{ (event.comments | trim | replace("\n", "<br>")) | safe }}
+                                        {% endif %}
                                     </p>
                                 </div>
                             </div>
@@ -104,7 +108,7 @@
                                         {% for file in event.files %}
                                         <li style="margin-bottom: 8px;">
                                             <a href="{{ file }}" style="color: #2563eb; text-decoration: none; font-size: 14px;">
-                                                {{ file }}
+                                                Скачать файл {{ loop.index }}
                                             </a>
                                         </li>
                                         {% endfor %}
@@ -121,7 +125,7 @@
                                     Файл с ответами опросного листа
                                 </h3>
                                 <div style="background: #f9fafb; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea;">
-                                    <a href="{{ event.answers_file_url }}" style="color: #667eea; font-size: 14px; text-decoration: underline;">{{ event.answers_file_url }}</a>
+                                    <a href="{{ event.answers_file_url }}" style="color: #667eea; font-size: 14px; text-decoration: underline;">Скачать заполненный опросный лист</a>
                                 </div>
                             </div>
                             {% endif %}

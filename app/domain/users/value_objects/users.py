@@ -22,7 +22,7 @@ class EmailValueObject(BaseValueObject):
         if not self.value:
             raise EmptyEmailException()
 
-        email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        email_pattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         if not re.match(email_pattern, self.value):
             raise InvalidEmailException(email=self.value)
 

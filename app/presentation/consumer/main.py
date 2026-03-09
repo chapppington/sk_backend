@@ -28,13 +28,15 @@ async def submission_created_consumer(message: dict) -> None:
     event = SubmissionCreatedEventSchema(**message)
 
     if event.email:
-        html_content = email_templates_service.render_submission_email(event)
-
-        await email_client.send_email(
-            to_email=event.email,
-            subject=f"Новая заявка: {event.form_type}",
-            body_html=html_content,
-        )
+        try:
+            html_content = email_templates_service.render_submission_email(event)
+            await email_client.send_email(
+                to_email=event.email,
+                subject=f"Новая заявка: {event.form_type}",
+                body_html=html_content,
+            )
+        except Exception as e:
+            print(e)
 
     try:
         lead_data = convert_event_to_lead_data(event)

@@ -25,7 +25,7 @@ class MongoUserRepository(BaseMongoRepository, BaseUserRepository):
         return user_document_to_entity(document)
 
     async def get_by_email(self, email: str) -> UserEntity | None:
-        document = await self.collection.find_one({"email": email.lower()})
+        document = await self.collection.find_one({"email": email})
         if not document:
             return None
         return user_document_to_entity(document)

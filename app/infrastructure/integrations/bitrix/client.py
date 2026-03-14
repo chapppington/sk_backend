@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 
 import httpx
@@ -5,6 +6,9 @@ import httpx
 from infrastructure.integrations.bitrix.base import BaseBitrixClient
 from infrastructure.integrations.bitrix.schemas import BitrixLeadData
 from settings.config import Config
+
+
+logger = logging.getLogger(__name__)
 
 
 class BitrixClient(BaseBitrixClient):
@@ -67,6 +71,7 @@ class BitrixClient(BaseBitrixClient):
         }
 
         async with httpx.AsyncClient(timeout=self.timeout) as client:
+            logger.info("Bitrix: отправка лида %s", lead_data.title)
             response = await client.post(
                 f"{self.webhook_url}/crm.lead.add.json",
                 json=request_data,
@@ -75,10 +80,19 @@ class BitrixClient(BaseBitrixClient):
                 },
             )
 
+            logger.info(
+                "Bitrix: статус %s, ответ: %s",
+                response.status_code,
+                response.text[:500] if response.text else "(пусто)",
+            )
+
             response.raise_for_status()
             response_data = response.json()
 
         if response_data and "result" in response_data:
-            return response_data["result"]
+            lead_id = response_data["result"]
+            logger.info("Bitrix: лид создан, id=%s", lead_id)
+            return lead_id
 
+        logger.error("Bitrix: неожиданный формат ответа: %s", response_data)
         raise ValueError("Bitrix24 вернул неожиданный формат ответа")

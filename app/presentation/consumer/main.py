@@ -5,12 +5,6 @@ import httpx
 from faststream import FastStream
 from faststream.rabbit import RabbitBroker
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
-
 from application.container import get_container
 from infrastructure.integrations.bitrix.base import BaseBitrixClient
 from infrastructure.integrations.email.base import BaseEmailClient
@@ -19,6 +13,12 @@ from presentation.api.v1.submissions.schemas import SubmissionCreatedEventSchema
 from presentation.consumer.converter import convert_event_to_lead_data
 from settings.config import Config
 
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 
 container = get_container()
 config = container.resolve(Config)

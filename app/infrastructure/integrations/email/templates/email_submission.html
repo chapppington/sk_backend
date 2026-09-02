@@ -72,6 +72,22 @@
                                     {% endif %}
                                     <tr>
                                         <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">
+                                            Согласие на обработку ПД:
+                                        </td>
+                                        <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 600;">
+                                            {% if event.consent %}Да{% else %}Нет{% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">
+                                            Согласие на рекламную рассылку:
+                                        </td>
+                                        <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 600;">
+                                            {% if event.marketing_consent %}Да{% else %}Нет{% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">
                                             Дата создания:
                                         </td>
                                         <td style="padding: 8px 0; color: #111827; font-size: 14px;">

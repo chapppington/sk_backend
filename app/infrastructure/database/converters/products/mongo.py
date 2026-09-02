@@ -53,6 +53,7 @@ def product_entity_to_document(entity: ProductEntity) -> dict:
         "order": entity.order,
         "is_shown": entity.is_shown,
         "show_advantages": entity.show_advantages,
+        "show_price_from": entity.show_price_from,
         "portfolio_ids": [str(pid) for pid in entity.portfolio_ids],
         "created_at": entity.created_at.isoformat(),
         "updated_at": entity.updated_at.isoformat(),
@@ -60,6 +61,8 @@ def product_entity_to_document(entity: ProductEntity) -> dict:
 
     if entity.preview_image_alt:
         document["preview_image_alt"] = entity.preview_image_alt.as_generic_type()
+    if entity.price:
+        document["price"] = entity.price
     if entity.documentation:
         document["documentation"] = [
             {"title": doc.title, "url": doc.url, "type": doc.type} for doc in entity.documentation
@@ -132,6 +135,8 @@ def product_document_to_entity(document: dict) -> ProductEntity:
         order=document.get("order", 0),
         is_shown=document.get("is_shown", True),
         show_advantages=document.get("show_advantages", True),
+        price=document.get("price"),
+        show_price_from=document.get("show_price_from", True),
         portfolio_ids=portfolio_ids,
         created_at=datetime.fromisoformat(document["created_at"]),
         updated_at=datetime.fromisoformat(document["updated_at"]),

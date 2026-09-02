@@ -40,6 +40,7 @@ async def test_create_submission_success(client: TestClient, faker: Faker):
             "comments": faker.text(max_nb_chars=200),
             "files": [],
             "answers_file_url": "https://storage.example.com/answers/file123.pdf",
+            "consent": True,
         }
 
         response: Response = client.post(url=url, json=data)
@@ -67,6 +68,7 @@ async def test_create_submission_minimal(client: TestClient, faker: Faker):
         data = {
             "form_type": "Обращение",
             "name": faker.name(),
+            "consent": True,
         }
 
         response: Response = client.post(url=url, json=data)
@@ -91,6 +93,7 @@ async def test_create_submission_invalid_form_type(client: TestClient, faker: Fa
     data = {
         "form_type": "Невалидный тип",
         "name": faker.name(),
+        "consent": True,
     }
 
     response: Response = client.post(url=url, json=data)
@@ -110,6 +113,7 @@ async def test_create_submission_invalid_email(client: TestClient, faker: Faker)
         "form_type": "Обращение",
         "name": faker.name(),
         "email": "invalid-email",
+        "consent": True,
     }
 
     response: Response = client.post(url=url, json=data)
@@ -128,6 +132,7 @@ async def test_create_submission_empty_name(client: TestClient):
     data = {
         "form_type": "Обращение",
         "name": "",
+        "consent": True,
     }
 
     response: Response = client.post(url=url, json=data)
@@ -150,6 +155,7 @@ async def test_get_submission_by_id_success(
         "name": faker.name(),
         "email": faker.email(),
         "answers_file_url": "https://storage.example.com/answers/file.pdf",
+        "consent": True,
     }
 
     request_schema = SubmissionRequestSchema(**data)
@@ -204,6 +210,7 @@ async def test_get_submissions_list_success(
             "form_type": "Опросный лист",
             "name": faker.name(),
             "email": faker.email(),
+            "consent": True,
         }
         request_schema = SubmissionRequestSchema(**data)
         submission = request_schema.to_entity()
@@ -238,6 +245,7 @@ async def test_get_submissions_list_with_pagination(
             "form_type": "Обращение",
             "name": faker.name(),
             "email": faker.email(),
+            "consent": True,
         }
         request_schema = SubmissionRequestSchema(**data)
         submission = request_schema.to_entity()
@@ -268,6 +276,7 @@ async def test_get_submissions_list_with_form_type_filter(
             "form_type": "Опросный лист",
             "name": faker.name(),
             "email": faker.email(),
+            "consent": True,
         }
         request_schema = SubmissionRequestSchema(**data)
         submission = request_schema.to_entity()
@@ -278,6 +287,7 @@ async def test_get_submissions_list_with_form_type_filter(
             "form_type": "Обращение",
             "name": faker.name(),
             "email": faker.email(),
+            "consent": True,
         }
         request_schema = SubmissionRequestSchema(**data)
         submission = request_schema.to_entity()
@@ -303,6 +313,7 @@ async def test_delete_submission_success(
         "form_type": "Обращение",
         "name": faker.name(),
         "email": faker.email(),
+        "consent": True,
     }
 
     request_schema = SubmissionRequestSchema(**data)
@@ -334,6 +345,7 @@ async def test_delete_submission_unauthorized(
         "form_type": "Обращение",
         "name": faker.name(),
         "email": faker.email(),
+        "consent": True,
     }
 
     request_schema = SubmissionRequestSchema(**data)

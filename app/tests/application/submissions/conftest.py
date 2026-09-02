@@ -19,6 +19,7 @@ def valid_submission_entity(faker: Faker) -> SubmissionEntity:
         email=EmailValueObject(value=faker.email()),
         phone=PhoneValueObject(value=faker.phone_number()),
         comments=CommentsValueObject(value=faker.text(max_nb_chars=200)),
+        consent=True,
     )
 
 
@@ -31,6 +32,7 @@ def valid_submission_entity_with_form_type(faker: Faker):
             email=EmailValueObject(value=faker.email()),
             phone=PhoneValueObject(value=faker.phone_number()),
             comments=CommentsValueObject(value=faker.text(max_nb_chars=200)),
+            consent=True,
         )
 
     return _create

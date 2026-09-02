@@ -104,6 +104,20 @@ from application.products.queries import (
     GetProductListQuery,
     GetProductListQueryHandler,
 )
+from application.questionnaire_settings.commands import (
+    CreateQuestionnaireSettingsCommand,
+    CreateQuestionnaireSettingsCommandHandler,
+    DeleteQuestionnaireSettingsCommand,
+    DeleteQuestionnaireSettingsCommandHandler,
+    UpdateQuestionnaireSettingsCommand,
+    UpdateQuestionnaireSettingsCommandHandler,
+)
+from application.questionnaire_settings.queries import (
+    GetQuestionnaireSettingsBySlugQuery,
+    GetQuestionnaireSettingsBySlugQueryHandler,
+    GetQuestionnaireSettingsListQuery,
+    GetQuestionnaireSettingsListQueryHandler,
+)
 from application.reviews.commands import (
     CreateReviewCommand,
     CreateReviewCommandHandler,
@@ -184,6 +198,8 @@ from domain.portfolios.interfaces.repository import BasePortfolioRepository
 from domain.portfolios.services.portfolios import PortfolioService
 from domain.products.interfaces.repository import BaseProductRepository
 from domain.products.services import ProductService
+from domain.questionnaire_settings.interfaces.repository import BaseQuestionnaireSettingsRepository
+from domain.questionnaire_settings.services import QuestionnaireSettingsService
 from domain.reviews.interfaces.repository import BaseReviewRepository
 from domain.reviews.services import ReviewService
 from domain.seo_settings.interfaces.repository import BaseSeoSettingsRepository
@@ -203,6 +219,7 @@ from infrastructure.database.repositories.members.mongo import MongoMemberReposi
 from infrastructure.database.repositories.news.mongo import MongoNewsRepository
 from infrastructure.database.repositories.portfolios.mongo import MongoPortfolioRepository
 from infrastructure.database.repositories.products.mongo import MongoProductRepository
+from infrastructure.database.repositories.questionnaire_settings.mongo import MongoQuestionnaireSettingsRepository
 from infrastructure.database.repositories.reviews.mongo import MongoReviewRepository
 from infrastructure.database.repositories.seo_settings.mongo import MongoSeoSettingsRepository
 from infrastructure.database.repositories.submissions.mongo import MongoSubmissionRepository
@@ -264,6 +281,7 @@ def _init_container() -> Container:
     container.register(BaseVacancyRepository, MongoVacancyRepository)
     container.register(BasePortfolioRepository, MongoPortfolioRepository)
     container.register(BaseProductRepository, MongoProductRepository)
+    container.register(BaseQuestionnaireSettingsRepository, MongoQuestionnaireSettingsRepository)
     container.register(BaseSeoSettingsRepository, MongoSeoSettingsRepository)
     container.register(BaseCertificateGroupRepository, MongoCertificateGroupRepository)
     container.register(BaseCertificateRepository, MongoCertificateRepository)
@@ -277,6 +295,7 @@ def _init_container() -> Container:
     container.register(VacancyService)
     container.register(PortfolioService)
     container.register(ProductService)
+    container.register(QuestionnaireSettingsService)
     container.register(SeoSettingsService)
     container.register(CertificateGroupService)
     container.register(CertificateService)
@@ -309,6 +328,10 @@ def _init_container() -> Container:
     container.register(UpdateProductCommandHandler)
     container.register(PatchProductOrderCommandHandler)
     container.register(DeleteProductCommandHandler)
+    # Questionnaire Settings
+    container.register(CreateQuestionnaireSettingsCommandHandler)
+    container.register(UpdateQuestionnaireSettingsCommandHandler)
+    container.register(DeleteQuestionnaireSettingsCommandHandler)
     # SEO Settings
     container.register(CreateSeoSettingsCommandHandler)
     container.register(UpdateSeoSettingsCommandHandler)
@@ -360,6 +383,9 @@ def _init_container() -> Container:
     container.register(GetProductByIdQueryHandler)
     container.register(GetProductBySlugQueryHandler)
     container.register(GetProductListQueryHandler)
+    # Questionnaire Settings
+    container.register(GetQuestionnaireSettingsListQueryHandler)
+    container.register(GetQuestionnaireSettingsBySlugQueryHandler)
     # SEO Settings
     container.register(GetSeoSettingsByIdQueryHandler)
     container.register(GetSeoSettingsByPathQueryHandler)
@@ -449,6 +475,19 @@ def _init_container() -> Container:
         mediator.register_command(
             DeleteProductCommand,
             [container.resolve(DeleteProductCommandHandler)],
+        )
+        # Questionnaire Settings
+        mediator.register_command(
+            CreateQuestionnaireSettingsCommand,
+            [container.resolve(CreateQuestionnaireSettingsCommandHandler)],
+        )
+        mediator.register_command(
+            UpdateQuestionnaireSettingsCommand,
+            [container.resolve(UpdateQuestionnaireSettingsCommandHandler)],
+        )
+        mediator.register_command(
+            DeleteQuestionnaireSettingsCommand,
+            [container.resolve(DeleteQuestionnaireSettingsCommandHandler)],
         )
         # SEO Settings
         mediator.register_command(
@@ -611,6 +650,15 @@ def _init_container() -> Container:
         mediator.register_query(
             GetProductListQuery,
             container.resolve(GetProductListQueryHandler),
+        )
+        # Questionnaire Settings
+        mediator.register_query(
+            GetQuestionnaireSettingsListQuery,
+            container.resolve(GetQuestionnaireSettingsListQueryHandler),
+        )
+        mediator.register_query(
+            GetQuestionnaireSettingsBySlugQuery,
+            container.resolve(GetQuestionnaireSettingsBySlugQueryHandler),
         )
         # SEO Settings
         mediator.register_query(

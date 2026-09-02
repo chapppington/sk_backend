@@ -17,6 +17,8 @@ def submission_entity_to_document(entity: SubmissionEntity) -> dict:
         "form_type": entity.form_type.as_generic_type(),
         "name": entity.name.as_generic_type(),
         "files": entity.files,
+        "consent": entity.consent,
+        "marketing_consent": entity.marketing_consent,
         "created_at": entity.created_at.isoformat(),
         "updated_at": entity.updated_at.isoformat(),
     }
@@ -43,6 +45,8 @@ def submission_document_to_entity(document: dict) -> SubmissionEntity:
         comments=CommentsValueObject(value=document.get("comments")),
         files=document.get("files", []),
         answers_file_url=document.get("answers_file_url"),
+        consent=document.get("consent", True),
+        marketing_consent=document.get("marketing_consent", False),
         created_at=datetime.fromisoformat(document["created_at"]),
         updated_at=datetime.fromisoformat(document["updated_at"]),
     )

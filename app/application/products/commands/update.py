@@ -47,6 +47,8 @@ class UpdateProductCommandHandler(
             order=command.product.order,
             is_shown=command.product.is_shown,
             show_advantages=command.product.show_advantages,
+            price=command.product.price,
+            show_price_from=command.product.show_price_from,
             portfolio_ids=command.product.portfolio_ids,
         )
 

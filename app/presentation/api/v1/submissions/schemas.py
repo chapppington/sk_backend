@@ -1,7 +1,10 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import (
+    BaseModel,
+    field_validator,
+)
 
 from domain.submissions.entities.submissions import SubmissionEntity
 from domain.submissions.value_objects.submissions import (
@@ -22,6 +25,8 @@ class SubmissionResponseSchema(BaseModel):
     comments: str | None
     files: list[str]
     answers_file_url: str | None
+    consent: bool
+    marketing_consent: bool
     created_at: datetime
     updated_at: datetime
 
@@ -36,6 +41,8 @@ class SubmissionResponseSchema(BaseModel):
             comments=entity.comments.as_generic_type() if entity.comments else None,
             files=entity.files,
             answers_file_url=entity.answers_file_url,
+            consent=entity.consent,
+            marketing_consent=entity.marketing_consent,
             created_at=entity.created_at,
             updated_at=entity.updated_at,
         )
@@ -49,6 +56,15 @@ class SubmissionRequestSchema(BaseModel):
     comments: str | None = None
     files: list[str] = []
     answers_file_url: str | None = None
+    consent: bool
+    marketing_consent: bool = False
+
+    @field_validator("consent")
+    @classmethod
+    def validate_consent(cls, value: bool) -> bool:
+        if not value:
+            raise ValueError("Необходимо согласие на обработку персональных данных")
+        return value
 
     def to_entity(self) -> SubmissionEntity:
         return SubmissionEntity(
@@ -59,6 +75,8 @@ class SubmissionRequestSchema(BaseModel):
             comments=CommentsValueObject(value=self.comments) if self.comments else None,
             files=self.files,
             answers_file_url=self.answers_file_url,
+            consent=self.consent,
+            marketing_consent=self.marketing_consent,
         )
 
 
@@ -71,6 +89,8 @@ class SubmissionCreatedEventSchema(BaseModel):
     comments: str | None
     files: list[str]
     answers_file_url: str | None
+    consent: bool
+    marketing_consent: bool
     timestamp: str
 
     @classmethod
@@ -84,5 +104,7 @@ class SubmissionCreatedEventSchema(BaseModel):
             comments=entity.comments.as_generic_type() if entity.comments else None,
             files=entity.files,
             answers_file_url=entity.answers_file_url,
+            consent=entity.consent,
+            marketing_consent=entity.marketing_consent,
             timestamp=entity.created_at.strftime("%d.%m.%Y %H:%M"),
         )

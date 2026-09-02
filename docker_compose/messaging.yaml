@@ -12,7 +12,8 @@ services:
     networks:
       - backend
     healthcheck:
-      test: rabbitmq-diagnostics -q ping
+      # ping alone can pass before the AMQP listener accepts TCP (race with main-app startup)
+      test: ["CMD-SHELL", "rabbitmq-diagnostics -q ping && rabbitmq-diagnostics -q check_port_listener 5672"]
       interval: 30s
       timeout: 10s
       retries: 5

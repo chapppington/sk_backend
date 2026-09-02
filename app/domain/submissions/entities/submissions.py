@@ -22,3 +22,5 @@ class SubmissionEntity(BaseEntity):
     comments: CommentsValueObject | None = None
     files: list[str] = field(default_factory=list)
     answers_file_url: str | None = None
+    consent: bool = False
+    marketing_consent: bool = False

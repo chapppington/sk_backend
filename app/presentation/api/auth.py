@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from authx import (
     AuthX,
     AuthXConfig,
@@ -13,6 +15,8 @@ config = container.resolve(Config)
 auth_config = AuthXConfig(
     JWT_ALGORITHM="HS256",
     JWT_SECRET_KEY=config.jwt_secret_key,
+    JWT_ACCESS_TOKEN_EXPIRES=timedelta(hours=24),
+    JWT_REFRESH_TOKEN_EXPIRES=timedelta(days=30),
     JWT_TOKEN_LOCATION=["cookies", "headers"],  # Поддерживаем cookies и headers
     JWT_ACCESS_COOKIE_NAME="access_token",
     JWT_REFRESH_COOKIE_NAME="refresh_token",

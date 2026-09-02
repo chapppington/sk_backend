@@ -72,6 +72,8 @@ class ProductResponseSchema(BaseModel):
     order: int
     is_shown: bool
     show_advantages: bool
+    price: Optional[str] = None
+    show_price_from: bool = True
     portfolio_ids: list[UUID]
     created_at: datetime
     updated_at: datetime
@@ -117,6 +119,8 @@ class ProductResponseSchema(BaseModel):
             order=entity.order,
             is_shown=entity.is_shown,
             show_advantages=entity.show_advantages,
+            price=entity.price,
+            show_price_from=entity.show_price_from,
             portfolio_ids=entity.portfolio_ids,
             created_at=entity.created_at,
             updated_at=entity.updated_at,
@@ -142,6 +146,8 @@ class ProductRequestSchema(BaseModel):
     order: int = 0
     is_shown: bool = True
     show_advantages: bool = True
+    price: Optional[str] = None
+    show_price_from: bool = True
     portfolio_ids: list[UUID] = []
 
     def to_entity(self) -> ProductEntity:
@@ -198,5 +204,7 @@ class ProductRequestSchema(BaseModel):
             order=self.order,
             is_shown=self.is_shown,
             show_advantages=self.show_advantages,
+            price=self.price,
+            show_price_from=self.show_price_from,
             portfolio_ids=self.portfolio_ids,
         )

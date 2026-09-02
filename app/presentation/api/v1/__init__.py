@@ -7,6 +7,7 @@ from presentation.api.v1.members.handlers import router as members_router
 from presentation.api.v1.news.handlers import router as news_router
 from presentation.api.v1.portfolios.handlers import router as portfolios_router
 from presentation.api.v1.products.handlers import router as products_router
+from presentation.api.v1.questionnaire_settings.handlers import router as questionnaire_settings_router
 from presentation.api.v1.reviews.handlers import router as reviews_router
 from presentation.api.v1.seo_settings.handlers import router as seo_settings_router
 from presentation.api.v1.submissions.handlers import router as submissions_router
@@ -26,5 +27,6 @@ v1_router.include_router(vacancies_router)
 v1_router.include_router(submissions_router)
 v1_router.include_router(portfolios_router)
 v1_router.include_router(products_router)
+v1_router.include_router(questionnaire_settings_router)
 v1_router.include_router(seo_settings_router)
 v1_router.include_router(certificates_router)

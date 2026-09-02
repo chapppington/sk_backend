@@ -36,4 +36,6 @@ class ProductEntity(BaseEntity):
     order: int = 0
     is_shown: bool = True
     show_advantages: bool = True
+    price: str | None = None
+    show_price_from: bool = True
     portfolio_ids: list[UUID] = field(default_factory=list)

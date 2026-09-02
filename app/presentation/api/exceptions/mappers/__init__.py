@@ -7,6 +7,7 @@ from domain.members.exceptions.members import MemberException
 from domain.news.exceptions.news import NewsException
 from domain.portfolios.exceptions.portfolios import PortfolioException
 from domain.products.exceptions.products import ProductException
+from domain.questionnaire_settings.exceptions.questionnaire_settings import QuestionnaireSettingsException
 from domain.reviews.exceptions.reviews import ReviewException
 from domain.seo_settings.exceptions.seo_settings import SeoSettingsException
 from domain.submissions.exceptions.submissions import SubmissionException
@@ -20,6 +21,9 @@ from presentation.api.exceptions.mappers.members import map_member_exception_to_
 from presentation.api.exceptions.mappers.news import map_news_exception_to_status_code
 from presentation.api.exceptions.mappers.portfolios import map_portfolio_exception_to_status_code
 from presentation.api.exceptions.mappers.products import map_product_exception_to_status_code
+from presentation.api.exceptions.mappers.questionnaire_settings import (
+    map_questionnaire_settings_exception_to_status_code,
+)
 from presentation.api.exceptions.mappers.reviews import map_review_exception_to_status_code
 from presentation.api.exceptions.mappers.seo_settings import map_seo_settings_exception_to_status_code
 from presentation.api.exceptions.mappers.submissions import map_submission_exception_to_status_code
@@ -38,6 +42,8 @@ def map_domain_exception_to_status_code(exc: DomainException) -> int:
         return map_portfolio_exception_to_status_code(exc)
     if isinstance(exc, ProductException):
         return map_product_exception_to_status_code(exc)
+    if isinstance(exc, QuestionnaireSettingsException):
+        return map_questionnaire_settings_exception_to_status_code(exc)
     if isinstance(exc, SeoSettingsException):
         return map_seo_settings_exception_to_status_code(exc)
     if isinstance(exc, CertificateGroupException):

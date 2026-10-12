@@ -13,6 +13,7 @@ from presentation.api.v1.seo_settings.handlers import router as seo_settings_rou
 from presentation.api.v1.submissions.handlers import router as submissions_router
 from presentation.api.v1.users.handlers import router as users_router
 from presentation.api.v1.vacancies.handlers import router as vacancies_router
+from presentation.api.v1.warehouse_file.handlers import router as warehouse_file_router
 
 
 v1_router = APIRouter()
@@ -30,3 +31,4 @@ v1_router.include_router(products_router)
 v1_router.include_router(questionnaire_settings_router)
 v1_router.include_router(seo_settings_router)
 v1_router.include_router(certificates_router)
+v1_router.include_router(warehouse_file_router)

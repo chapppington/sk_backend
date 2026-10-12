@@ -13,6 +13,7 @@ from domain.seo_settings.exceptions.seo_settings import SeoSettingsException
 from domain.submissions.exceptions.submissions import SubmissionException
 from domain.users.exceptions import UserException
 from domain.vacancies.exceptions.vacancies import VacancyException
+from domain.warehouse_file.exceptions.warehouse_file import WarehouseFileException
 from presentation.api.exceptions.mappers.certificates import (
     map_certificate_exception_to_status_code,
     map_certificate_group_exception_to_status_code,
@@ -29,6 +30,9 @@ from presentation.api.exceptions.mappers.seo_settings import map_seo_settings_ex
 from presentation.api.exceptions.mappers.submissions import map_submission_exception_to_status_code
 from presentation.api.exceptions.mappers.users import map_user_exception_to_status_code
 from presentation.api.exceptions.mappers.vacancies import map_vacancy_exception_to_status_code
+from presentation.api.exceptions.mappers.warehouse_file import (
+    map_warehouse_file_exception_to_status_code,
+)
 
 
 def map_domain_exception_to_status_code(exc: DomainException) -> int:
@@ -56,4 +60,6 @@ def map_domain_exception_to_status_code(exc: DomainException) -> int:
         return map_member_exception_to_status_code(exc)
     if isinstance(exc, ReviewException):
         return map_review_exception_to_status_code(exc)
+    if isinstance(exc, WarehouseFileException):
+        return map_warehouse_file_exception_to_status_code(exc)
     return status.HTTP_400_BAD_REQUEST

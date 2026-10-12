@@ -184,6 +184,14 @@ from application.vacancies.queries import (
     GetVacancyListQuery,
     GetVacancyListQueryHandler,
 )
+from application.warehouse_file.commands import (
+    UpsertWarehouseFileCommand,
+    UpsertWarehouseFileCommandHandler,
+)
+from application.warehouse_file.queries import (
+    GetWarehouseFileQuery,
+    GetWarehouseFileQueryHandler,
+)
 from domain.certificates.interfaces.repositories.certificate_groups import BaseCertificateGroupRepository
 from domain.certificates.interfaces.repositories.certificates import BaseCertificateRepository
 from domain.certificates.services import (
@@ -210,6 +218,8 @@ from domain.users.interfaces.repository import BaseUserRepository
 from domain.users.services import UserService
 from domain.vacancies.interfaces.repository import BaseVacancyRepository
 from domain.vacancies.services import VacancyService
+from domain.warehouse_file.interfaces.repository import BaseWarehouseFileRepository
+from domain.warehouse_file.services import WarehouseFileService
 from infrastructure.database.gateways.mongo import MongoDatabase
 from infrastructure.database.repositories.certificates import (
     MongoCertificateGroupRepository,
@@ -225,6 +235,7 @@ from infrastructure.database.repositories.seo_settings.mongo import MongoSeoSett
 from infrastructure.database.repositories.submissions.mongo import MongoSubmissionRepository
 from infrastructure.database.repositories.users.mongo import MongoUserRepository
 from infrastructure.database.repositories.vacancies.mongo import MongoVacancyRepository
+from infrastructure.database.repositories.warehouse_file.mongo import MongoWarehouseFileRepository
 from infrastructure.integrations.bitrix.base import BaseBitrixClient
 from infrastructure.integrations.bitrix.client import BitrixClient
 from infrastructure.integrations.email.base import BaseEmailClient
@@ -288,6 +299,7 @@ def _init_container() -> Container:
     container.register(BaseMemberRepository, MongoMemberRepository)
     container.register(BaseReviewRepository, MongoReviewRepository)
     container.register(BaseSubmissionRepository, MongoSubmissionRepository)
+    container.register(BaseWarehouseFileRepository, MongoWarehouseFileRepository)
 
     # Регистрируем доменные сервисы
     container.register(UserService)
@@ -302,6 +314,7 @@ def _init_container() -> Container:
     container.register(MemberService)
     container.register(ReviewService)
     container.register(SubmissionService)
+    container.register(WarehouseFileService)
 
     # Регистрируем command handlers
     # Media
@@ -354,6 +367,8 @@ def _init_container() -> Container:
     container.register(CreateReviewCommandHandler)
     container.register(UpdateReviewCommandHandler)
     container.register(DeleteReviewCommandHandler)
+    # Warehouse File
+    container.register(UpsertWarehouseFileCommandHandler)
 
     # Регистрируем query handlers
     # Users
@@ -395,8 +410,10 @@ def _init_container() -> Container:
     container.register(GetCertificateGroupsListQueryHandler)
     container.register(GetCertificateByIdQueryHandler)
     container.register(GetCertificatesListQueryHandler)
+    # Warehouse File
+    container.register(GetWarehouseFileQueryHandler)
 
-    # Инициализируем медиатор
+        # Инициализируем медиатор
     def init_mediator() -> Mediator:
         mediator = Mediator()
 
@@ -565,6 +582,11 @@ def _init_container() -> Container:
             DeleteReviewCommand,
             [container.resolve(DeleteReviewCommandHandler)],
         )
+        # Warehouse File
+        mediator.register_command(
+            UpsertWarehouseFileCommand,
+            [container.resolve(UpsertWarehouseFileCommandHandler)],
+        )
 
         # Регистрируем queries
         # Users
@@ -689,6 +711,11 @@ def _init_container() -> Container:
         mediator.register_query(
             GetCertificatesListQuery,
             container.resolve(GetCertificatesListQueryHandler),
+        )
+        # Warehouse File
+        mediator.register_query(
+            GetWarehouseFileQuery,
+            container.resolve(GetWarehouseFileQueryHandler),
         )
 
         return mediator

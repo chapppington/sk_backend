@@ -2,6 +2,11 @@ services:
   minio:
     image: minio/minio:latest
     container_name: minio
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"
     ports:
       - "${MINIO_API_PORT:-9000}:9000"
       - "${MINIO_CONSOLE_PORT:-9001}:9001"

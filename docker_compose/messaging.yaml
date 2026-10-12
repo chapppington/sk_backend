@@ -2,6 +2,11 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"
     ports:
       - "5672:5672"
     environment:

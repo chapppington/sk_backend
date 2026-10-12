@@ -2,6 +2,11 @@ services:
   maildev:
     image: maildev/maildev:latest
     container_name: maildev
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"
     ports:
       - "${MAILDEV_SMTP_PORT:-1025}:1025"
       - "${MAILDEV_WEB_PORT:-1080}:1080"

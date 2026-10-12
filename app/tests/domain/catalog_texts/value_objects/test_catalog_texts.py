@@ -37,6 +37,18 @@ def test_content_accepts_editor_document():
                 ],
             },
             {
+                "type": "orderedList",
+                "attrs": {"start": 1, "type": None},
+                "content": [
+                    {
+                        "type": "listItem",
+                        "content": [
+                            {"type": "paragraph", "content": [{"type": "text", "text": "раз"}]},
+                        ],
+                    },
+                ],
+            },
+            {
                 "type": "bulletList",
                 "content": [
                     {

@@ -70,11 +70,14 @@ def _validate_attrs(node_type: str, attrs: Any) -> None:
         return
 
     if node_type == "orderedList":
-        if set(attrs) - {"start"}:
-            raise _invalid("у нумерованного списка допустим только start")
+        if set(attrs) - {"start", "type"}:
+            raise _invalid("у нумерованного списка допустимы только start и type")
         start = attrs.get("start", 1)
         if isinstance(start, bool) or not isinstance(start, int) or start < 1:
             raise _invalid("start нумерованного списка должен быть целым числом от 1")
+        list_type = attrs.get("type")
+        if list_type not in (None, "1", "a", "A", "i", "I"):
+            raise _invalid("type нумерованного списка может быть только 1, a, A, i или I")
         return
 
     if attrs != {}:

@@ -5,6 +5,16 @@ from punq import (
     Scope,
 )
 
+from application.catalog_texts.commands import (
+    UpsertCatalogTextCommand,
+    UpsertCatalogTextCommandHandler,
+)
+from application.catalog_texts.queries import (
+    GetCatalogTextByCategoryQuery,
+    GetCatalogTextByCategoryQueryHandler,
+    GetCatalogTextListQuery,
+    GetCatalogTextListQueryHandler,
+)
 from application.certificates.commands import (
     CreateCertificateCommand,
     CreateCertificateCommandHandler,
@@ -192,6 +202,8 @@ from application.warehouse_file.queries import (
     GetWarehouseFileQuery,
     GetWarehouseFileQueryHandler,
 )
+from domain.catalog_texts.interfaces.repository import BaseCatalogTextRepository
+from domain.catalog_texts.services import CatalogTextService
 from domain.certificates.interfaces.repositories.certificate_groups import BaseCertificateGroupRepository
 from domain.certificates.interfaces.repositories.certificates import BaseCertificateRepository
 from domain.certificates.services import (
@@ -221,6 +233,7 @@ from domain.vacancies.services import VacancyService
 from domain.warehouse_file.interfaces.repository import BaseWarehouseFileRepository
 from domain.warehouse_file.services import WarehouseFileService
 from infrastructure.database.gateways.mongo import MongoDatabase
+from infrastructure.database.repositories.catalog_texts.mongo import MongoCatalogTextRepository
 from infrastructure.database.repositories.certificates import (
     MongoCertificateGroupRepository,
     MongoCertificateRepository,
@@ -293,6 +306,7 @@ def _init_container() -> Container:
     container.register(BasePortfolioRepository, MongoPortfolioRepository)
     container.register(BaseProductRepository, MongoProductRepository)
     container.register(BaseQuestionnaireSettingsRepository, MongoQuestionnaireSettingsRepository)
+    container.register(BaseCatalogTextRepository, MongoCatalogTextRepository)
     container.register(BaseSeoSettingsRepository, MongoSeoSettingsRepository)
     container.register(BaseCertificateGroupRepository, MongoCertificateGroupRepository)
     container.register(BaseCertificateRepository, MongoCertificateRepository)
@@ -308,6 +322,7 @@ def _init_container() -> Container:
     container.register(PortfolioService)
     container.register(ProductService)
     container.register(QuestionnaireSettingsService)
+    container.register(CatalogTextService)
     container.register(SeoSettingsService)
     container.register(CertificateGroupService)
     container.register(CertificateService)
@@ -345,6 +360,8 @@ def _init_container() -> Container:
     container.register(CreateQuestionnaireSettingsCommandHandler)
     container.register(UpdateQuestionnaireSettingsCommandHandler)
     container.register(DeleteQuestionnaireSettingsCommandHandler)
+    # Catalog texts
+    container.register(UpsertCatalogTextCommandHandler)
     # SEO Settings
     container.register(CreateSeoSettingsCommandHandler)
     container.register(UpdateSeoSettingsCommandHandler)
@@ -401,6 +418,9 @@ def _init_container() -> Container:
     # Questionnaire Settings
     container.register(GetQuestionnaireSettingsListQueryHandler)
     container.register(GetQuestionnaireSettingsBySlugQueryHandler)
+    # Catalog texts
+    container.register(GetCatalogTextListQueryHandler)
+    container.register(GetCatalogTextByCategoryQueryHandler)
     # SEO Settings
     container.register(GetSeoSettingsByIdQueryHandler)
     container.register(GetSeoSettingsByPathQueryHandler)
@@ -413,7 +433,7 @@ def _init_container() -> Container:
     # Warehouse File
     container.register(GetWarehouseFileQueryHandler)
 
-        # Инициализируем медиатор
+    # Инициализируем медиатор
     def init_mediator() -> Mediator:
         mediator = Mediator()
 
@@ -505,6 +525,11 @@ def _init_container() -> Container:
         mediator.register_command(
             DeleteQuestionnaireSettingsCommand,
             [container.resolve(DeleteQuestionnaireSettingsCommandHandler)],
+        )
+        # Catalog texts
+        mediator.register_command(
+            UpsertCatalogTextCommand,
+            [container.resolve(UpsertCatalogTextCommandHandler)],
         )
         # SEO Settings
         mediator.register_command(
@@ -681,6 +706,15 @@ def _init_container() -> Container:
         mediator.register_query(
             GetQuestionnaireSettingsBySlugQuery,
             container.resolve(GetQuestionnaireSettingsBySlugQueryHandler),
+        )
+        # Catalog texts
+        mediator.register_query(
+            GetCatalogTextListQuery,
+            container.resolve(GetCatalogTextListQueryHandler),
+        )
+        mediator.register_query(
+            GetCatalogTextByCategoryQuery,
+            container.resolve(GetCatalogTextByCategoryQueryHandler),
         )
         # SEO Settings
         mediator.register_query(

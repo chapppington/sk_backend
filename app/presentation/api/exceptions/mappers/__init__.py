@@ -1,6 +1,7 @@
 from fastapi import status
 
 from domain.base.exceptions import DomainException
+from domain.catalog_texts.exceptions.catalog_texts import CatalogTextException
 from domain.certificates.exceptions.certificate_groups import CertificateGroupException
 from domain.certificates.exceptions.certificates import CertificateException
 from domain.members.exceptions.members import MemberException
@@ -14,6 +15,7 @@ from domain.submissions.exceptions.submissions import SubmissionException
 from domain.users.exceptions import UserException
 from domain.vacancies.exceptions.vacancies import VacancyException
 from domain.warehouse_file.exceptions.warehouse_file import WarehouseFileException
+from presentation.api.exceptions.mappers.catalog_texts import map_catalog_text_exception_to_status_code
 from presentation.api.exceptions.mappers.certificates import (
     map_certificate_exception_to_status_code,
     map_certificate_group_exception_to_status_code,
@@ -30,12 +32,12 @@ from presentation.api.exceptions.mappers.seo_settings import map_seo_settings_ex
 from presentation.api.exceptions.mappers.submissions import map_submission_exception_to_status_code
 from presentation.api.exceptions.mappers.users import map_user_exception_to_status_code
 from presentation.api.exceptions.mappers.vacancies import map_vacancy_exception_to_status_code
-from presentation.api.exceptions.mappers.warehouse_file import (
-    map_warehouse_file_exception_to_status_code,
-)
+from presentation.api.exceptions.mappers.warehouse_file import map_warehouse_file_exception_to_status_code
 
 
 def map_domain_exception_to_status_code(exc: DomainException) -> int:
+    if isinstance(exc, CatalogTextException):
+        return map_catalog_text_exception_to_status_code(exc)
     if isinstance(exc, UserException):
         return map_user_exception_to_status_code(exc)
     if isinstance(exc, NewsException):

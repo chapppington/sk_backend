@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from presentation.api.v1.auth.handlers import router as auth_router
+from presentation.api.v1.catalog_texts.handlers import router as catalog_texts_router
 from presentation.api.v1.certificates.handlers import router as certificates_router
 from presentation.api.v1.media.handlers import router as media_router
 from presentation.api.v1.members.handlers import router as members_router
@@ -19,6 +20,7 @@ from presentation.api.v1.warehouse_file.handlers import router as warehouse_file
 v1_router = APIRouter()
 
 v1_router.include_router(auth_router)
+v1_router.include_router(catalog_texts_router)
 v1_router.include_router(users_router)
 v1_router.include_router(media_router)
 v1_router.include_router(news_router)
